@@ -1,0 +1,398 @@
+@{
+    ViewBag.Title = "角色管理";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/js/plugins/zTree/3.5/zTreeStyle/zTreeStyle.css?201811201906" rel="stylesheet" />
+
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="ibox float-e-margins">
+
+        <div class="ibox-content">
+            <div class="row row-lg">
+                <div class="col-sm-12">
+                    <div>
+                        <div>
+                            <div class="btn-group hidden-xs" id="RoleTableEventsToolbar" role="group">
+                                <button type="button" class="btn btn-w-m btn-success authorization" action-id="role-add" action-name="新增角色" style="display: none; margin-right: 10px" v-on:click="_roleAdd">新增角色</button>
+                                <button type="button" class="btn btn-w-m btn-success authorization" action-id="role-edit" action-name="修改角色" style="display: none;margin-right: 10px" v-on:click="_roleEdit">修改角色</button>
+                                <button type="button" class="btn btn-w-m btn-danger authorization" action-id="role-delete" action-name="删除角色" style="display: none;margin-right: 10px" v-on:click="_roleDelete">删除角色</button>
+                                <div class="input-group" style="display: inline-block">
+                                    <input type="text" placeholder="请输入角色名称" class="form-control input-md" id="roleName" style="width: 150px;display: inline-block" v-on:keyup.enter="_FreshTable" data-pure-clear-button />
+                                </div>
+                                <div class="input-group" style="display: inline-block">
+                                    <input type="text" placeholder="创建者" class="form-control input-md" id="createUser" style="width: 150px;display: inline-block" v-on:keyup.enter="_FreshTable" data-pure-clear-button />
+                                </div>
+                            </div>
+                            <table id="RoleTable" data-side-pagination="server" data-sort-order="desc" data-mobile-responsive="true"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal inmodal" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="control-label">角色名称：</label>
+                    <input id="firstname" name="firstname" v-model="roleAddName" class="form-control" type="text" placeholder="请输入角色名称，重复不可" data-pure-clear-button>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">角色描述：</label>
+                    <input id="roleDesc" name="roleDesc" v-model="roleAddDesc" class="form-control" type="text" placeholder="请输入角色描述" data-pure-clear-button>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">请选择菜单权限和按钮权限：</label>
+                    <ul id="menu_tree" class="ztree" style="overflow: auto; "></ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" id="close-model" v-on:click="_roleAddClose">关闭</button>
+                <button type="button" class="btn btn-primary" id="save-model" v-on:click="_roleAddSave">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal" id="editModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="control-label">角色名称：</label>
+                    <input v-model="currentRow.RoleName" class="form-control" type="text" placeholder="请输入角色名称，重复不可">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">角色描述：</label>
+                    <input v-model="currentRow.Description" class="form-control" type="text" placeholder="请输入角色描述">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">请选择菜单权限和按钮权限：</label>
+                    <ul id="menu_tree_edit" class="ztree" style="overflow:auto;"></ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" v-on:click="_roleEditClose">关闭</button>
+                <button type="button" class="btn btn-primary" v-on:click="_roleEditSave">更新</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script src="~/js/plugins/zTree/3.5/jquery.ztree.all.js?201811201906"></script>
+
+    <script type="text/javascript">
+        var zTree;
+        var editTree;
+        var vm = new Vue({
+            el: 'body',
+            data: {
+                menuTree: [],
+                roleAddName: '',
+                roleAddDesc: '',
+                currentRow: {}
+            },
+            computed: {},
+            ready: function () {
+                auth();
+            },
+            methods: {
+                _FreshTable: function () {
+                    try {
+                        $(".bootstrap-table button[name='refresh']")[0].click();
+                    } catch (e) {
+
+                    }
+                },
+                _roleDelete: function () {
+                    var selectRow = $('#RoleTable').bootstrapTable('getSelections');
+                    if (selectRow.length < 1) {
+                        swal({
+                            title: "",
+                            text: "请选择角色！",
+                            type: "error"
+                        });
+                        return;
+                    }
+
+                    var tid = selectRow[0].Tid;
+                    swal({
+                        title: "您确定要删除吗?",
+                        text: "若该角色下有用户会操作失败！",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "是的，朕决心已定！",
+                        cancelButtonText: "让朕再考虑一下…",
+                        showLoaderOnConfirm: true,
+                        preConfirm: function (isConfirm) {
+                            if (isConfirm) {
+                                QQT.ajax('/Role/DeleteRole',
+                                    'Post',
+                                    { tid: tid })
+                                    .done(function (response) {
+                                        $('#RoleTable').bootstrapTable('refresh', { silent: true });
+                                        swal("成功啦！", "操作成功!", "success");
+                                    });
+                            }
+                        }
+                    }).then(function () {
+
+                    }).catch(function () {
+
+                    });
+                },
+                _roleAdd: function () {
+                    vm.roleAddName = '',
+                        vm.roleAddDesc = '',
+                        $('#myModal').modal({ backdrop: 'static', keyboard: false });
+                    $('#myModal').modal('show');
+                },
+                _roleAddClose: function () {
+                    resetTree(zTree);
+                    $('#myModal').modal('hide');
+                },
+                _roleAddSave: function () {
+                    if ($.trim(vm.roleAddName).length < 1) {
+                        swal({
+                            title: "",
+                            text: "角色名称不可为空!",
+                            type: "error"
+                        });
+                        return;
+                    }
+                    var ac = getNodeIdAction(zTree);
+                    QQT.ajax('/Role/AddRole',
+                        'POST',
+                        {
+                            RoleName: vm.roleAddName,
+                            RoleDesc: vm.roleAddDesc,
+                            Ids: ac.ids,
+                            Actions: ac.actions
+                        },
+                        true)
+                        .done(function (response) {
+                            $('#myModal').modal('hide');
+                            resetTree(zTree);
+                            $('#RoleTable').bootstrapTable('refresh', { silent: true });
+                        });
+
+                },
+                _roleEdit: function () {
+                    var selectRow = $('#RoleTable').bootstrapTable('getSelections');
+                    if (selectRow.length < 1) {
+                        swal({
+                            title: "",
+                            text: "请选择角色！",
+                            type: "error"
+                        });
+                        return;
+                    }
+                    var row = $.extend({}, selectRow[0]);
+                    vm.currentRow = row;
+
+                    QQT.ajax('/Home/GetMenuTree',
+                        'POST',
+                        {
+                            roleId: vm.currentRow.Tid
+                        })
+                        .done(function (response) {
+                            if (editTree)editTree.destroy();
+                            //加载Menu
+                            var setting = {
+                                check: {
+                                    enable: true,
+                                }
+                            };
+
+                            editTree = $.fn.zTree.init($("#menu_tree_edit"), setting, response.Data);
+                            $('#editModal').modal({ backdrop: 'static', keyboard: false });
+                            $('#editModal').modal('show');
+                        });
+
+
+                },
+                _roleEditClose: function () {
+                    $('#editModal').modal('hide');
+                },
+                _roleEditSave: function () {
+                    if ($.trim(vm.currentRow.RoleName).length < 1) {
+                        swal({
+                            title: "",
+                            text: "角色名称不可为空!",
+                            type: "error"
+                        });
+                        return;
+                    }
+                    var ac = getNodeIdAction(editTree);
+                    QQT.ajax('/Role/AddRole',
+                        'POST',
+                        {
+                            RoleName: vm.currentRow.RoleName,
+                            RoleDesc: vm.currentRow.Description,
+                            Ids: ac.ids,
+                            Actions: ac.actions,
+                            Tid: vm.currentRow.Tid
+                        },
+                        true)
+                        .done(function (response) {
+                            $('#editModal').modal('hide');
+                            resetTree(zTree);
+                            $('#RoleTable').bootstrapTable('refresh', { silent: true });
+                            swal("成功啦！", "更新成功!", "success");
+                        });
+
+                }
+            }
+        });
+
+        $(function () {
+            $('#RoleTable')
+                .bootstrapTable({
+                    ajax: ajaxRequest,
+                    pageNumber: 1,
+                    pageSize: 10,
+                    pageList: [10, 25, 50, 100],
+                    resetOffset: true,
+                    search: false,
+                    sortable: true,
+                    pagination: true,
+                    height: $(window).height(),
+                    showRefresh: true,
+                    showToggle: true,
+                    showColumns: false,
+                    striped: true,
+                    sortOrder: 'desc',
+                    clickToSelect: true,
+                    singleSelect: true,
+                    cache: false,
+                    // showPaginationSwitch:true,
+                    dataType: "json",
+                    iconSize: 'outline',
+                    toolbar: '#RoleTableEventsToolbar',
+                    icons: {
+                        refresh: 'glyphicon-repeat',
+                        toggle: 'glyphicon-list-alt',
+                        columns: 'glyphicon-list'
+                    },
+                    columns: [
+                        {
+                            field: 'state',
+                            title: '',
+                            checkbox: true
+                        },
+                        {
+                            field: 'Tid',
+                            title: '角色Id'
+                        },
+                        {
+                            field: 'RoleName',
+                            title: '角色名称'
+                        },
+                        {
+                            field: 'Description',
+                            title: '角色描述'
+                        },
+                        {
+                            field: 'CreateUser',
+                            title: '创建者'
+                        }
+                    ],
+                    onLoadSuccess: function () {
+
+                    },
+                    onToggle: function () {
+                    },
+                    onEditableSave: function (field, row, oldValue, $el) {
+
+                    }
+                });
+
+            $(window).resize(function () {
+                $('#RoleTable').bootstrapTable('resetView', { height: $(window).height() });
+            });
+
+            //加载所有的menu
+            QQT.ajax('/Home/GetMenuTree', 'Post')
+                .done(function (response) {
+                    console.log(response);
+                    vm.menuTree = response.Data;
+                    var setting = {
+                        check: {
+                            enable: true,
+                        }
+                    };
+                    zTree = $.fn.zTree.init($("#menu_tree"), setting, response.Data);
+                });
+        });
+
+
+        function ajaxRequest(params) {
+            var pageSize = params.data.limit;
+            var pageIndex = params.data.offset / params.data.limit + 1;
+            var orderBy = params.data.sort;
+            var orderSequence = params.data.order;
+            QQT.ajax('/Role/GetRoleList',
+                'POST',
+                {
+                    pageIndex: pageIndex,
+                    pageSize: pageSize,
+                    orderBy: orderBy,
+                    orderSequence: orderSequence,
+                    roleName: $.trim($('#roleName').val()),
+                    createUser: $.trim($('#createUser').val())
+                })
+                .done(function (response) {
+                    params.success({
+                        total: response.Total,
+                        rows: response.Rows
+                    });
+                });
+
+        }
+
+        function getNodeIdAction(tree) {
+            var nodes = tree.getCheckedNodes();
+            var tmpNode;
+            var result = {};
+            var ids = [];
+            var actions = [];
+            for (var i = 0; i < nodes.length; i++) {
+                tmpNode = nodes[i];
+                if (tmpNode.Tid != 0) {
+                    ids.push(tmpNode.Tid);
+                } else {
+                    actions.push({
+                        MenuId: tmpNode.ParentTid,
+                        ActionId: tmpNode.ActionId,
+                        ActionName: tmpNode.name
+                    });
+                }
+            }
+            result.ids = ids;
+            result.actions = actions;
+            return result;
+        }
+
+        function resetTree(tree) {
+            if (!tree) {
+                return;
+            }
+            tree.checkAllNodes(false);
+            tree.expandAll(false);
+        }
+
+    </script>
+
+}

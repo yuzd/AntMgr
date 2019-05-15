@@ -1,0 +1,201 @@
+@{
+    ViewBag.Title = "代码生成";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/plugins/jQueryUI/jquery-ui.css?201811201906" rel="stylesheet" />
+<link href="~/css/plugins/steps/jquery.steps.css?201811201906" rel="stylesheet" />
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row" id="codearea" style="display: none">
+        <div class="col-sm-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>CRUD代码自动生成向导</h5>
+                </div>
+                <div class="ibox-content">
+
+                    <form id="form" action="#" class="wizard-big">
+                        <h1>选择表</h1>
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-sm-8">
+                                    <div class="form-group">
+                                        <label>表名称 *</label>
+                                        <input class="js-example-data-array-selected text-box" id="tables" style="width: 400px;" />
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <h1>选择字段列表</h1>
+                        <fieldset>
+                            <h2>字段列表</h2>
+                            <div class="row">
+                                <div class="col-sm-8">
+                                    <div class="form-group">
+                                        <label>字段列表 *</label>
+                                        <input class="js-example-data-array-selected text-box" id="columns" style="width: 500px;" />
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <h1>下载代码</h1>
+                        <fieldset>
+                            <h2>注意：点击完成开始下载。下载后请粘贴到工程里面去</h2>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+@section Scripts{
+    <script src="~/js/plugins/jquery-ui/jqueryui.js?201811201906"></script>
+    <script src="~/js/jquery.fileDownload.js?201811201906"></script>
+    <script src="~/js/plugins/staps/jquery.steps.min.js?201811201906"></script>
+    <!-- Jquery Validate -->
+    <script src="~/js/plugins/validate/jquery.validate.min.js?201811201906"></script>
+    <script src="~/js/plugins/validate/messages_zh.min.js?201811201906"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            $('#codearea').show();
+            $("#form").steps({
+                bodyTag: "fieldset",
+                onStepChanging: function (event, currentIndex, newIndex) {
+
+                    if (currentIndex === 1 && newIndex === 2) {
+                        var columns = $('#columns').select2('data');
+                        if (columns.length === 0) {
+                            return false;
+                        }
+                        return true;
+                    } else if (currentIndex == 2 && newIndex == 1) {
+                        return true;
+                    } else if (currentIndex == 1 && newIndex == 0) {
+                        return true;
+                    } else {
+                        var tableName = $('#tables').select2('data');
+                        if (!tableName) {
+                            return false;
+                        }
+                        return true;
+                    }
+                },
+                onStepChanged: function (event, currentIndex, priorIndex) {
+                    if (currentIndex === 2) return;
+                    var tableName = $('#tables').select2('data') && $('#tables').select2('data').id;
+                    if (!tableName) return;
+                    QQT.ajax('/Common/GetDbTableColumns',
+                        'Post',
+                        { tableName: tableName.split('→')[0] }
+                    )
+                        .done(function (response) {
+                            InitDbTablesColumns(response.Data);
+                        });
+                },
+                onFinishing: function (event, currentIndex) {
+                    if (currentIndex < 2) return false;
+                    return true;
+                },
+                onFinished: function (event, currentIndex) {
+                    var cc = $('#columns').select2('data');
+                    var columns = [];
+                    $.each(cc,
+                        function (index, r) {
+                            columns.push(r.id);
+                        });
+
+                    swal({
+                        title: "您确定要开始生成代码吗?",
+                        text: "今天是个好日子！",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "GOGO！",
+                        cancelButtonText: "NONO…",
+                        showLoaderOnConfirm: true,
+                        preConfirm: function () {
+                            debugger;
+                            $.fileDownload(window.appUrl + '/Common/CodeGenDown',
+                                {
+                                    httpMethod: 'POST',
+                                    dataType: "json",
+                                    contentType: "application/json",
+                                    data: {
+                                        tableName: $('#tables').select2('data').id,
+                                        ColumnStr: columns.join(',')
+                                    },
+                                    preparingMessageHtml: "代码正在生成中,请稍后...",
+                                    failMessageHtml: "生成出错,请联系技术！",
+                                    successCallback: function () {
+                                        swal("成功啦！", "代码生成成功!", "success");
+                                        $('#columns').val(null).trigger("change");
+                                        $('#tables').val(null).trigger("change");
+                                        $("#form").steps('previous');
+                                        $("#form").steps('previous');
+                                    }
+                                });
+                            
+                        }
+                    }).then(function() {
+
+                     }).catch(swal.noop);
+                    return true;
+                }
+            }).validate({
+                errorPlacement: function (error, element) {
+                    element.before(error);
+                },
+                rules: {
+                }
+            });
+
+
+            QQT.ajax('/Common/GetDbTables', 'Post')
+                .done(function (response) {
+                    InitTablesCombobox(response.Data);
+                });
+        });
+
+        function InitTablesCombobox(data) {
+            var searchList = new Array();
+            $.each(data,
+                function (index, item) {
+                    searchList.push({
+                        id: item.Name + "→" + item.Comment,
+                        text: item.TableName + "(" + item.Comment + ")"
+                    });
+                });
+
+
+            $('#tables').select2({
+                data: searchList,
+                placeholder: '请选择表',
+                multiple: false
+            });
+
+        }
+
+        function InitDbTablesColumns(data) {
+            var searchList = new Array();
+            $.each(data,
+                function (index, item) {
+                    searchList.push({
+                        id: item.Name + "→" + item.Comment,
+                        text: item.FieldName + "(" + item.Comment + ")"
+                    });
+                });
+
+
+            $('#columns').select2({
+                data: searchList,
+                placeholder: '请选择字段',
+                multiple: true
+            });
+
+        }
+    </script>
+}

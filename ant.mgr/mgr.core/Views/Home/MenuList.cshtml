@@ -1,0 +1,389 @@
+﻿
+@{
+    ViewBag.Title = "菜单管理";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<link rel="stylesheet" href="~/Content/static/css/font-awesome.min.css?201811201906" />
+<link rel="stylesheet" href="~/Content/static/css/ace.min.css?201811201906" />
+<link rel="stylesheet" href="~/Content/static/css/ace-responsive.min.css?201811201906" />
+<link rel="stylesheet" href="~/Content/static/css/ace-skins.min.css?201811201906" />
+<style>
+
+    .table thead tr th {
+        background: linear-gradient(to bottom,#f8f8f8 0,#ececec 100%);
+    }
+
+    .table-striped tbody > tr:nth-child(odd) > td, .table-striped tbody > tr:nth-child(odd) > th {
+        background-color: #f9f9f9;
+    }
+
+    .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+        background-color: #f1f1f1;
+    }
+</style>
+
+<div style="padding-top: 30px;">
+    <table id="table_report" class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr>
+                <th class="center" style="width: 50px;">序号</th>
+                <th class='center'>名称</th>
+                <th class='center'>资源路径</th>
+                <th class='center'>排序</th>
+                <th class='center'>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <template v-if="parentList.length >0">
+                <tr v-for="item in parentList" id="tr_{{item.Tid}}">
+                    <td class="center">{{$index+1}}</td>
+                    <td class='center'>
+                        <i class="{{item.Class}}">&nbsp;</i>{{item.name}}&nbsp;
+                        <span class="label label-success arrowed">系统</span>
+                    </td>
+                    <td>{{item.Url}}</td>
+                    <td class='center'>{{item.OrderRule}}</td>
+                    <td style="width: 25%;">
+                        <a class='btn btn-mini btn-warning authorization' action-id="menu-expend" action-name="展开菜单" onclick="openClose('{{item.Tid}}',this,'{{$index}}')">展开</a>
+                        <a class='btn btn-mini btn-info authorization' action-id="menu-edit" action-name="编辑菜单" title="编辑" onclick="editMenu('{{item.Tid}}')"><i class='icon-edit'></i></a>
+                        <a class='btn btn-mini btn-danger authorization' action-id="menu-del" action-name="删除菜单" title="删除" onclick="delMenu('{{item.Tid}}', true)"><i class='icon-trash'></i></a>
+                </tr>
+            </template>
+            <template v-else>
+                <tr>
+                    <td colspan="100">没有相关数据</td>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+
+    <div>
+        <div>
+            &nbsp;&nbsp;<a class="btn btn-small btn-success authorization" action-id="menu-add" action-name="新增菜单" v-on:click="_toAddMenu">新增</a>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal inmodal" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 v-if="add" class="modal-title">新增菜单</h4>
+                <h1 v-else class="modal-title" style="color: red">修改菜单</h1>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="control-label">菜单：</label>
+                    <select name="parentId" id="parentId" onchange="setMUR()" title="菜单" style="width: 300px;">
+                        <option value="0">顶级菜单</option>
+                        <option v-for="item in parentList" value="{{item.Tid}}" onclick="">{{item.name}}</option>
+                    </select>
+                </div>
+                <input type="hidden" name="menuId" id="menuId" />
+                <input type="hidden" name="pId" id="pId" />
+                <div class="form-group">
+                    <label class="control-label">名称：</label>
+                    <input name="menuName" id="menuName" class="form-control" type="text" placeholder="这里输入菜单名称">
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">地址：</label>
+                    <input class="form-control" name="menuUrl" id="menuUrl" type="text" placeholder="这里输入链接地址">
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">序号：</label>
+                    <input class="form-control" type="number" name="menuOrder" id="menuOrder" placeholder="这里输入序号" title="序号">
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">Class图标：</label>
+                    <input class="form-control" type="text" name="menuClass" id="menuClass" placeholder="这里输入Ico" value="" title="Class图标">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="close-model" v-on:click="_CloseAddMenu">关闭</button>
+                <button type="button" class="btn btn-primary" id="save-model" v-on:click="_SaveAddMenu">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+    <script type="text/javascript">
+
+        var vm = new Vue({
+            el: 'body',
+            data: {
+                add: true,
+                currentRow: {},
+                parentList: []
+            },
+            computed: {},
+            methods: {
+                _toAddMenu: function () {
+                    vm.add = true;
+                    $("#menuUrl").attr("readonly", true);
+                    $('#myModal').modal({ backdrop: 'static', keyboard: false });
+                    $('#myModal').modal('show');
+                },
+                _CloseAddMenu: function () {
+                    vm.currentRow = {};
+                    $('#menuId').val('');
+                    $('#pId').val('');
+                    $('#menuName').val('');
+                    $('#menuUrl').val('');
+                    $('#menuOrder').val('');
+                    $('#menuClass').val('');
+                    $('#myModal').modal('hide');
+                },
+                _SaveAddMenu: function () {
+                    if ($("#menuName").val() == "") {
+
+                        swal({
+                            title: "",
+                            text: "请输入菜单名称！",
+                            type: "error"
+                        });
+                        return;
+                    }
+                    if ($("#menuUrl").val() == "") {
+                        $("#menuUrl").val('#');
+                    }
+                    if ($("#menuOrder").val() == "") {
+
+                        swal({
+                            title: "",
+                            text: "请输入菜单序号！",
+                            type: "error"
+                        });
+                        return;
+                    }
+
+                    if (isNaN(Number($("#menuOrder").val()))) {
+
+                        swal({
+                            title: "",
+                            text: "请输入菜单序号！",
+                            type: "error"
+                        });
+                        $("#menuOrder").val(1);
+                        return;
+                    }
+
+                    if (vm.add) {
+                        QQT.ajax('/Home/AddMenu',
+                            'Post',
+                            {
+                                ParentTid: $("#parentId").val(),
+                                Name: $('#menuName').val(),
+                                Url: $('#menuUrl').val(),
+                                OrderRule: $('#menuOrder').val(),
+                                Class: $('#menuClass').val(),
+                                Tid: $('#menuId').val()
+                            })
+                            .done(function (response) {
+                                swal({
+                                    title: '成功',
+                                    text: "提交成功",
+                                    type: 'success',
+                                    showCancelButton: false,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: '知道了!'
+                                }).then((result) => {
+                                    location.reload();
+                                });
+
+                            });
+                    } else {
+                        QQT.ajax('/Home/UpdateMenu',
+                            'Post',
+                            {
+                                ParentTid: $("#parentId").val(),
+                                Name: $('#menuName').val(),
+                                Url: $('#menuUrl').val(),
+                                OrderRule: $('#menuOrder').val(),
+                                Class: $('#menuClass').val(),
+                                Tid: $('#menuId').val()
+                            })
+                            .done(function (response) {
+                                swal({
+                                    title: '成功',
+                                    text: "提交成功",
+                                    type: 'success',
+                                    showCancelButton: false,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: '知道了!'
+                                }).then((result) => {
+                                    location.reload();
+                                });
+                            });
+                    }
+
+                }
+            },
+            ready: function () {
+                auth();
+                onReady();
+            }
+        });
+
+
+        function onReady() {
+            //获取全部父级菜单
+            QQT.ajax('/Home/GetAllParentMenus', 'Post')
+                .done(function (response) {
+                    if (!response || !response.Data) return;
+                    vm.parentList = response.Data;
+                });
+        }
+
+        function setMUR(flag) {
+            if ($("#parentId").val() == "0") {
+                $("#menuUrl").attr("readonly", true);
+                if (flag) {
+                    $("#menuUrl").val(flag);
+                } else {
+                    $("#menuUrl").val('');
+                }
+                $("#form-field-radio1").attr("disabled", false);
+                $("#form-field-radio2").attr("disabled", false);
+            } else {
+                $("#menuUrl").attr("readonly", false);
+                $("#form-field-radio1").attr("disabled", true);
+                $("#form-field-radio2").attr("disabled", true);
+                $("#form-field-radio1").attr("checked", false);
+                $("#form-field-radio2").attr("checked", false);
+            }
+        }
+
+
+        //修改
+        function editMenu(menuId) {
+            QQT.ajax('/Home/GetEditMenu', 'Post', { Tid: menuId })
+                .done(function (response) {
+                    var menu = response.Data;
+                    $('#menuId').val(menu.Tid);
+                    $('#pId').val(menu.ParentTid);
+                    $('#menuName').val(menu.name);
+                    $('#menuUrl').val(menu.Url);
+                    $('#menuOrder').val(menu.OrderRule);
+                    $('#menuClass').val(menu.Class);
+                    vm.add = false;
+                    $("#parentId").val(menu.ParentTid);
+                    setMUR(menu.Url);
+                    $('#myModal').modal({ backdrop: 'static', keyboard: false });
+                    $('#myModal').modal('show');
+                });
+        }
+
+
+        function delMenu(menuId, isParent) {
+            var msg = isParent ? '确定要删除该菜单吗？其下子菜单将一并删除！' : "确定要删除该菜单吗？";
+
+            swal({
+                title: msg,
+                text: "请谨慎操作！",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "是的，确定删除！",
+                cancelButtonText: "让我再考虑一下…",
+                showLoaderOnConfirm: true,
+                preConfirm: function (isConfirm) {
+                    if (isConfirm) {
+                        QQT.ajax('/Home/DisableMenu',
+                            'Post',
+                            {
+                                menuTid: menuId
+                            })
+                            .done(function (response) {
+                                swal("成功啦！", "该菜单删除成功!", "success");
+                                setTimeout("location.reload()", 100);
+                            });
+                    }
+                }
+            }).then(function () {
+
+            }).catch(function () {
+
+            });
+
+        }
+
+        function openClose(menuId, curObj, trIndex) {
+            trIndex = parseInt(trIndex, 10);
+            var txt = $(curObj).text();
+            if (txt == "展开") {
+                $(curObj).text("折叠");
+                $("#tr_" + menuId).after("<tr id='tempTr" + menuId + "'><td colspan='5'>数据载入中</td></tr>");
+                if (trIndex % 2 == 0) {
+                    $("#tempTr" + menuId).addClass("main_table_even");
+                }
+
+                QQT.ajax('/Home/GetSubMenu',
+                    'Post',
+                    {
+                        menuTid: menuId
+                    })
+                    .done(function (response) {
+                        var data = response.Data;
+                        if (data && data.length > 0) {
+                            var html = "";
+                            $.each(data,
+                                function (i) {
+                                    html = "<tr class='center' style='height:24px;line-height:24px;' name='subTr" +
+                                        menuId +
+                                        "'>";
+                                    html += "<td></td>";
+                                    html += "<td class='center'><span style='width:80px;display:inline-block;'></span>";
+                                    if (i == data.length - 1)
+                                        html += "<img src='" +
+                                            window.appUrl +
+                                            "/Content/static/images/joinbottom.gif' style='vertical-align: middle;'/>";
+                                    else
+                                        html += "<img src='" +
+                                            window.appUrl +
+                                            "/Content/static/images/join.gif' style='vertical-align: middle;'/>";
+                                    html += "<span style='width:100px;text-align:left;display:inline-block;'>" +
+                                        this.name +
+                                        "</span>";
+                                    html += "</td>";
+                                    html += "<td>" + this.Url + "</td>";
+                                    html += "<td class='center'>" + this.OrderRule + "</td>";
+                                    html +=
+                                        "<td><a class='btn btn-mini btn-info authorization' action-id='menu-edit' title='编辑' onclick='editMenu(" +
+                                        this.Tid +
+                                        ")'><i class='icon-edit'></i></a> <a class='btn btn-mini btn-danger authorization' action-id='menu-del' title='删除' onclick='delMenu(\"" +
+                                        this.Tid +
+                                        "\",false)'><i class='icon-trash'></i></a></td>";
+                                    html += "</tr>";
+                                    $("#tempTr" + menuId).before(html);
+                                });
+                            $("#tempTr" + menuId).remove();
+                            if (trIndex % 2 == 0) {
+                                $("tr[name='subTr" + menuId + "']").addClass("main_table_even");
+                            }
+
+                            //重新检查权限
+                            auth();
+                        } else {
+                            $("#tempTr" + menuId + " > td").html("没有相关数据");
+                        }
+                    });
+
+            } else {
+                $("#tempTr" + menuId).remove();
+                $("tr[name='subTr" + menuId + "']").remove();
+                $(curObj).text("展开");
+            }
+        }
+    </script>
+
+}

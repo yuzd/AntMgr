@@ -1,0 +1,98 @@
+@{
+    ViewBag.Title = "登录";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="middle-box text-center loginscreen  animated fadeInDown">
+    <div>
+        <div>
+            <h1 class="logo-name">Lito</h1>
+        </div>
+        <h3>欢迎使用 Lito管理后台</h3>
+        <input type="hidden" id="returnUrl" value="@ViewBag.returnUrl" />
+        <form class="m-t" role="form" id="login_form">
+            <div class="form-group">
+                <input type="email" class="form-control " placeholder="用户名" required="" id="userName">
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" placeholder="密码" required="" id="password" v-on:keyup.enter="login">
+            </div>
+            <button id="loginBt" type="button" class="btn btn-primary block full-width m-b" v-on:click="login">登 录</button>
+
+
+            <p class="text-muted text-center">
+                @*<a href="#"><small>请确保使用windows账号登录!</small></a>*@
+            </p>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        var vm = new Vue({
+            el: '#login_form',
+            data: {
+            },
+            computed: {},
+            methods: {
+                login: function () {
+                    loginAction();
+                }
+            },
+            ready: function () {
+
+            }
+        });
+
+        function loginAction() {
+            if (navigator.userAgent.indexOf("Chrome") < 0 && navigator.userAgent.indexOf("Ctrip") < 0) {
+                swal({
+                    title: "",
+                    text: "不建议使用该浏览器。强烈建议更换谷歌浏览器以获得最佳体验！",
+                    type: "error"
+                });
+                return;
+            }
+            var userName = $.trim($('#userName').val());
+            var password = $.trim($('#password').val());
+            if (!userName) {
+                $('#userName').focus();
+                return;
+            }
+            if (!password) {
+                $('#password').focus();
+                return;
+            }
+
+
+            QQT.ajax('/Account/LogOn',
+                'POST',
+                {
+                    eid: userName,
+                    pwd: password
+
+                })
+                .done(function (result) {
+                    if (parseInt(result.Status, 10) === 0) {
+                        //alert(result.Info);
+                        swal({
+                            title: "",
+                            text: result.Info,
+                            type: "error"
+                        });
+                    } else {
+                        var returnUrl = $('#returnUrl').val();
+                        if (returnUrl) {
+                            window.location.replace(returnUrl);
+                        } else {
+                            window.location.replace(window.appUrl + '/Home/Index');
+                        }
+                    }
+                });
+
+
+        }
+    </script>
+}

@@ -1,0 +1,188 @@
+@{
+    ViewBag.Title = "权限管理";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/js/plugins/zTree/3.5/metroStyle/metroStyle.css?201811201906" rel="stylesheet" />
+
+
+<style>
+    .top {
+        position: fixed;
+        top: 50%;
+        right: 0;
+        height: 200px;
+        width: 200px;
+        margin-top: -200px;
+        margin-right: 10%;
+    }
+
+    div {
+        display: inline;
+    }
+
+        div.left {
+            float: left;
+            width: 250px;
+            height: 80%;
+            overflow: auto;
+        }
+
+        div.right {
+            float: left;
+            width: 400px;
+            height: 80%;
+            overflow: auto;
+        }
+
+        div.middle {
+            float: left;
+            width: 100px;
+            height: 80%;
+            overflow: auto;
+            padding-top: 250px;
+        }
+</style>
+
+<div class="left">
+    <ul id="tree" class="ztree"></ul>
+</div>
+
+<div class="middle">
+    <button type="button" class="btn btn-success authorization" style="display: none" action-id="role-action-save" v-on:click="RoleActionSave" action-name="提交保存">
+        提交保存
+    </button>
+</div>
+
+<div class="right" style="display: none" v-show="showControl">
+    <ul id="tree2" class="ztree"></ul>
+</div>
+
+@section Scripts{
+    <script src="~/js/plugins/zTree/3.5/jquery.ztree.all.min.js?201811201906"></script>
+    <script type="text/javascript">
+
+        var vm = new Vue({
+            el: 'body',
+            data: {
+                showControl: false,
+                currentRow: {}
+            },
+            computed: {},
+            methods: {
+                RoleActionSave: function () {
+                    var tree1Obj = $.fn.zTree.getZTreeObj("tree");
+                    var nodes1 = tree1Obj.getSelectedNodes();
+                    if (nodes1.length != 1) {
+                        swal({
+                            title: "提交失败！",
+                            text: '没有要修改的!',
+                            type: "error"
+                        });
+                        return;
+                    }
+                    var node = nodes1[0].getParentNode();
+                    if (node == null) {
+                        swal({
+                            title: "提交失败！",
+                            text: '获取数据失败!',
+                            type: "error"
+                        });
+                        return;
+                    }
+                    var selectNodes = getSelectedNodes();
+                    QQT.ajax('/Role/AddRoleActions',
+                        'POST',
+                        {
+                            ActionId: nodes1[0].ActionId,
+                            MenuId: node.Tid,
+                            ActionList: selectNodes
+                        },
+                        true)
+                        .done(function (response) {
+                            swal("成功啦！", "操作成功!", "success");
+                        });
+                }
+            },
+            ready: function () {
+                auth();
+                //获取总的数据
+                QQT.ajax('/Home/GetMenuActionTree', 'Post', {})
+                    .done(function (response) {
+                        ready(response.Data);
+                    });
+
+                QQT.ajax('/Home/GetControllerActions', 'Post', {})
+                    .done(function (response) {
+                        ready2(response.Data);
+                    });
+            }
+        });
+
+        function ready(zNodes) {
+            var setting = {
+                view: {
+                    selectedMulti: false,
+                },
+                check: {
+                    enable: false,
+                },
+                callback: {
+                    onClick: onClick
+                }
+            };
+
+            $.fn.zTree.init($("#tree"), setting, zNodes);
+            var treeObj = $.fn.zTree.getZTreeObj("tree");
+            treeObj.expandAll(true);
+        }
+
+        function ready2(zNodes) {
+            var setting = {
+                view: {
+                    selectedMulti: true,
+                },
+                check: {
+                    enable: true,
+                }
+            };
+
+            $.fn.zTree.init($("#tree2"), setting, zNodes);
+            var treeObj = $.fn.zTree.getZTreeObj("tree2");
+            treeObj.expandAll(true);
+
+        }
+
+        function onClick(event, treeId, treeNode, clickFlag) {
+            if (treeNode.Tid != 0) {
+                vm.showControl = false;
+                return;
+            }
+            QQT.ajax('/Role/GetRoleActions',
+                'POST',
+                {
+                    ActionId: treeNode.ActionId,
+                    MenuId: treeNode.getParentNode().Tid
+                })
+                .done(function (response) {
+                    $.fn.zTree.destroy("tree2");
+                    ready2(response.Data);
+                    vm.showControl = true;
+                });
+        }
+
+        function getSelectedNodes() {
+            var treeObj = $.fn.zTree.getZTreeObj("tree2");
+            var nodes = treeObj.getCheckedNodes(true);
+            var re = [];
+            for (var i = 0; i < nodes.length; i++) {
+                var node = nodes[i];
+                if (node.children != null) continue;
+                re.push(node.getParentNode().Name + ',' + node.Name);
+            }
+            return re;
+        }
+
+
+    </script>
+
+}

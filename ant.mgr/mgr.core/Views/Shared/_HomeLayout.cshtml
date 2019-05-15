@@ -1,0 +1,144 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <title>Lito</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/css/bootstrap.min.css?201811201906" rel="stylesheet">
+    <link href="~/css/font-awesome.min.css?201811201906" rel="stylesheet">
+    <link href="~/css/animate.css?201811201906" rel="stylesheet">
+    <link href="~/css/style.css?201811201906" rel="stylesheet">
+
+</head>
+
+<body class="fixed-sidebar full-height-layout gray-bg" style="overflow: hidden">
+    <input type="hidden" id="eid" value="@ViewBag.Code" />
+    <input type="hidden" id="userName" value="@ViewBag.UserName" />
+    <div id="wrapper">
+        <!--左侧导航开始-->
+        <nav class="navbar-default navbar-static-side" role="navigation">
+            <div class="nav-close">
+                <i class="fa fa-times-circle"></i>
+            </div>
+            <div class="sidebar-collapse">
+                <ul class="nav" id="side-menu">
+                    <li class="nav-header">
+                        <div class="dropdown profile-element">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                                <span class="clear">
+                                    <span class="block m-t-xs" style="text-align: center"><strong class="font-bold" style="font-size: 20px;">Ant后台</strong></span>
+                                </span>
+                            </a>
+
+                        </div>
+                        <li>
+                            <div class="logo-element">
+                                Lito
+                            </div>
+                        </li>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="~/Home/DashBord" data-id="Home/DashBord"><i class="fa fa-home"></i> <span class="nav-label">首页</span></a>
+                    </li>
+                    @await Component.InvokeAsync("MenuHeader")
+                </ul>
+            </div>
+        </nav>
+        <!--左侧导航结束-->
+        <!--右侧部分开始-->
+        <div id="page-wrapper" class="gray-bg dashbard-1">
+            <div class="row border-bottom">
+                <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+                    <div class="navbar-header">
+                        <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+                        <!--[if lte IE 7]>
+                            <form role="search" class="navbar-form-custom" style="width: 420px !important;">
+                                <div class="form-group">
+                                    <input type="text" placeholder="您还在使用老掉牙的IE，为了正常使用系统请更换为谷歌浏览器" class="form-control" name="top-search" id="top-search">
+                                </div>
+                            </form>
+                        <![endif]-->
+                    </div>
+                    <ul class="nav navbar-top-links navbar-right">
+
+                        <li class="hidden-xs">
+                            <a href="mailto:zdyu@Ctrip.com?subject=[CB] Support" data-index="0"><i class="fa fa-envelope"></i> 技术支持</a>
+                        </li>
+                        <li class="dropdown hidden-xs">
+                            <a class="right-sidebar-toggle" aria-expanded="false">
+                                <i class="glyphicon glyphicon-user"></i> <font id="Eid">@ViewBag.Eid<font style="font-size: 5px;">(@ViewBag.RoleName)</font></font>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="row content-tabs">
+                <button class="roll-nav roll-left J_tabLeft">
+                    <i class="fa fa-backward"></i>
+                </button>
+                <nav class="page-tabs J_menuTabs">
+                    <div class="page-tabs-content">
+                        <a href="javascript:;" class="active J_menuTab" data-id="Home/DashBord"><i class="fa fa-refresh"></i> 首页</a>
+                    </div>
+                </nav>
+
+                <img id="fullscreen_on" class="roll-nav roll-right J_tabRight" style="right: 180px;margin-top: 8px;margin-right: 1.5px; width: 25px;height: 25px" src="~/img/fullscreen_alt.png" alt="全屏" />
+                <img id="fullscreen_exit" class="roll-nav roll-right J_tabRight" style="right: 180px;margin-top: 8px;margin-right: 1.5px; width: 25px; height: 25px;display: none" src="~/img/fullscreen_exit.png" alt="退出全屏" />
+                <button class="roll-nav roll-right J_tabRight">
+                    <i class="fa fa-forward"></i>
+                </button>
+
+                <div class="btn-group roll-nav roll-right">
+                    <button class="dropdown J_tabClose" data-toggle="dropdown">
+                        关闭操作<span class="caret"></span>
+                    </button>
+                    <ul role="menu" class="dropdown-menu dropdown-menu-right">
+                        <li class="J_tabShowActive">
+                            <a>定位当前选项卡</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li class="J_tabCloseAll">
+                            <a>关闭全部选项卡</a>
+                        </li>
+                        <li class="J_tabCloseOther">
+                            <a>关闭其他选项卡</a>
+                        </li>
+                    </ul>
+                </div>
+                <a href="@Url.Action("Logout","Account")"  class="roll-nav roll-right J_tabExit"><i class="fa fa fa-sign-out"></i> 退出</a>
+            </div>
+            <div class="row J_mainContent" id="content-main">
+                <iframe class="J_iframe" name="iframe0" width="100%" height="100%" src="~/Home/DashBord" frameborder="0" data-id="Home/DashBord" seamless></iframe>
+            </div>
+            <div class="footer">
+                <div class="pull-right">
+                    &copy; 2018 <a href="#" target="">Lito</a>
+                </div>
+            </div>
+        </div>
+        <!--右侧部分结束-->
+        @RenderBody()
+    </div>
+
+    <!-- 全局js -->
+    <script src="~/js/jquery.min.js?201811201906"></script>
+    <script src="~/js/bootstrap.min.js?201811201906"></script>
+    <script src="~/js/plugins/metisMenu/jquery.metisMenu.js?201811201906"></script>
+    <script src="~/js/plugins/slimscroll/jquery.slimscroll.min.js?201811201906"></script>
+    <script src="~/js/plugins/layer/layer.min.js?201811201906"></script>
+
+    <!-- 自定义js -->
+    <script src="~/js/hplus.js?201811201906"></script>
+    <script type="text/javascript" src="~/js/contabs.js?201811201906"></script>
+
+
+
+    <script src="~/js/plugins/attention/zDialog/zDrag.js?201811201906"></script>
+    <script src="~/js/plugins/attention/zDialog/zDialog.js?201811201906"></script>
+    <script src="~/js/plugins/notify/jsNotify.js?201811201906"></script>
+    <script src="~/js/plugins/data.format/date.format.js?201811201906"></script>
+</body>
+
+</html>

@@ -1,0 +1,73 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;1591</NoWarn>
+    <DocumentationFile />
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Autofac.Annotation" Version="1.0.6" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.3.1" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.9" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="1.3.0" />
+    <PackageReference Include="NLog.MailKit" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Configuration\Configuration\Configuration.csproj" />
+    <ProjectReference Include="..\DBModels\DBModels\DbModel.csproj" />
+    <ProjectReference Include="..\Infrastructure\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\Mapping\Mapping\Mapping.csproj" />
+    <ProjectReference Include="..\Repository\Repository\Repository.csproj" />
+    <ProjectReference Include="..\ServicesModel\ServicesModel\ServicesModel.csproj" />
+    <ProjectReference Include="..\ViewModels\ViewModels\ViewModels.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\js\plugins\bootstrap-fileinput\plugins\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\Content\static\css\ace-responsive.min.css" />
+    <None Include="wwwroot\Content\static\css\ace-skins.min.css" />
+    <None Include="wwwroot\Content\static\css\ace.min.css" />
+    <None Include="wwwroot\Content\static\css\chosen-sprite%402x.png" />
+    <None Include="wwwroot\Content\static\css\chosen-sprite.png" />
+    <None Include="wwwroot\Content\static\css\font-awesome.min.css" />
+    <None Include="wwwroot\Content\static\css\loading.css" />
+    <None Include="wwwroot\Content\static\font\fontawesome-webfont.eot" />
+    <None Include="wwwroot\Content\static\font\fontawesome-webfont.svg" />
+    <None Include="wwwroot\Content\static\font\fontawesome-webfont.ttf" />
+    <None Include="wwwroot\Content\static\font\fontawesome-webfont.woff" />
+    <None Include="wwwroot\Content\static\font\FontAwesome.otf" />
+    <None Include="wwwroot\Content\static\images\jiazai.gif" />
+    <None Include="wwwroot\Content\static\images\join.gif" />
+    <None Include="wwwroot\Content\static\images\joinbottom.gif" />
+    <None Include="wwwroot\Content\static\images\jzx.gif" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="nlog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Views\Account\Login.cshtml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Views\Account\UserList.cshtml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

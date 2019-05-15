@@ -1,0 +1,29 @@
+{
+  "NamespaceName": "DbModel", //必填：设置生成代码的命名空间
+
+  "BaseEntityClass": "LinqToDBEntity", //可选：生成的DTo继父类class名称
+
+  "DataContextName": "AntEntity", //自定义生成的数据库Entity的name( 如果不填会有默认值为db的名称+Entitys)
+
+  "EntitySuffix": "", //自定义生成的每张表对应class的后缀 例如统一加一个 "DTO"
+
+  "AssociationPrefix": "", //定义生成外键的字段名称的前缀 例如 “FK_”
+
+  "AssociationAppendByFieldName": true, //定义生成外键的字段名称是否根据增加 "By" + 他的字段名称
+
+  "GenerateAssociations": true, //是否生成外键
+
+  "ConnectionString": "Server=localhost;Port=3306;Database=antmgr;Uid=root;Pwd=123456;charset=utf8;SslMode=none", //DB链接字符串
+
+  "OutFileName": "DbModels", //生成的cs文件名称
+
+  "SetFkList": [ //逻辑(非物理,不提倡物理建外键)
+    //格式: A表名称，A表字段，B表名称，B表字段，外键关系(OneToOne,OneToMany,ManyToOne) 例如 "good_category,GoodTid,goods,Tid,OneToOne"
+  ],
+  "UsingList": [ //设置Using
+
+  ],
+  "SetColumnTypeList": [ //自定义设置属性的类型 格式为 table.filedName=xxxxxx  例如："person.Gender=GenderEnum"
+
+  ]
+}

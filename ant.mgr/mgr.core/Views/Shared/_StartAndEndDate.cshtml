@@ -1,0 +1,40 @@
+
+<script type="text/javascript">
+
+    whenReady(function () {
+
+        laydate.render({
+            elem: '#startTime'
+            , calendar: true
+        });
+        laydate.render({
+            elem: '#endTime'
+            , calendar: true
+        });
+        if (!window.initLayDate) {
+            $('#startTime').val('');
+            $('#endTime').val('');
+        }
+      
+    });
+
+    
+</script>
+<style>
+    .layer-date-customer {
+        width: 100px;
+        background-color: #FFFFFF;
+        background-image: none;
+        border: 1px solid #e5e6e7;
+        border-radius: 1px;
+        color: inherit;
+        text-align: center;
+        display: inline-block;
+        vertical-align: top;
+    }
+
+</style>
+<input placeholder="开始时间" class="form-control layer-date-customer" id="startTime">
+<input placeholder="结束时间" class="form-control layer-date-customer" id="endTime">
+
+

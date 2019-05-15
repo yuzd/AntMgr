@@ -1,0 +1,197 @@
+﻿@using Infrastructure.Web
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <title>Lito-@ViewBag.Title</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width" />
+
+    <link href="~/css/bootstrap.min.css?201811201906" rel="stylesheet">
+    <link href="~/css/font-awesome.css?201811201906" rel="stylesheet">
+    <link href="~/css/animate.css?201811201906" rel="stylesheet">
+    <link href="~/css/style.css?201811201906" rel="stylesheet">
+    <link href="~/js/plugins/tipped-4.4.1-light/css/tipped/tipped.css?201811201906" rel="stylesheet" />
+    <link href="~/css/plugins/bootstrap-table/bootstrap-table.min.css?201811201906" rel="stylesheet">
+    <link href="~/css/plugins/dataTables/bootstrap-editable.css?201811201906" rel="stylesheet" />
+    <link href="~/js/plugins/select2/select2.css?201811201906" rel="stylesheet" />
+    <link href="~/css/plugins/switchery/switchery.css?201811201906" rel="stylesheet">
+    <link href="~/Content/static/css/loading.css?201811201906" rel="stylesheet" />
+    <!-- Sweet alert 2 -->
+    <link href="~/js/plugins/sweetalert/sweetalert2.css?201811201906" rel="stylesheet" />
+    <script src="~/js/whenReady.js?201811201906"></script>
+
+    @RenderSection("Head", false)
+    <style>
+
+        .wrapper-content {
+            padding: 0px !important;
+        }
+
+        .ibox {
+            margin-bottom: 0 !important;
+        }
+    </style>
+</head>
+
+<body class="fixed-sidebar full-height-layout gray-bg" style="overflow: hidden">
+    <partial name="_Loading" />
+
+    @RenderBody()
+
+
+    <form id='_AntiForgeryTokenId' method='POST'>@Html.AntiForgeryToken() </form>
+
+
+    <!-- 全局js -->
+    <script src="~/js/jquery.min.js?201811201906"></script>
+    <script src="~/js/bootstrap.min.js?201811201906"></script>
+
+    <!-- 自定义js -->
+    <script src="~/js/content.js?201811201906"></script>
+
+    <script src="~/js/plugins/layer/laydatev5.0.85/laydate.js"></script>
+    <script src="~/js/plugins/data.format/date.format.js?201811201906"></script>
+    <script src="~/js/plugins/tipped-4.4.1-light/js/tipped/tipped.js?201811201906"></script>
+    <!-- Bootstrap table -->
+    <script src="~/js/plugins/bootstrap-table/bootstrap-table.min.js?201811201906"></script>
+    <script src="~/js/plugins/bootstrap-table/bootstrap-table-mobile.min.js?201811201906"></script>
+    <script src="~/js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js?201811201906"></script>
+    <script src="~/js/plugins/select2/select2.min.js?201811201906"></script>
+    <script src="~/js/plugins/select2/select2_locale_zh-CN.js?201811201906"></script>
+    <script src="~/js/underscore-1.8.2.js?201811201906"></script>
+    <script src="~/js/plugins/bootstrap-table/bootstrap-editable.js?201811201906"></script>
+    <script src="~/js/plugins/bootstrap-table/bootstrap-table-editable.min.js?201811201906"></script>
+    <script src="~/js/authlazy.js?201811201906"></script>
+    <!-- Switchery -->
+    <script src="~/js/plugins/switchery/switchery.js?201811201906"></script>
+    <script src="~/js/monkey-run.js?201811201906"></script>
+    <script src="~/js/plugins/clearjs/jquery.bootstrap-pureClearButton.min.js"></script>
+    <!-- Sweet alert 2 -->
+    <script src="~/js/vue.min1.0.js?20190110"></script>
+    
+    <script src="~/js/plugins/sweetalert/sweetalert2.js?201811201906"></script>
+    <script src="~/js/plugins/moment/moment-with-locales.min.js?201811201906"></script>
+    <script src="~/js/plugins/badjs/bj-report_new.js?201811201906"></script>
+    <script src="~/js/plugins/badjs/bj-report-tryjs.js?201811201906"></script>
+    
+    <script type="text/javascript">
+    var appUrl = "@WebUtils.AppBaseUrl";
+
+    BJ_REPORT.init({
+        id: 'mrg',//代表后台系统
+        url: appUrl + "/Common/Badjs",
+    }).tryJs().spyAll();
+
+    var QQT = {
+
+        ajax: function (path, method, data, isJsonNet, async, isFile) {
+            var newData = null;
+            var token = null;
+            if (isJsonNet) {
+                token = $('[name=__RequestVerificationToken]').val();
+                newData = { __RequestVerificationToken: token, __JsonRequest: JSON.stringify(data) };
+            } else {
+                token = $('#_AntiForgeryTokenId').serializeObject();
+                newData = $.extend(data, token);
+            }
+            var deferred = $.Deferred();
+            var ajaxSettings = {
+                url: appUrl + path,
+                data: newData,
+                dataType: 'json',
+                method: method,
+                beforeSend: function() {
+                    $('.loading').show();
+                },
+                complete: function() {
+                    $('.loading').hide();
+                }
+                // headers: { 'token': QQT.getToken() }
+            };
+            if (isJsonNet) {
+                ajaxSettings.contentType = 'application/x-www-form-urlencoded';
+            } 
+
+            if (async) {
+                ajaxSettings.async = async;
+            }
+            if (isFile) {
+                ajaxSettings.contentType = false;
+                ajaxSettings.processData = false;
+            }
+            $.ajax(ajaxSettings)
+                .done(function(response) {
+                    console.log(path, method, data, response);
+                    if (response && response.Status) {
+                        deferred.resolve(response);
+                    } else if (response) {
+                        //if (data && data.type === 2 ) {
+                        //    response.Info = '微信登录失败！尚未绑定此微信！';
+                        //}
+                        //alert(response.Info);
+                        swal({
+                            title: "失败",
+                            text: response.Info,
+                            type: "error"
+                        });
+                        deferred.reject(response);
+                    } else {
+                        swal({
+                            title: "失败",
+                            text: "请求错误！",
+                            type: "error"
+                        });
+                        deferred.reject(response);
+                    }
+                })
+                .fail(function(response) {
+                    console.error('ajax fail', response);
+                    if (response && response.responseJSON && (response.responseJSON.Status === 401 || response.responseJSON.Status === 403)) {
+                        //alert('没有权限访问！');
+                        swal({
+                            title: "失败",
+                            text: "没有权限访问！",
+                            type: "error"
+                        });
+                        //MonkeyRun.mvcJump('Account', 'Login', { returnUrl: location.href });
+                    } else if (response && (response.status === 401 || response.status === 403)) {
+                        swal({
+                            title: "失败",
+                            text: "没有权限访问！",
+                            type: "error"
+                        });
+                    } else if (response && response.responseJSON && response.responseJSON.Info) {
+                        alert(response.responseJSON.Info);
+                    } else {
+                        console.log('网络请求中断');
+                    }
+                    deferred.reject(response);
+                });
+            return deferred;
+        },
+        InsertEnter: function (str, n) {
+            if (!str)
+                return '';
+            /*
+            str:需要换行的字符串
+            n:换行间隔字符数
+            */
+            var len = str.length;
+            var strTemp = '';
+            if (len > n) {
+                strTemp = str.substring(0, n);
+                str = str.substring(n, len);
+                return strTemp + '<br>' + QQT.InsertEnter(str, n);
+            } else {
+                return str;
+            }
+        }
+    }
+    </script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+
+</html>

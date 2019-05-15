@@ -1,0 +1,544 @@
+@{
+    ViewBag.Title = "系统用户";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="ibox float-e-margins">
+        <div class="ibox-content">
+            <div class="row row-lg">
+                <div class="col-sm-12">
+                    <div>
+                        <div>
+                            <div class="btn-group hidden-xs" id="SystemUsewrTableEventsToolbar" role="group">
+                                <button type="button" action-id="role-add" action-name="授予角色" class="btn btn-w-m btn-success authorization" style="display: none;margin-right: 10px" v-on:click="_roleAdd">授予角色</button>
+                                <button type="button" action-id="user-delete" action-name="禁用用户" class="btn btn-w-m btn-danger authorization" style="display: none;margin-right: 10px" v-on:click="_userDelete">禁用用户</button>
+                                <button type="button" action-id="user-add" action-name="新增用户" class="btn btn-w-m btn-success authorization" style="display: none;margin-right: 10px" v-on:click="_userAdd">新增用户</button>
+                                <div class="input-group" style="display: inline-block">
+                                    <input type="text" class="form-control  input-md" id="UserName" placeholder="用户姓名" style="width: 150px;display: inline-block" v-on:keyup.enter="_FreshTable" data-pure-clear-button>
+                                </div>
+                                <div class="input-group" style="display: inline-block">
+                                    <input type="text" class="form-control  input-md" placeholder="用户登录账号" id="Eid" style="width: 150px;display: inline-block" v-on:keyup.enter="_FreshTable" data-pure-clear-button>
+                                </div>
+                                <input class="js-example-data-array-selected text-box" id="roleCombox1" style="width: 150px;vertical-align: initial;" />
+                            </div>
+                            <table id="SystemUsewrTable" data-side-pagination="server" data-sort-order="desc" data-mobile-responsive="true"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal" id="userAddModel" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" style="color: red">新增用户!</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="control-label">登录名称(英文)：</label>
+                    <input class="form-control" type="text" v-model="currentUser.Eid" placeholder="请输入登录名称(英文)" data-pure-clear-button>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">姓名：</label>
+                    <input class="form-control" type="text" v-model="currentUser.UserName" placeholder="请输入姓名" data-pure-clear-button>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">密码：</label>
+                    <input class="form-control" type="text" v-model="currentUser.Pwd" placeholder="请输入密码" data-pure-clear-button>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">角色列表：</label>
+                    <input class="js-example-data-array-selected text-box" id="roleCombox2" style="width: 350px;" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" v-on:click="_CloseAdd">关闭</button>
+                <button type="button" class="btn btn-primary" v-on:click="_SaveAdd">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 v-if="noRole" class="modal-title" style="color: red">请先创建角色!</h4>
+                <h1 v-else class="modal-title">请选择角色</h1>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="control-label">角色列表：</label>
+                    <input class="js-example-data-array-selected text-box" id="roleCombox" style="width: 350px;" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" id="close-model" v-on:click="_Close">关闭</button>
+                <button type="button" action-id="role-add" action-name="授予角色" class="btn btn-primary authorization" id="save-model" v-on:click="_Save">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script type="text/javascript">
+        var $roleCombox = $("#roleCombox");
+        var PM = null;
+        var eids = [];
+        var vm = new Vue({
+            el: 'body',
+            data: {
+                noRole: true,
+                currentRow: {},
+                currentUser: {}
+            },
+            computed: {},
+            ready: function () {
+                auth();
+            },
+            methods: {
+                _FreshTable: function () {
+                    try {
+                        $(".bootstrap-table button[name='refresh']")[0].click();
+                    } catch (e) {
+
+                    }
+                },
+                _SaveAdd: function () {
+                    //保存用户
+                    if (!vm.currentUser.Eid) {
+                        swal({
+                            title: "",
+                            text: "请输入登录名称！",
+                            type: "error"
+                        });
+                        return;
+                    }
+
+                    if (!vm.currentUser.UserName) {
+                        swal({
+                            title: "",
+                            text: "请输入姓名！",
+                            type: "error"
+                        });
+                        return;
+                    }
+                    if (!vm.currentUser.Pwd) {
+                        swal({
+                            title: "",
+                            text: "请输入密码！",
+                            type: "error"
+                        });
+                        return;
+                    }
+
+                    var roleTid = $('#roleCombox2').select2('data') && $('#roleCombox2').select2('data').id;
+                    if (!roleTid) {
+                        swal({
+                            title: "",
+                            text: "请选择角色！",
+                            type: "error"
+                        });
+                        return;
+                    }
+                    vm.currentUser.RoleTid = roleTid;
+                    QQT.ajax('/Account/UserAdd', 'Post', vm.currentUser)
+                        .done(function (response) {
+                            $('#SystemUsewrTable').bootstrapTable('refresh', { silent: true });
+                            swal("成功啦！", "添加成功!", "success");
+                            vm._CloseAdd();
+                        });
+                },
+                _CloseAdd: function () {
+                    this.currentUser = {};
+                    $('#roleCombox2').val(null).trigger("change");
+                    $('#userAddModel').modal('hide');
+                },
+                _userAdd: function () {
+                    $('#userAddModel').modal({ backdrop: 'static', keyboard: false });
+                    $('#userAddModel').modal('show');
+
+                },
+                _roleAdd: function () {
+                    var selectRow = $('#SystemUsewrTable').bootstrapTable('getSelections');
+                    if (selectRow.length < 1) {
+                        swal({
+                            title: "",
+                            text: "请选择用户！",
+                            type: "error"
+                        });
+                        return;
+                    }
+                    var row = $.extend({}, selectRow[0]);
+                    vm.currentRow = row;
+                    if (vm.currentRow.RoleTid) {
+                        $roleCombox.select2("val", vm.currentRow.RoleTid);
+                    }
+
+                    $('#myModal').modal({ backdrop: 'static', keyboard: false });
+                    $('#myModal').modal('show');
+                },
+                _Close: function () {
+                    $roleCombox.val(null).trigger("change");
+                    $('#myModal').modal('hide');
+                },
+                _Save: function () {
+                    if (!$roleCombox.select2('data')) {
+                        swal({
+                            title: "",
+                            text: "请选择角色！",
+                            type: "error"
+                        });
+                        return;
+                    }
+                    var roleTid = $roleCombox.select2('data').id;
+                    var roleName = $roleCombox.select2('data').text;
+                    swal({
+                        title: "您确定要赋予角色[" + roleName + "]吗?",
+                        text: "请谨慎操作！",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "朕准了！",
+                        cancelButtonText: "让朕再考虑一下…",
+                        showLoaderOnConfirm: true,
+                        preConfirm: function () {
+                            return QQT.ajax('/Account/UserAddRole',
+                                'Post',
+                                {
+                                    UserTid: vm.currentRow.Tid,
+                                    RoleTid: roleTid
+                                });
+                        }
+                    }).then(function (response) {
+                        $('#SystemUsewrTable').bootstrapTable('refresh', { silent: true });
+                        swal("成功啦！", "角色已赋予成功!", "success");
+                        $roleCombox.val(null).trigger("change");
+                        $('#myModal').modal('hide');
+                    }).catch(function() {
+                    });
+                },
+                _userDelete: function () {
+                    var selectRow = $('#SystemUsewrTable').bootstrapTable('getSelections');
+                    if (selectRow.length < 1) {
+                        swal({
+                            title: "",
+                            text: "请选择用户！",
+                            type: "error"
+                        });
+                        return;
+                    }
+                    var row = $.extend({}, selectRow[0]);
+                    swal({
+                        title: "您确定要禁用用户[" + row.UserName + "]吗?",
+                        text: "请谨慎操作！",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "朕准了！",
+                        cancelButtonText: "让朕再考虑一下…",
+                        showLoaderOnConfirm: true,
+                        preConfirm: function (isConfirm) {
+                            return QQT.ajax('/Account/UserDelete',
+                                    'Post',
+                                    {
+                                        UserTid: row.Tid
+                                    });
+                        }
+                    }).then(function (response) {
+                        $('#SystemUsewrTable').bootstrapTable('refresh', { silent: true });
+                        swal("成功啦！", "该用户已被禁用!", "success");
+                    }).catch(function () {
+                    });
+                  
+                }
+            }
+        });
+
+        $(function () {
+            $('#SystemUsewrTable')
+                .bootstrapTable({
+                    ajax: ajaxRequest,
+                    pageNumber: 1,
+                    pageSize: 25,
+                    pageList: [10, 25, 50, 100],
+                    resetOffset: true,
+                    search: false,
+                    sortable: true,
+                    pagination: true,
+                    height: $(window).height(),
+                    showRefresh: true,
+                    showToggle: true,
+                    showColumns: false,
+                    striped: true,
+                    sortOrder: 'desc',
+                    clickToSelect: true,
+                    singleSelect: true,
+                    cache: false,
+                    // showPaginationSwitch:true,
+                    dataType: "json",
+                    iconSize: 'outline',
+                    toolbar: '#SystemUsewrTableEventsToolbar',
+                    icons: {
+                        refresh: 'glyphicon-repeat',
+                        toggle: 'glyphicon-list-alt',
+                        columns: 'glyphicon-list'
+                    },
+                    columns: [
+                        {
+                            field: 'state',
+                            title: '',
+                            checkbox: true
+                        },
+                        {
+                            field: 'Eid',
+                            title: '登录账号'
+                        },
+                        {
+                            field: 'UserName',
+                            title: '姓名'
+                        },
+                        {
+                            field: 'Phone',
+                            title: '联系手机',
+                            editable: {
+                                type: 'text',
+                                showbuttons: 'bottom',
+                                validate: function (value) {
+                                    if (!value || $.trim(value).length < 1) {
+                                        return '请填写手机号!';
+                                    }
+                                    return '';
+                                }
+                            }
+                        },
+                        {
+                            field: 'LoginIp',
+                            title: '最后一次登录IP',
+                            sortable: true
+                        },
+                        {
+                            field: 'LastLoginTime',
+                            title: '最后一次登录时间',
+                            sortable: true
+                        },
+                        {
+                            field: 'RoleTid',
+                            title: '角色id',
+                            visible: false
+                        },
+                        {
+                            field: 'RoleDesc',
+                            title: '角色描述',
+                            visible: false
+                        },
+                        {
+                            field: 'RoleName',
+                            title: '所属角色',
+                            formatter: RoleDetailFormatter,
+                            sortable: true
+                        },
+                        {
+                            field: 'CreateUser',
+                            title: '创建者',
+                        },
+                        {
+                            field: 'UserAgent',
+                            title: 'UserAgent',
+                            formatter: LongStringFormatter
+                        }
+                    ],
+                    onLoadSuccess: function () {
+                        Tipped.create('.tip_infomation',
+                            function (element) {
+                                return "<strong>" + $(element).data('content') + "</strong>";
+                            });
+                    },
+                    onToggle: function () {
+                        tipReCreate();
+
+                    },
+                    onEditableSave: function (field, row, oldValue, $el) {
+                        QQT.ajax('/Account/ChangeField',
+                            'Post',
+                            {
+                                tid: row.Tid,
+                                field: field,
+                                value: row[field]
+                            })
+                            .done(function (response) {
+                                $('#SystemUsewrTable').bootstrapTable('refresh', { silent: true });
+
+                                if (response.Info) {
+                                    swal({
+                                        title: "更新失败",
+                                        text: response.Info,
+                                        type: "error"
+                                    });
+                                    return;
+                                }
+
+                                swal({
+                                    title: "成功啦！",
+                                    text: "修改成功！",
+                                    type: "success"
+                                });
+                            });
+                    }
+                });
+            $(window).resize(function () {
+
+                tipReCreate();
+                $('#SystemUsewrTable').bootstrapTable('resetView', { height: $(window).height() });
+            });
+
+            //加载所有的角色
+            QQT.ajax('/Role/GetAllRoleList', 'Post')
+                .done(function (response) {
+                    if (response.Data.length > 0) {
+                        vm.noRole = false;
+                    }
+                    InitRoleCombobox(response.Data);
+                    InitRoleCombobox2(response.Data);
+                    InitRoleCombobox1(response.Data);
+                });
+        });
+
+
+        function tipReCreate() {
+            setTimeout(function () {
+                Tipped.create('.tip_infomation',
+                    function (element) {
+                        return "<strong>" + $(element).data('content') + "</strong>";
+                    });
+
+            },
+                200);
+
+        }
+
+        function LongStringFormatter(value, row, index) {
+            if (!value) return '-';
+            if (value.length <= 15) {
+                return value;
+            } else {
+                return "<div class='tip_infomation' data-content='" +
+                    QQT.InsertEnter(value, 10) +
+                    "'>" +
+                    value.substring(0, 15) +
+                    "...</div>";
+            }
+        }
+
+        function RoleDetailFormatter(value, row, index) {
+
+            return "<a class='tip_infomation' data-content='角色描述:<br>" +
+                QQT.InsertEnter(row.RoleDesc, 20) +
+                "'>" +
+                value +
+                "</a>";
+        }
+
+        function EmailFormatter(value, row, index) {
+            return "<a href=\"mailto:" +
+                value +
+                "?subject=[CB] 行李寄存\"'>" +
+                value +
+                "</a>";
+        }
+
+
+        function InitRoleCombobox(data) {
+            var searchList = new Array();
+            $.each(data,
+                function (index, item) {
+                    searchList.push({
+                        id: item.Tid,
+                        text: item.RoleName
+                    });
+                });
+
+            $roleCombox.select2({
+                data: searchList,
+                placeholder: '请选择',
+                multiple: false,
+                //createSearchChoice: function (term, data) {
+                //    if ($(data).filter(function () {
+                //        return this.text.localeCompare(term) === 0;
+                //    }).length === 0)
+                //    { return { id: term, text: term }; }
+                //}
+            });
+        }
+
+        function InitRoleCombobox1(data) {
+            var searchList = new Array();
+            searchList.push({
+                id: 0,
+                text: '全部'
+            });
+            $.each(data,
+                function (index, item) {
+                    searchList.push({
+                        id: item.Tid,
+                        text: item.RoleName
+                    });
+                });
+
+            $('#roleCombox1').select2({
+                data: searchList,
+                placeholder: '筛选角色',
+                multiple: false
+            });
+        }
+
+        function InitRoleCombobox2(data) {
+            var searchList = new Array();
+            $.each(data,
+                function (index, item) {
+                    searchList.push({
+                        id: item.Tid,
+                        text: item.RoleName
+                    });
+                });
+
+            $('#roleCombox2').select2({
+                data: searchList,
+                placeholder: '请选择',
+                multiple: false
+            });
+        }
+
+        function ajaxRequest(params) {
+            var pageSize = params.data.limit;
+            var pageIndex = params.data.offset / params.data.limit + 1;
+            var orderBy = params.data.sort;
+            var orderSequence = params.data.order;
+            QQT.ajax('/Account/GetUserList',
+                'POST',
+                {
+                    pageIndex: pageIndex,
+                    pageSize: pageSize,
+                    orderBy: orderBy,
+                    orderSequence: orderSequence,
+                    UserName: $.trim($('#UserName').val()),
+                    Eid: $.trim($('#Eid').val()),
+                    RoleTid: $('#roleCombox1').select2('data') && $('#roleCombox1').select2('data').id || 0
+                })
+                .done(function (response) {
+                    params.success({
+                        total: response.Total,
+                        rows: response.Rows
+                    });
+                });
+
+        }
+
+
+    </script>
+
+}
