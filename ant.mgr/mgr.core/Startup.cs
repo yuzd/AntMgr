@@ -49,7 +49,7 @@ namespace ant.mgr.core
             var builder = new ContainerBuilder();
             builder.Populate(services);
 
-            //autofac打标签模式
+            //autofac打标签模式 文档：https://github.com/yuzd/Autofac.Annotation
             builder.RegisterModule(new AutofacAnnotationModule(this.GetType().Assembly, typeof(BaseRepository<>).Assembly)
                 .SetAllowCircularDependencies(true)
                 .InstancePerLifetimeScope());
@@ -65,7 +65,7 @@ namespace ant.mgr.core
         {
 
             #region AntORM
-
+            //文档：https://github.com/yuzd/AntData.ORM
             AntData.ORM.Common.Configuration.UseDBConfig(Configuration);
             AntData.ORM.Common.Configuration.Linq.AllowMultipleQuery = true;
             #endregion

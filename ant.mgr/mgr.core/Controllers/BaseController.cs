@@ -7,7 +7,7 @@ namespace ant.mgr.core.Controllers
     /// <summary>
     /// 基础控制器
     /// </summary>
-    [EnableCors("Any")]
+    [EnableCors("Any")]//统一设置Cors策略
     public class BaseController : Controller
     {
         /// <summary>
