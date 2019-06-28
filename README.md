@@ -121,3 +121,6 @@ https://github.com/yuzd/AntData.ORM
 配合ORM框架的vs一键生成dbmodel 插件：
 
 https://marketplace.visualstudio.com/items?itemName=nainaigu.AntDataVS
+
+### WIKI有更详细的教程
+https://github.com/yuzd/AntMgr/wiki
