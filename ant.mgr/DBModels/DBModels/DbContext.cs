@@ -41,7 +41,6 @@ namespace DbModel
                 sql += $"Server：{detail.Server},DB名称：{detail.DbName}, 执行时间：{detail.Duration.TotalSeconds}秒" +Environment.NewLine ;
                 Debug.Write(sql);
             }
-            RequestContext.Instance.Set("lastSql",sql.Replace("\r\n\t"," ").Replace("\r\n"," "));
         }
     }
 }

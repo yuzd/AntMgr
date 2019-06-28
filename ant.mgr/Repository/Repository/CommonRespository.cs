@@ -6,8 +6,6 @@ using Castle.DynamicProxy;
 using DbModel;
 using Infrastructure.CodeGen;
 using Infrastructure.Logging;
-using Infrastructure.StaticExt;
-using Infrastructure.StaticExt.Reflection;
 using Newtonsoft.Json;
 using Repository.Interface;
 using ServicesModel;
@@ -15,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using ViewModels.Reuqest;
 using Infrastructure;
@@ -22,6 +21,9 @@ using System.Text;
 
 namespace Repository
 {
+    /// <summary>
+    /// 公共处理
+    /// </summary>
     [Bean(typeof(ICommonRespository), Interceptor = typeof(AsyncInterceptor))]
     public class CommonRespository : BaseRepository, ICommonRespository
     {
@@ -43,15 +45,23 @@ namespace Repository
             return JsonConvert.SerializeObject(result);
         }
 
+        /// <summary>
+        /// 获取所有的表
+        /// </summary>
+        /// <returns></returns>
         public List<CodeGenTable> GetDbTables()
         {
 
             return this.GetDbTabless();
         }
 
+        /// <summary>
+        /// 获取表下面所有的字段
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <returns></returns>
         public List<CodeGenField> GetDbTablesColumns(string tableName)
         {
-            tableName = tableName.NotEmptyOrWhiteSpace("请选择表名称");
             return this.GetDbModels(tableName);
         }
 
@@ -158,8 +168,8 @@ namespace Repository
             {
                 throw new ArgumentException("targetClass");
             }
-
-            var properties = targetClass.GetCanWritePropertyInfo();
+            
+            var properties = targetClass.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static).Where(e => e.CanWrite).ToArray();
 
             var result = (from item in properties
                           let r = item.GetCustomAttribute<ColumnAttribute>()

@@ -142,6 +142,11 @@ namespace ant.mgr.core.Controllers
             return Json(result);
         }
 
+        /// <summary>
+        /// 权限与接口关联配置
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public async Task<JsonResult> GetRoleActions(RoleAction model)
         {
             var result = new ResultJsonInfo<List<APIDescription>>();

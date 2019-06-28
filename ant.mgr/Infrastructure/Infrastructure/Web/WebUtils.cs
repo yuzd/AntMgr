@@ -3,11 +3,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Web;
 using Microsoft.AspNetCore.Http.Extensions;
-using System.IO;
-using System.Net;
-using System.Threading;
-using Infrastructure.Logging;
-using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Infrastructure.Web
 {
@@ -122,7 +118,7 @@ namespace Infrastructure.Web
                 result = HttpContext.Current.Connection.RemoteIpAddress.ToString();
             }
 
-            if (string.IsNullOrEmpty(result) || !ValidatorUtils.IsIPv4(result))
+            if (string.IsNullOrEmpty(result) || !Regex.IsMatch(result, @"^((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)$"))
             {
                 return "127.0.0.1";
             }
@@ -169,158 +165,5 @@ namespace Infrastructure.Web
             return System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, strPath);
         }
 
-        /// <summary>
-        /// 获取View页面的绝对路径
-        /// </summary>
-        /// <param name="strPath"></param>
-        /// <returns></returns>
-        public static string GetViewMapPath(string strPath)
-        {
-            strPath = strPath.Replace("~", "~/Views") + ".cshtml";
-            if (strPath.StartsWith("\\"))
-            {
-                strPath = strPath.Substring(strPath.IndexOf('\\', 1)).TrimStart('\\');
-            }
-
-            return System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, strPath);
-        }
-
-        /// <summary>
-        /// Http方式下载文件
-        /// </summary>
-        /// <param name="url">http地址</param>
-        /// <param name="localFile">本地文件</param>
-        /// <returns></returns>
-        public static bool Download(string url, string localFile)
-        {
-            bool flag = false;
-            long startPosition = 0; // 上次下载的文件起始位置
-            FileStream writeStream; // 写入本地文件流对象
-
-            long remoteFileLength = GetHttpLength(url);// 取得远程文件长度
-            // System.Console.WriteLine("remoteFileLength=" + remoteFileLength);
-            if (remoteFileLength == 745)
-            {
-                //Console.WriteLine("远程文件不存在.");
-                return false;
-            }
-
-            // 判断要下载的文件夹是否存在
-            if (File.Exists(localFile))
-            {
-
-                writeStream = File.OpenWrite(localFile); // 存在则打开要下载的文件
-                startPosition = writeStream.Length; // 获取已经下载的长度
-
-                if (startPosition >= remoteFileLength)
-                {
-                    // Console.WriteLine("本地文件长度" + startPosition + "已经大于等于远程文件长度" + remoteFileLength);
-                    writeStream.Close();
-
-                    return false;
-                }
-                else
-                {
-                    writeStream.Seek(startPosition, SeekOrigin.Current); // 本地文件写入位置定位
-                }
-            }
-            else
-            {
-                writeStream = new FileStream(localFile, FileMode.Create);// 文件不保存创建一个文件
-                startPosition = 0;
-            }
-
-
-            try
-            {
-                HttpWebRequest myRequest = (HttpWebRequest) HttpWebRequest.Create(url); // 打开网络连接
-
-                if (startPosition > 0)
-                {
-                    myRequest.AddRange((int) startPosition); // 设置Range值,与上面的writeStream.Seek用意相同,是为了定义远程文件读取位置
-                }
-
-                myRequest.ReadWriteTimeout = 40000;
-
-                Stream readStream = myRequest.GetResponse().GetResponseStream(); // 向服务器请求,获得服务器的回应数据流
-
-
-                byte[] btArray = new byte[512]; // 定义一个字节数据,用来向readStream读取内容和向writeStream写入内容
-                int contentSize = readStream.Read(btArray, 0, btArray.Length); // 向远程文件读第一次
-
-                long currPostion = startPosition;
-
-                while (contentSize > 0) // 如果读取长度大于零则继续读
-                {
-                    currPostion += contentSize;
-                    int percent = (int) (currPostion * 100 / remoteFileLength);
-                    //System.Console.Title="downloading percent=" + percent + "%";
-
-                    writeStream.Write(btArray, 0, contentSize); // 写入本地文件
-                    contentSize = readStream.Read(btArray, 0, btArray.Length); // 继续向远程文件读取
-                }
-
-                //关闭流
-                writeStream.Close();
-                readStream.Close();
-
-                flag = true; //返回true下载成功
-
-
-                //判断本地的文件大小
-                if (File.Exists(localFile))
-                {
-                    var file = new FileInfo(localFile);
-                    if (file.Length < 1)
-                    {
-                        flag = false;
-                    }
-                }
-
-            }
-            catch (Exception e)
-            {
-                using (StreamWriter writer = new StreamWriter("download-log.txt", true, Encoding.UTF8))
-                {
-                    writer.WriteLine(e.Message);
-                    writer.WriteLine(e.StackTrace);
-                }
-                
-                flag = false; //返回false下载失败
-            }
-            finally
-            {
-                writeStream.Close();
-            }
-
-           
-
-            return flag;
-        }
-
-        // 从文件头得到远程文件的长度
-        public static long GetHttpLength(string url)
-        {
-            long length = 0;
-
-            try
-            {
-                HttpWebRequest req = (HttpWebRequest)HttpWebRequest.Create(url);// 打开网络连接
-                HttpWebResponse rsp = (HttpWebResponse)req.GetResponse();
-
-                if (rsp.StatusCode == HttpStatusCode.OK)
-                {
-                    length = rsp.ContentLength;// 从文件头得到远程文件的长度
-                }
-
-                rsp.Close();
-                return length;
-            }
-            catch (Exception)
-            {
-                return length;
-            }
-
-        }
     }
 }

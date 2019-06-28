@@ -17,9 +17,15 @@ using ViewModels.Reuqest;
 
 namespace Repository
 {
+    /// <summary>
+    /// 菜单处理
+    /// </summary>
     [Bean(typeof(IMenuRespository), Interceptor = typeof(AsyncInterceptor))]
     public class MenuRespository : BaseRepository<SystemMenu>, IMenuRespository
     {
+        /// <summary>
+        /// Autofac属性注入
+        /// </summary>
         [Autowired]
         public IViewRenderService ViewRenderService { get; set; }
 
@@ -181,36 +187,6 @@ namespace Repository
             return parentMenu;
         }
 
-        private void GetAllChild(List<SystemMenuSM> allMenusList, ref List<SystemMenuSM> newAllMenuList)
-        {
-            foreach (var all in allMenusList)
-            {
-                if (all.Tid < 1)
-                {
-                    continue;
-                }
-                newAllMenuList.Add(all);
-                if (all.ChildMunuList != null && all.ChildMunuList.Count > 0)
-                {
-                    GetAllChild(all.ChildMunuList, ref newAllMenuList);
-                }
-            }
-        }
-        private void GetCheckAllChild(List<SystemMenuSM> allMenusList)
-        {
-            foreach (var all in allMenusList)
-            {
-                if (all.Tid < 1)
-                {
-                    continue;
-                }
-                if (all.ChildMunuList != null && all.ChildMunuList.Count > 0)
-                {
-                    if (all.ChildMunuList.All(r => r.HasMenu)) all.HasMenu = true;
-                    GetCheckAllChild(all.ChildMunuList);
-                }
-            }
-        }
         /// <summary>
         /// 禁用某菜单
         /// </summary>
@@ -348,6 +324,36 @@ namespace Repository
 
         #region Private
 
+        private void GetAllChild(List<SystemMenuSM> allMenusList, ref List<SystemMenuSM> newAllMenuList)
+        {
+            foreach (var all in allMenusList)
+            {
+                if (all.Tid < 1)
+                {
+                    continue;
+                }
+                newAllMenuList.Add(all);
+                if (all.ChildMunuList != null && all.ChildMunuList.Count > 0)
+                {
+                    GetAllChild(all.ChildMunuList, ref newAllMenuList);
+                }
+            }
+        }
+        private void GetCheckAllChild(List<SystemMenuSM> allMenusList)
+        {
+            foreach (var all in allMenusList)
+            {
+                if (all.Tid < 1)
+                {
+                    continue;
+                }
+                if (all.ChildMunuList != null && all.ChildMunuList.Count > 0)
+                {
+                    if (all.ChildMunuList.All(r => r.HasMenu)) all.HasMenu = true;
+                    GetCheckAllChild(all.ChildMunuList);
+                }
+            }
+        }
 
         private void addActionChildren(List<SystemMenuSM> sysActionSMList, BigInteger right, bool isGod,
             ref List<SystemMenuSM> systemActionSM)
@@ -420,7 +426,7 @@ namespace Repository
             }
         }
 
-        #endregion
+       
         private List<SystemMenuSM> GetAllRightsMenusTwo(string eid, string menuRights, bool isGod = false)
         {
             var isGlod = GlobalSetting.GoldList.Contains(eid) || isGod;
@@ -492,5 +498,7 @@ namespace Repository
             }).ToList();
             return result;
         }
+
+        #endregion
     }
 }

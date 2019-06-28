@@ -113,13 +113,9 @@ namespace ant.mgr.core.Filter
             //检查是否是上帝模式//
             if (GlobalSetting.GoldList.Contains(systemUser.Eid))
             {
-                //记录当前用户
-                RequestContext.Instance.Set("loginUserInfo",new {Eid = systemUser.Eid,RoleTid = systemUser.RoleTid,AccessUrl = currentUrl,IsGold = true});
                 return;
             }
 
-            //记录当前用户
-            RequestContext.Instance.Set("loginUserInfo",new {Eid = systemUser.Eid,RoleTid = systemUser.RoleTid,AccessUrl = currentUrl});
 
             var menuTid = MenuRespository.HaveMenuPermission(currentUrl, systemUser.MenuRights);
             if (menuTid < 0)

@@ -21,11 +21,16 @@ using Newtonsoft.Json;
 
 namespace Repository
 {
+    /// <summary>
+    /// 基础仓库
+    /// </summary>
     public class BaseRepository: IRepository
     {
+
+        /// <summary>
+        /// DB
+        /// </summary>
         public MysqlDbContext<AntEntity> DB => DbModel.DbContext.DB;
-
-
 
 
         /// <summary>
@@ -43,13 +48,7 @@ namespace Repository
         /// <summary>
         /// DB里面所有的Entity
         /// </summary>
-        public AntEntity Entitys
-        {
-            get
-            {
-                return DB.Tables;
-            }
-        }
+        public AntEntity Entitys => DB.Tables;
 
         public int Execute(string sql, params DataParameter[] parameters)
         {
@@ -57,11 +56,12 @@ namespace Repository
         }
     }
 
+    /// <summary>
+    /// 基础泛型仓库
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class BaseRepository<T> : BaseRepository,IRepository<T> where T : class
     {
-
-
-
 
 
         #region Impl
@@ -72,10 +72,7 @@ namespace Repository
         /// <summary>
         /// 当前的Entity
         /// </summary>
-        public IQueryable<T> Entity
-        {
-            get { return DB.GetTable<T>(); }
-        }
+        public IQueryable<T> Entity => DB.GetTable<T>();
 
 
         public int Save(T entity)

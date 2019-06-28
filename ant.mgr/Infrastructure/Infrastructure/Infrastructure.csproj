@@ -14,27 +14,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aliyun.OSS.SDK.NetCore" Version="2.9.1" />
     <PackageReference Include="DotLiquid" Version="2.0.298" />
-    <PackageReference Include="ExcelMapper" Version="4.0.32" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.4" />
-    <PackageReference Include="JWT" Version="4.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.1.2" />
     <PackageReference Include="NLog" Version="4.5.11" />
-    <PackageReference Include="NPOI" Version="2.4.0" />
-    <PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Configuration\Configuration\Configuration.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Microsoft.Extensions.Caching.Memory">
-      <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.extensions.caching.memory\2.1.1\lib\netstandard2.0\Microsoft.Extensions.Caching.Memory.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

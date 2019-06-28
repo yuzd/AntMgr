@@ -37,23 +37,7 @@ namespace ViewModels.Reuqest
         public string ColumnStr { get; set; }
     }
 
-    public class BadjsVm
-    {
-        public string id { get; set; } //APPID
-        public string uin { get; set; }
-        public string msg { get; set; }
-        public string target { get; set; }
-        public long rowNum { get; set; }
-        public long colNum { get; set; }
-        public string from { get; set; }
-        public int level { get; set; }
-        public long _t { get; set; }
-
-        public DateTime? clientTime
-        {
-            get { return CodingUtils.ConvertFromJs(_t); }
-        }
-    }
+  
 
    
 }   

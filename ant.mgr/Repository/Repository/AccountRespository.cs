@@ -17,11 +17,12 @@ using ViewModels.Reuqest;
 
 namespace Repository
 {
+    /// <summary>
+    /// 系统用户
+    /// </summary>
     [Bean(typeof(IAccountRespository), Interceptor = typeof(AsyncInterceptor))]
     public class AccountRespository : BaseRepository<SystemUsers>, IAccountRespository
     {
-        [Autowired]
-        public IMenuRespository MenuRespository { get; set; }
 
         /// <summary>
         /// 登录
@@ -115,7 +116,6 @@ namespace Repository
             }
         }
 
-
         /// <summary>
         /// 获取用户列表
         /// </summary>
@@ -179,13 +179,6 @@ namespace Repository
                             .Skip((model.PageIndex - 1) * model.PageSize)
                             .Take(model.PageSize)
                             .ToListAsync();
-            //userList.ForEach(r =>
-            //{
-            //    if (string.IsNullOrEmpty(r.CtripCode))
-            //    {
-            //        r.CtripCode = r.UserCode;
-            //    }
-            //});
             return new Tuple<long, List<UserSM>>(await total, userList);
         }
 
@@ -313,9 +306,6 @@ namespace Repository
             {
                 return new Tuple<bool, string>(false, "该员工已存在");
             }
-
-            //var isGloal = GlobalSetting.GoldList.Contains(user.Eid);
-            //Task<SystemRole> createUserRoleTask =isGloal?null:this.Entitys.SystemRole.FindByBkAsync(user.RoleTid);
 
             var role = await this.Entitys.SystemRole.FirstOrDefaultAsync(r => r.Tid.Equals(info.RoleTid));
             if (role == null)

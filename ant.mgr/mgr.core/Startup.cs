@@ -13,8 +13,6 @@ using NLog.Extensions.Logging;
 using Repository;
 using System;
 using ant.mgr.core.Filter;
-using ant.mgr.core.Middleware;
-using Infrastructure.Cache;
 
 namespace ant.mgr.core
 {
@@ -55,7 +53,6 @@ namespace ant.mgr.core
             builder.RegisterModule(new AutofacAnnotationModule(this.GetType().Assembly, typeof(BaseRepository<>).Assembly)
                 .SetAllowCircularDependencies(true)
                 .InstancePerLifetimeScope());
-            builder.Register<ICache>(r => new LocalMemoryCache()).SingleInstance();
 
             var container = builder.Build();
             var serviceProvider = new AutofacServiceProvider(container);
@@ -84,8 +81,6 @@ namespace ant.mgr.core
             #endregion
 
             app.UseStaticFiles();
-
-            app.UseMiddleware<RequestContextMiddleware>();
 
             app.UseStatusCodePagesWithReExecute("/error/{0}");
 

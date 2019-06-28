@@ -22,11 +22,7 @@ namespace ant.mgr.core.Filter
             if (filterContext.HttpContext.Request.IsAjaxRequest())
             {
                 HandleAjaxRequestException(filterContext);
-                return;
             }
-
-            LogHelper.Warn("GlobalExceptionFilter.OnException ===> " + RequestContext.Instance ,filterContext.Exception);
-            RequestContext.Instance.EndRequest();
         }
 
         private void HandleAjaxRequestException(ExceptionContext filterContext)
@@ -47,8 +43,7 @@ namespace ant.mgr.core.Filter
             filterContext.ExceptionHandled = true;
             filterContext.HttpContext.Response.Clear();
             filterContext.HttpContext.Response.StatusCode = (int)HttpStatusCode.OK;
-            LogHelper.Warn("GlobalExceptionFilter.HandleAjaxRequestException  ===> " + RequestContext.Instance, filterContext.Exception);
-            RequestContext.Instance.EndRequest();
+            LogHelper.Warn(nameof(GlobalExceptionFilter.HandleAjaxRequestException), filterContext.Exception);
         }
     }
 }

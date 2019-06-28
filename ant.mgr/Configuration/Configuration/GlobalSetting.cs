@@ -7,13 +7,6 @@ namespace Configuration
     public class GlobalSetting
     {
 
-        public static string CurrentRootPath;
-
-        /// <summary>
-        /// JWT 私有秘钥
-        /// </summary>
-        public const string JWTSecretKey = "GQDstcKxs0NHjPOuXOYg5MbeJ1XT0uFiwDV8VBr8";
-
         /// <summary>
         /// 当前登陆用户的Eid
         /// </summary>

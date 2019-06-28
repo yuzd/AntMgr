@@ -1,14 +1,5 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="InterceptorException.cs" company="Company">
-// Copyright (C) Company. All Rights Reserved.
-// </copyright>
-// <author>nainaigu</author>
-// <summary></summary>
-//-----------------------------------------------------------------------
-
-using Autofac.Annotation;
+﻿using Autofac.Annotation;
 using Castle.DynamicProxy;
-using Infrastructure.Web;
 
 namespace Repository.Interceptors
 {
@@ -16,6 +7,9 @@ namespace Repository.Interceptors
     using System.Threading.Tasks;
 
 
+    /// <summary>
+    /// 接口超时拦截器
+    /// </summary>
     [Bean(typeof(AsyncInterceptor))]
     public class AsyncTimeoutInterceptor : AsyncInterceptor
     {

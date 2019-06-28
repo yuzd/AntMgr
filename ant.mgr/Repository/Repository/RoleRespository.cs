@@ -16,11 +16,14 @@ using ViewModels.Reuqest;
 
 namespace Repository
 {
+    /// <summary>
+    /// 角色权限管理
+    /// </summary>
     [Bean(typeof(IRoleRespository), Interceptor = typeof(AsyncInterceptor))]
     public class RoleRespository : BaseRepository<SystemRole>, IRoleRespository
     {
         /// <summary>
-        /// 页面也接口关联
+        /// 页面与接口关联
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -45,6 +48,11 @@ namespace Repository
             return string.Empty;
         }
 
+        /// <summary>
+        /// 权限与接口关联配置 获取某一个菜单的某一个功能配置的接口列表
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public async Task<List<SystemPageAction>> GetRoleActions(RoleAction model)
         {
             if (model == null || model.MenuId < 1 || string.IsNullOrEmpty(model.ActionId)) return new List<SystemPageAction>();
