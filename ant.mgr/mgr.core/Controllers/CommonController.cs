@@ -42,7 +42,6 @@ namespace ant.mgr.core.Controllers
         [AuthorizeFilter]
         [API("获取所有的表名称和列")]
         [HttpPost]
-        [ApiExplorerSettings(IgnoreApi = true)]
         [Route("GetDbTablesAndColumns")]
         public JsonResult GetDbTablesAndColumns()
         {
@@ -62,7 +61,6 @@ namespace ant.mgr.core.Controllers
         [AuthorizeFilter]
         [API("获取数据库表")]
         [HttpPost]
-        [ApiExplorerSettings(IgnoreApi = true)]
         [Route("GetDbTables")]
         public JsonResult GetDbTables()
         {
@@ -81,7 +79,6 @@ namespace ant.mgr.core.Controllers
         [AuthorizeFilter]
         [API("获取数据表下的所有字段")]
         [HttpPost]
-        [ApiExplorerSettings(IgnoreApi = true)]
         [Route("GetDbTableColumns")]
         public JsonResult GetDbTableColumns(string tableName)
         {
@@ -101,7 +98,6 @@ namespace ant.mgr.core.Controllers
         [HttpPost, FileDownload]
         [AuthorizeFilter]
         [API("生成代码")]
-        [ApiExplorerSettings(IgnoreApi = true)]
         [Route("CodeGenDown")]
         public ActionResult CodeGenDown([FromForm] CodeGenVm model)
         {
@@ -121,7 +117,6 @@ namespace ant.mgr.core.Controllers
         /// </summary>
         /// <returns></returns>
         [AuthorizeFilter]
-        [ApiExplorerSettings(IgnoreApi = true)]
         [Route("CodeGen")]
         public ActionResult CodeGen()
         {
@@ -140,7 +135,6 @@ namespace ant.mgr.core.Controllers
         /// <returns></returns>
         [AuthorizeFilter]
         [API("下载文件")]
-        [ApiExplorerSettings(IgnoreApi = true)]
         [Route("Download")]
         public ActionResult Download(string fileName)
         {

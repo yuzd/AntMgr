@@ -10,7 +10,6 @@ using ViewModels.Reuqest;
 
 namespace ant.mgr.core.Controllers
 {
-    [ApiExplorerSettings(IgnoreApi=true)]
     [ServiceFilter(typeof(AuthorizeFilterAttribute))]
     [API("Home")]
     public class HomeController : BaseController
@@ -43,24 +42,6 @@ namespace ant.mgr.core.Controllers
 
         public ActionResult DashBord()
         {
-            //#if DEBUG
-            //            return View();
-            //#endif
-            //if (!GlobalSetting.IsPro)
-            //{
-            //    return Content("DashBord");
-            //}
-
-            //if (GlobalSetting.GoldList.Contains(UserToken.Eid))
-            //{
-            //    return View();
-            //}
-
-            //if (!string.IsNullOrEmpty(this.UserToken.RoleName) && this.UserToken.RoleName.Equals("超级管理员"))
-            //{
-            //    return View();
-            //}
-
             return Content("DashBord");
         }
 

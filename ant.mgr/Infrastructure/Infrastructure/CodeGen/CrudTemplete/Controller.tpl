@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Configuration;
 using DbModel.Mysql;
 using Infrastructure.Web;
-using Lito.mgr.core.Filter;
+using ant.mgr.core.Filter;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Repository.Interface;
@@ -12,7 +12,7 @@ using ServicesModel;
 using ViewModels.Result;
 using ViewModels.Reuqest;
 
-namespace Lito.mgr.core.Controllers
+namespace ant.mgr.core.Controllers
 {
     [AuthorizeFilter]
     [API("{{ModelName}}")]

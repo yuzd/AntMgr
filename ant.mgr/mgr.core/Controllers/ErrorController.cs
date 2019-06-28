@@ -9,7 +9,6 @@ namespace ant.mgr.core.Controllers
     /// <summary>
     /// 错误
     /// </summary>
-    [ApiExplorerSettings(IgnoreApi=true)]
     public class ErrorController : BaseController
     {
 
@@ -21,7 +20,6 @@ namespace ant.mgr.core.Controllers
         }
 
         [Route("error/404")]
-        [ApiExplorerSettings(IgnoreApi=true)]
         public ActionResult Http404()
         {
             if (HttpContextAccessor.HttpContext.Request.IsAjaxRequest())
@@ -59,7 +57,6 @@ namespace ant.mgr.core.Controllers
         /// </summary>
         /// <returns>ActionResult.</returns>
         [Route("error/401")]
-        [ApiExplorerSettings(IgnoreApi=true)]
         public JsonResult Http401()
         {
             var result = new ResultJsonNoDataInfo();
@@ -73,7 +70,6 @@ namespace ant.mgr.core.Controllers
         /// </summary>
         /// <returns></returns>
         [Route("error/500")]
-        [ApiExplorerSettings(IgnoreApi=true)]
         public JsonResult Http500()
         {
             var result = new ResultJsonNoDataInfo();

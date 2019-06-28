@@ -11,7 +11,6 @@ using ViewModels.Reuqest;
 
 namespace ant.mgr.core.Controllers
 {
-    [ApiExplorerSettings(IgnoreApi=true)]
     [AuthorizeFilter]
     [API("角色")]
     public class RoleController : BaseController

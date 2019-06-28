@@ -35,7 +35,6 @@ namespace ant.mgr.core.Controllers
         /// </summary>
         /// <param name="returnUrl"></param>
         /// <returns></returns>
-        [ApiExplorerSettings(IgnoreApi=true)]
         [Route("Login")]
         public ActionResult Login(string returnUrl)
         {
@@ -47,7 +46,6 @@ namespace ant.mgr.core.Controllers
         /// 退出系统
         /// </summary>
         /// <returns></returns>
-        [ApiExplorerSettings(IgnoreApi=true)]
         [Route("Logout")]
         public ActionResult Logout()
         {
@@ -63,7 +61,6 @@ namespace ant.mgr.core.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("LogOn")]
-        [ProducesResponseType(typeof(ResultJsonNoDataInfo), 200)]
         public async Task<JsonResult> LogOn([FromForm] LogOnVM info)
         {
             var result = new ResultJsonNoDataInfo();
@@ -87,7 +84,6 @@ namespace ant.mgr.core.Controllers
         /// </summary>
         /// <returns></returns>
         [AuthorizeFilter]
-        [ApiExplorerSettings(IgnoreApi=true)]
         [Route("UserList")]
         public ActionResult UserList()
         {
@@ -103,7 +99,6 @@ namespace ant.mgr.core.Controllers
         [HttpPost]
         [API("获取所有的用户")]
         [Route("GetUserList")]
-        [ProducesResponseType(typeof(SearchResult<List<UserSM>>), 200)]
         public async Task<JsonResult> GetUserList([FromForm] AccountVm model)
         {
             var result = new SearchResult<List<UserSM>>();
@@ -125,7 +120,6 @@ namespace ant.mgr.core.Controllers
         [ValidateAntiForgeryToken]
         [API("给用户赋予角色")]
         [Route("UserAddRole")]
-        [ProducesResponseType(typeof(ResultJsonNoDataInfo), 200)]
         public async Task<JsonResult> UserAddRole([FromForm] UserAddRoleVm info)
         {
             var result = new ResultJsonNoDataInfo();
@@ -152,7 +146,6 @@ namespace ant.mgr.core.Controllers
         [AuthorizeFilter]
         [API("手动添加用户")]
         [Route("UserAdd")]
-        [ProducesResponseType(typeof(ResultJsonNoDataInfo), 200)]
         public async Task<JsonResult> UserAdd([FromForm] SystemUsers info)
         {
             var result = new ResultJsonNoDataInfo();
@@ -180,7 +173,6 @@ namespace ant.mgr.core.Controllers
         [ValidateAntiForgeryToken]
         [API("禁用用户")]
         [Route("UserDelete")]
-        [ProducesResponseType(typeof(ResultJsonNoDataInfo), 200)]
         public async Task<JsonResult> UserDelete(long UserTid)
         {
             var result = new ResultJsonNoDataInfo();
@@ -208,7 +200,6 @@ namespace ant.mgr.core.Controllers
         [ValidateAntiForgeryToken]
         [API("改变某个属性值")]
         [Route("ChangeField")]
-        [ProducesResponseType(typeof(ResultJsonNoDataInfo), 200)]
         public async Task<JsonResult> ChangeField([FromForm] ChangeFieldVm info)
         {
             var result = new ResultJsonNoDataInfo();

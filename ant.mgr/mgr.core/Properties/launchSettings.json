@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iis": {
-      "applicationUrl": "http://localhost/Lito.mgr.core",
+      "applicationUrl": "http://localhost/ant.mgr.core",
       "sslPort": 0
     },
     "iisExpress": {
@@ -23,7 +23,7 @@
     "IIS": {
       "commandName": "IIS",
       "launchBrowser": true,
-      "launchUrl": "http://localhost/Lito.mgr.core",
+      "launchUrl": "http://localhost/ant.mgr.core",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
