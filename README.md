@@ -11,7 +11,7 @@
 5. 代码生成器
 
 
-# 如何使用
+# 如何使用 wiki:https://github.com/yuzd/AntMgr/wiki
 代码克隆到本地 用vs2017或以上版本 打开工程。
 
 ### 项目结构如下：
