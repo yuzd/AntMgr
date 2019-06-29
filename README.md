@@ -10,6 +10,9 @@
 4. 权限管理[精确到按钮]）
 5. 代码生成器
 
+角色支持遗传，比如 ：共有ABCD四个功能权限，分配了 A B 2个权限给 超级管理员角色的用户，支持让超级管理员用户还能自己创建角色。但是只能选择 A B 2个。无法看到 C D！
+
+
 
 # 如何使用 wiki:https://github.com/yuzd/AntMgr/wiki
 代码克隆到本地 用vs2017或以上版本 打开工程。
@@ -94,7 +97,7 @@
 在页面里面写需要权限控制的按钮的时候
 
 ```
-<button type="button" action-id="role-add" action-name="新增角色" style="display: none" >新增角色</button>
+<button type="button" class="authorization" action-id="role-add" action-name="新增角色" style="display: none" >新增角色</button>
 
 ```
 
@@ -103,7 +106,7 @@
 action-id  | 表示这个权限按钮的id 在当前view唯一
 action-name  | 权限按钮的作用描述
 display  | 默认使用 none 隐藏
-
+class    | 必须有 authorization
 
 只要遵守如上2个约定开发好页面和controller后，按照如下步骤进行配置权限
 

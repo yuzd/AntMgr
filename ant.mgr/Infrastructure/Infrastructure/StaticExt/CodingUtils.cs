@@ -18,7 +18,7 @@ namespace Infrastructure.StaticExt
     {
 
 
-     
+
         /// <summary>
         /// MD5函数
         /// </summary>
@@ -51,9 +51,9 @@ namespace Infrastructure.StaticExt
             }
             try
             {
-                byte[] keyArray = UTF8Encoding.UTF8.GetBytes(@"F30F6FD087514424B671C397AF1C1C51");
+                byte[] keyArray = Encoding.UTF8.GetBytes(@"7BF45189A0ED4BD6BE7936EFD11169E7");
 
-                byte[] toEncryptArray = UTF8Encoding.UTF8.GetBytes(toEncrypt);
+                byte[] toEncryptArray = Encoding.UTF8.GetBytes(toEncrypt);
 
                 RijndaelManaged rDel = new RijndaelManaged();
                 rDel.Key = keyArray;
@@ -85,7 +85,7 @@ namespace Infrastructure.StaticExt
             try
             {
 
-                byte[] keyArray = UTF8Encoding.UTF8.GetBytes(@"F30F6FD087514424B671C397AF1C1C51");
+                byte[] keyArray = Encoding.UTF8.GetBytes(@"7BF45189A0ED4BD6BE7936EFD11169E7");
 
                 byte[] toEncryptArray = Convert.FromBase64String(toDecrypt);
 
@@ -93,6 +93,7 @@ namespace Infrastructure.StaticExt
                 rDel.Key = keyArray;
                 rDel.Mode = CipherMode.ECB;
                 rDel.Padding = PaddingMode.PKCS7;
+
 
                 ICryptoTransform cTransform = rDel.CreateDecryptor();
                 byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
@@ -108,7 +109,7 @@ namespace Infrastructure.StaticExt
         #endregion
 
 
-        
+
 
     }
 }

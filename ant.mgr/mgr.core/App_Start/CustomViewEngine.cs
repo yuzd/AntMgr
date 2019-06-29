@@ -101,13 +101,15 @@ namespace ant.mgr.core
                             //增加对固定Url的展示
                             if (!string.IsNullOrEmpty(child2.Url) && child2.Url.ToLower().StartsWith("http"))
                             {
-                                sb.AppendLine(" <li><a class=\"J_menuItem\" href=\"" + (string.IsNullOrEmpty(child2.Url) ? "#" : child2.Url) + "\">" + child2.Name +
+                                sb.AppendLine($" <li><a class=\"J_menuItem\" href=\"" + (string.IsNullOrEmpty(child2.Url) ? "#" : child2.Url) + "\"> <i class=\"" + child2.Class +
+                                              "\"></i>" + child2.Name +
                                               "</a></li > ");
                             }
                             else
                             {
                                 //只有第二层
-                                sb.AppendLine(" <li><a class=\"J_menuItem\" href=\"" + (string.IsNullOrEmpty(child2.Url) ? "#" : Url.Content(child2.Url)) + "\">" + child2.Name +
+                                sb.AppendLine($" <li><a class=\"J_menuItem\" href=\"" + (string.IsNullOrEmpty(child2.Url) ? "#" : Url.Content(child2.Url)) + "\"><i class=\"" + child2.Class +
+                                              "\"></i>" + child2.Name +
                                               "</a></li > ");
                             }
                         }
@@ -121,7 +123,8 @@ namespace ant.mgr.core
 
                             foreach (var child3 in child2.ChildMunuList)
                             {
-                                sb.AppendLine("<li><a class=\"J_menuItem\" href=\"" + (string.IsNullOrEmpty(child3.Url) ? "#" : Url.Content(child3.Url)) + "\">" + child3.Name +
+                                sb.AppendLine($"<li><a class=\"J_menuItem\" href=\"" + (string.IsNullOrEmpty(child3.Url) ? "#" : Url.Content(child3.Url)) + "\"><i class=\"" + child2.Class +
+                                              "\"></i>" + child3.Name +
                                               "</a></li>");
                             }
                             sb.AppendLine("</ul>");
