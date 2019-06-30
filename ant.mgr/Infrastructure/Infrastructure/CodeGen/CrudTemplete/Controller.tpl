@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Configuration;
-using DbModel.Mysql;
-using Infrastructure.Web;
+using DbModel;
 using ant.mgr.core.Filter;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Repository.Interface;
 using ServicesModel;

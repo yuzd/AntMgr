@@ -3,7 +3,7 @@ using AntData.ORM.Linq;
 using Autofac.Annotation;
 using Castle.DynamicProxy;
 using Configuration;
-using DbModel.Mysql;
+using DbModel;
 using Infrastructure.Logging;
 using Infrastructure.StaticExt;
 using Infrastructure.Web;
