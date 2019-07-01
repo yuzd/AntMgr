@@ -23,7 +23,12 @@
 ![image](https://images4.c-ctrip.com/target/zb0u15000000yoc9r273B.png)
 
 ### 找到DbModel下面的初始化db脚本
-![image](https://images4.c-ctrip.com/target/zb0315000000yq3p05596.png)
+- mysql数据库的初始化脚本
+- sqlserver数据库的初始化脚本（我测试用的是2012）
+
+![image](https://images4.c-ctrip.com/target/zb0m16000000z3fk4624C.png)
+
+### 以下教程采用的是mysql数据库，如果您是用MSSQL的话请看wiki里面有专门介绍注意点。
 
 里面包含4张表的schema和初始化数据，你可以新建一个db，也可以导入到你现有的db
 
