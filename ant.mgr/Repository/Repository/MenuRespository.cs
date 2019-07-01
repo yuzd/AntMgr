@@ -133,6 +133,7 @@ namespace Repository
                 {
                     //获取所有的菜单
                     var allMenus = GetAllRightsMenusTwo(string.Empty, null, true);
+                    GetCheckAllChild(allMenus);
                     return allMenus;
                 }
 
@@ -345,6 +346,7 @@ namespace Repository
             {
                 if (all.Tid < 1)
                 {
+                    all.ChildMunuList = null;
                     continue;
                 }
                 if (all.ChildMunuList != null && all.ChildMunuList.Count > 0)

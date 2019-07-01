@@ -38,4 +38,11 @@ namespace ViewModels.Reuqest
 
     }
 
+
+    public class UpdatePwdVm
+    {
+        public string Eid { get; set; }
+        public string OldPwd { get; set; }
+        public string Pwd { get; set; }
+    }
 }

@@ -43,6 +43,72 @@ namespace ant.mgr.core.Controllers
         }
 
         /// <summary>
+        /// 个人信息页面
+        /// </summary>
+        /// <returns></returns>
+        [Route("UserDetail")]
+        [AuthorizeFilter]
+        public async Task<ActionResult> UserDetail()
+        {
+            var currentUser = await AccountRespository.GetUserInfo(UserToken);
+            ViewBag.UserName = currentUser?.UserName;
+            ViewBag.Phone = currentUser?.Phone;
+            return View();
+        }
+
+        /// <summary>
+        /// 更新个人信息
+        /// </summary>
+        /// <returns></returns>
+        [Route("UpdateUserInfo")]
+        [ValidateAntiForgeryToken]
+        [AuthorizeFilter]
+        public async Task<ActionResult> UpdateUserInfo([FromForm] SystemUsers user)
+        {
+            var result = new ResultJsonNoDataInfo();
+            user.Eid = UserToken.Eid;
+            var respositoryResult = await AccountRespository.UpdateUserInfo(user);
+            if (string.IsNullOrEmpty(respositoryResult))
+            {
+
+                result.Status = ResultConfig.Ok;
+                result.Info = ResultConfig.SuccessfulMessage;
+            }
+            else
+            {
+                result.Status = ResultConfig.Fail;
+                result.Info = respositoryResult;
+            }
+            return Json(result);
+        }
+
+        /// <summary>
+        /// 更新登录密码
+        /// </summary>
+        /// <returns></returns>
+        [Route("UpdatePwd")]
+        [ValidateAntiForgeryToken]
+        [AuthorizeFilter]
+        public async Task<ActionResult> UpdatePwd([FromForm] UpdatePwdVm user)
+        {
+            var result = new ResultJsonNoDataInfo();
+            user.Eid = UserToken.Eid;
+            var respositoryResult = await AccountRespository.UpdatePwd(user);
+            if (string.IsNullOrEmpty(respositoryResult))
+            {
+
+                result.Status = ResultConfig.Ok;
+                result.Info = ResultConfig.SuccessfulMessage;
+            }
+            else
+            {
+                result.Status = ResultConfig.Fail;
+                result.Info = respositoryResult;
+            }
+            return Json(result);
+        }
+
+        /// <summary>
         /// 退出系统
         /// </summary>
         /// <returns></returns>

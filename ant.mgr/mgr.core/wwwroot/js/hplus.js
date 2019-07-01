@@ -105,6 +105,16 @@ $(window).bind("load resize", function () {
     }
 });
 
+//修改密码
+function modifyPwd() {
+
+}
+
+//个人资料
+function profile() {
+
+}
+
 function NavToggle() {
     $('.navbar-minimalize').trigger('click');
 }

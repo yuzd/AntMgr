@@ -335,6 +335,79 @@ namespace Repository
             return new Tuple<bool, string>(true, string.Empty);
         }
 
+        /// <summary>
+        /// 获取系统用户信息
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public async Task<SystemUsers> GetUserInfo(Token user)
+        {
+            if (user == null) return null;
+
+            return await this.Entity.Where(r => r.Eid.Equals(user.Eid)).Select(r => new SystemUsers
+            {
+                UserName = r.UserName,
+                Phone = r.Phone
+            }).FirstOrDefaultAsync();
+        }
+
+        /// <summary>
+        /// 更新个人信息
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public async Task<string> UpdateUserInfo(SystemUsers user)
+        {
+            if (user == null) return Tip.BadRequest;
+
+            if (string.IsNullOrEmpty(user.UserName) && string.IsNullOrEmpty(user.Phone)) return Tip.BadRequest;
+
+            var query = this.Entity.Where(r => r.Eid.Equals(user.Eid)).Set(r=>r.DataChangeLastTime,DateTime.Now);
+
+            if (!string.IsNullOrEmpty(user.UserName))
+            {
+                query = query.Set(r => r.UserName, user.UserName);
+            }
+
+            if (!string.IsNullOrEmpty(user.Phone))
+            {
+                query = query.Set(r => r.Phone, user.Phone);
+            }
+
+            var rt = await query.UpdateAsync() > 0;
+
+            if (!rt) return Tip.UpdateError;
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// 更新密码
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public async Task<string> UpdatePwd(UpdatePwdVm user)
+        {
+            if (user == null) return Tip.BadRequest;
+
+            if (string.IsNullOrEmpty(user.Pwd) || string.IsNullOrEmpty(user.OldPwd)) return Tip.BadRequest;
+
+            var currentUser = await Entity.FirstOrDefaultAsync(r => r.Eid.Equals(user.Eid));
+            if (currentUser == null)
+            {
+                return "用户不存在";
+            }
+
+            var pwd = CodingUtils.MD5(user.OldPwd);
+            if (!currentUser.Pwd.Equals(pwd))
+            {
+                return "旧密码错误";
+            }
+
+            var newPwd = CodingUtils.MD5(user.Pwd);
+            var rt = this.Entity.Where(r => r.Eid.Equals(user.Eid)).Set(r => r.DataChangeLastTime, DateTime.Now).Set(r=>r.Pwd,newPwd).Update()>0;
+            if (!rt) return Tip.UpdateError;
+            return string.Empty;
+        }
 
         private void GetRoleName(SystemRole role, List<long> roleList)
         {

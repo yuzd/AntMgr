@@ -30,7 +30,7 @@ namespace Repository
         /// <summary>
         /// DB
         /// </summary>
-        public MysqlDbContext<AntEntity> DB => DbModel.DbContext.DB;
+        public DbContext<AntEntity> DB => DbModel.DbContext.DB;
 
 
         /// <summary>

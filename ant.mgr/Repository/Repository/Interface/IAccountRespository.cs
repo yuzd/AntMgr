@@ -62,5 +62,26 @@ namespace Repository.Interface
         /// <param name="user"></param>
         /// <returns></returns>
         Task<Tuple<bool, string>> UserAdd(SystemUsers info,Token user);
+
+        /// <summary>
+        /// 获取系统用户信息
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        Task<SystemUsers> GetUserInfo(Token user);
+
+        /// <summary>
+        /// 更新个人信息
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        Task<string> UpdateUserInfo(SystemUsers user);
+
+        /// <summary>
+        /// 更新密码
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        Task<string> UpdatePwd(UpdatePwdVm user);
     }
 }

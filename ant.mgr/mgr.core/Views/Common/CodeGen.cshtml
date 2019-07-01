@@ -54,9 +54,7 @@
     <script src="~/js/plugins/jquery-ui/jqueryui.js?201811201906"></script>
     <script src="~/js/jquery.fileDownload.js?201811201906"></script>
     <script src="~/js/plugins/staps/jquery.steps.min.js?201811201906"></script>
-    <!-- Jquery Validate -->
-    <script src="~/js/plugins/validate/jquery.validate.min.js?201811201906"></script>
-    <script src="~/js/plugins/validate/messages_zh.min.js?201811201906"></script>
+ 
 
     <script>
 
@@ -144,12 +142,6 @@
 
                      }).catch(swal.noop);
                     return true;
-                }
-            }).validate({
-                errorPlacement: function (error, element) {
-                    element.before(error);
-                },
-                rules: {
                 }
             });
 
