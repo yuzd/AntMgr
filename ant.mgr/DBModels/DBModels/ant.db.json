@@ -1,29 +1,29 @@
 {
-  "NamespaceName": "DbModel", //±ØÌî£ºÉèÖÃÉú³É´úÂëµÄÃüÃû¿Õ¼ä
+  "NamespaceName": "DbModel", //å¿…å¡«ï¼šè®¾ç½®ç”Ÿæˆä»£ç çš„å‘½åç©ºé—´
 
-  "BaseEntityClass": "LinqToDBEntity", //¿ÉÑ¡£ºÉú³ÉµÄDTo¼Ì¸¸ÀàclassÃû³Æ
+  "BaseEntityClass": "LinqToDBEntity", //ç”Ÿæˆçš„DToç»§çˆ¶ç±»classåç§° (å¿…å¡« ä»£ç ç”Ÿæˆçš„æ—¶å€™ä¼šç”¨åˆ°)
 
-  "DataContextName": "AntEntity", //×Ô¶¨ÒåÉú³ÉµÄÊı¾İ¿âEntityµÄname( Èç¹û²»Ìî»áÓĞÄ¬ÈÏÖµÎªdbµÄÃû³Æ+Entitys)
+  "DataContextName": "AntEntity", //è‡ªå®šä¹‰ç”Ÿæˆçš„æ•°æ®åº“Entityçš„name( å¦‚æœä¸å¡«ä¼šæœ‰é»˜è®¤å€¼ä¸ºdbçš„åç§°+Entitys)
 
-  "EntitySuffix": "", //×Ô¶¨ÒåÉú³ÉµÄÃ¿ÕÅ±í¶ÔÓ¦classµÄºó×º ÀıÈçÍ³Ò»¼ÓÒ»¸ö "DTO"
+  "EntitySuffix": "", //è‡ªå®šä¹‰ç”Ÿæˆçš„æ¯å¼ è¡¨å¯¹åº”classçš„åç¼€ ä¾‹å¦‚ç»Ÿä¸€åŠ ä¸€ä¸ª "DTO"
 
-  "AssociationPrefix": "", //¶¨ÒåÉú³ÉÍâ¼üµÄ×Ö¶ÎÃû³ÆµÄÇ°×º ÀıÈç ¡°FK_¡±
+  "AssociationPrefix": "", //å®šä¹‰ç”Ÿæˆå¤–é”®çš„å­—æ®µåç§°çš„å‰ç¼€ ä¾‹å¦‚ â€œFK_â€
 
-  "AssociationAppendByFieldName": true, //¶¨ÒåÉú³ÉÍâ¼üµÄ×Ö¶ÎÃû³ÆÊÇ·ñ¸ù¾İÔö¼Ó "By" + ËûµÄ×Ö¶ÎÃû³Æ
+  "AssociationAppendByFieldName": true, //å®šä¹‰ç”Ÿæˆå¤–é”®çš„å­—æ®µåç§°æ˜¯å¦æ ¹æ®å¢åŠ  "By" + ä»–çš„å­—æ®µåç§°
 
-  "GenerateAssociations": true, //ÊÇ·ñÉú³ÉÍâ¼ü
+  "GenerateAssociations": true, //æ˜¯å¦ç”Ÿæˆå¤–é”®
 
-  "ConnectionString": "Server=localhost;Port=3306;Database=antmgr;Uid=root;Pwd=123456;charset=utf8;SslMode=none", //DBÁ´½Ó×Ö·û´®
+  "ConnectionString": "Server=localhost;Port=3306;Database=antmgr;Uid=root;Pwd=123456;charset=utf8;SslMode=none", //DBé“¾æ¥å­—ç¬¦ä¸²
 
-  "OutFileName": "DbModels", //Éú³ÉµÄcsÎÄ¼şÃû³Æ
+  "OutFileName": "DbModels", //ç”Ÿæˆçš„csæ–‡ä»¶åç§°
 
-  "SetFkList": [ //Âß¼­(·ÇÎïÀí,²»Ìá³«ÎïÀí½¨Íâ¼ü)
-    //¸ñÊ½: A±íÃû³Æ£¬A±í×Ö¶Î£¬B±íÃû³Æ£¬B±í×Ö¶Î£¬Íâ¼ü¹ØÏµ(OneToOne,OneToMany,ManyToOne) ÀıÈç "good_category,GoodTid,goods,Tid,OneToOne"
+  "SetFkList": [ //é€»è¾‘(éç‰©ç†,ä¸æå€¡ç‰©ç†å»ºå¤–é”®)
+    //æ ¼å¼: Aè¡¨åç§°ï¼ŒAè¡¨å­—æ®µï¼ŒBè¡¨åç§°ï¼ŒBè¡¨å­—æ®µï¼Œå¤–é”®å…³ç³»(OneToOne,OneToMany,ManyToOne) ä¾‹å¦‚ "good_category,GoodTid,goods,Tid,OneToOne"
   ],
-  "UsingList": [ //ÉèÖÃUsing
+  "UsingList": [ //è®¾ç½®Using
 
   ],
-  "SetColumnTypeList": [ //×Ô¶¨ÒåÉèÖÃÊôĞÔµÄÀàĞÍ ¸ñÊ½Îª table.filedName=xxxxxx  ÀıÈç£º"person.Gender=GenderEnum"
+  "SetColumnTypeList": [ //è‡ªå®šä¹‰è®¾ç½®å±æ€§çš„ç±»å‹ æ ¼å¼ä¸º table.filedName=xxxxxx  ä¾‹å¦‚ï¼š"person.Gender=GenderEnum"
 
   ]
 }
