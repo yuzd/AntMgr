@@ -82,10 +82,11 @@ namespace ant.mgr.core
 
                 if (mu.ChildMunuList.Count == 0)
                 {
+                    continue;
                     //只有一层
-                    sb.AppendLine(
-                        "<a class=\"J_menuItem\" href=\"" + (string.IsNullOrEmpty(mu.Url) ? "#" : Url.Content(mu.Url)) + "\"><i class=\"" + mu.Class +
-                        "\"></i> <span class=\"nav-label\">" + mu.Name + "</span></a>");
+                    //sb.AppendLine(
+                    //    "<a class=\"J_menuItem\" href=\"" + (string.IsNullOrEmpty(mu.Url) ? "#" : Url.Content(mu.Url)) + "\"><i class=\"" + mu.Class +
+                    //    "\"></i> <span class=\"nav-label\">" + mu.Name + "</span></a>");
                 }
                 else
                 {

@@ -50,6 +50,7 @@ namespace ServicesModel
         public long ParentTid { get; set; }
 
         public string Class { get; set; }
+        public bool IsActive { get; set; }
 
         [JsonProperty("nodes")]
         public List<SystemMenuSM> ChildMunuList { get; set; }

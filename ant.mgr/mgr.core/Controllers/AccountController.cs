@@ -62,6 +62,7 @@ namespace ant.mgr.core.Controllers
         /// <returns></returns>
         [Route("UpdateUserInfo")]
         [ValidateAntiForgeryToken]
+        [API("更新个人信息")]
         [AuthorizeFilter]
         public async Task<ActionResult> UpdateUserInfo([FromForm] SystemUsers user)
         {
@@ -88,6 +89,7 @@ namespace ant.mgr.core.Controllers
         /// <returns></returns>
         [Route("UpdatePwd")]
         [ValidateAntiForgeryToken]
+        [API("更新登录密码")]
         [AuthorizeFilter]
         public async Task<ActionResult> UpdatePwd([FromForm] UpdatePwdVm user)
         {

@@ -31,6 +31,11 @@ namespace ViewModels.Reuqest
         /// 样式
         /// </summary>
         public string Class { get; set; }
+        
+        /// <summary>
+        /// 是否要在页面上显示该菜单
+        /// </summary>
+        public bool IsActive { get; set; }
 
         /// <summary>
         /// 主键

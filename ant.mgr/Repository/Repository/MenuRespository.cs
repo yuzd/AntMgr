@@ -167,7 +167,7 @@ namespace Repository
             }
             else
             {
-                allMenusList = this.Entity.Where(r => r.IsActive).MappperTo<SystemMenuSM>().ToList();
+                allMenusList = this.Entity.MappperTo<SystemMenuSM>().ToList();
 
             }
             var parentMenu = allMenusList.Where(r => r.ParentTid.Equals(0))
@@ -239,6 +239,7 @@ namespace Repository
                 .Set(r => r.Url, model.Url)
                 .Set(r => r.ParentTid, model.ParentTid)
                 .Set(r => r.OrderRule, model.OrderRule)
+                .Set(r => r.IsActive, model.IsActive)
                 .Update() > 0;
             if (!updateResult)
             {
@@ -277,7 +278,7 @@ namespace Repository
             SystemMenu menu = new SystemMenu
             {
                 Class = model.Class,
-                IsActive = true,
+                IsActive = model.IsActive,
                 Name = model.Name,
                 Url = model.Url,
                 OrderRule = model.OrderRule,
@@ -300,7 +301,7 @@ namespace Repository
         /// <returns></returns>
         public List<SystemMenuSM> GetSubMenus(long menuTid)
         {
-            var allMenus = this.Entity.Where(r => r.IsActive && r.ParentTid == menuTid)
+            var allMenus = this.Entity.Where(r => r.ParentTid == menuTid)
                 .OrderBy(r => r.OrderRule)
                 .MappperTo<SystemMenuSM>()
                 .ToList();
@@ -313,7 +314,7 @@ namespace Repository
         /// <returns></returns>
         public List<SystemMenuSM> GetAllParentMenus()
         {
-            var allMenus = this.Entity.Where(r => r.IsActive && r.ParentTid == 0)
+            var allMenus = this.Entity.Where(r => r.ParentTid == 0)
                 .OrderBy(r => r.OrderRule)
                 .MappperTo<SystemMenuSM>().ToList();
             return allMenus;
@@ -437,7 +438,7 @@ namespace Repository
                 return new List<SystemMenuSM>();
             }
             var right = new BigInteger(menuRights ?? "0");
-            var allMenus = this.Entity.Where(r => r.IsActive).MappperTo<SystemMenuSM>().ToList();
+            var allMenus = this.Entity.MappperTo<SystemMenuSM>().ToList();
             var parentMenu = allMenus.Where(r => r.ParentTid.Equals(0) && (right.TestBit((int)r.Tid) || isGlod))
                 .OrderBy(r => r.OrderRule).ToList();
             //递归构建
