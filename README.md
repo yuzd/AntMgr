@@ -12,7 +12,8 @@
 
 角色支持遗传，比如 ：共有ABCD四个功能权限，分配了 A B 2个权限给 超级管理员角色的用户，支持让超级管理员用户还能自己创建角色。但是只能选择 A B 2个。无法看到 C D！
 
-
+# 遇到问题可有加群咨询
+![image](https://images4.c-ctrip.com/target/zb0k16000000yztm18B20.png)
 
 # 如何使用 wiki:https://github.com/yuzd/AntMgr/wiki
 代码克隆到本地 用vs2017或以上版本 打开工程。
