@@ -3385,7 +3385,7 @@
 
                     if (vm.add) {
 
-                        QQT.ajax('/Home/AddMenu',
+                        QQT.ajax('/Admin/Home/AddMenu',
                             'Post',
                             {
                                 ParentTid: $("#parentId").val(),
@@ -3411,7 +3411,7 @@
 
                             });
                     } else {
-                        QQT.ajax('/Home/UpdateMenu',
+                        QQT.ajax('/Admin/Home/UpdateMenu',
                             'Post',
                             {
                                 ParentTid: $("#parentId").val(),
@@ -3453,7 +3453,7 @@
 
         function onReady() {
             //获取全部父级菜单
-            QQT.ajax('/Home/GetAllParentMenus', 'Post')
+            QQT.ajax('/Admin/Home/GetAllParentMenus', 'Post')
                 .done(function (response) {
                     if (!response || !response.Data) return;
                     vm.parentList = response.Data;
@@ -3487,7 +3487,7 @@
 
         //修改
         function editMenu(menuId) {
-            QQT.ajax('/Home/GetEditMenu', 'Post', { Tid: menuId })
+            QQT.ajax('/Admin/Home/GetEditMenu', 'Post', { Tid: menuId })
                 .done(function (response) {
                     var menu = response.Data;
                     $('#menuId').val(menu.Tid);
@@ -3520,7 +3520,7 @@
                 showLoaderOnConfirm: true,
                 preConfirm: function (isConfirm) {
                     if (isConfirm) {
-                        QQT.ajax('/Home/DisableMenu',
+                        QQT.ajax('/Admin/Home/DisableMenu',
                             'Post',
                             {
                                 menuTid: menuId
@@ -3549,7 +3549,7 @@
                     $("#tempTr" + menuId).addClass("main_table_even");
                 }
 
-                QQT.ajax('/Home/GetSubMenu',
+                QQT.ajax('/Admin/Home/GetSubMenu',
                     'Post',
                     {
                         menuTid: menuId

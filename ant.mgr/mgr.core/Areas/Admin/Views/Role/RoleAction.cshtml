@@ -106,12 +106,12 @@
             ready: function () {
                 auth();
                 //获取总的数据
-                QQT.ajax('/Home/GetMenuActionTree', 'Post', {})
+                QQT.ajax('/Admin/Home/GetMenuActionTree', 'Post', {})
                     .done(function (response) {
                         ready(response.Data);
                     });
 
-                QQT.ajax('/Home/GetControllerActions', 'Post', {})
+                QQT.ajax('/Admin/Home/GetControllerActions', 'Post', {})
                     .done(function (response) {
                         ready2(response.Data);
                     });
@@ -157,7 +157,7 @@
                 vm.showControl = false;
                 return;
             }
-            QQT.ajax('/Role/GetRoleActions',
+            QQT.ajax('/Admin/Role/GetRoleActions',
                 'POST',
                 {
                     ActionId: treeNode.ActionId,

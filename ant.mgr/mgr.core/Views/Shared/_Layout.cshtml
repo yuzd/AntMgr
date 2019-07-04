@@ -156,7 +156,11 @@
                             type: "error"
                         });
                     } else if (response && response.responseJSON && response.responseJSON.Info) {
-                        alert(response.responseJSON.Info);
+                        swal({
+                            title: "失败",
+                            text: response.responseJSON.Info,
+                            type: "error"
+                        });
                     } else {
                         console.log('网络请求中断');
                     }

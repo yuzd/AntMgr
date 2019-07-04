@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Net;
+using Microsoft.AspNetCore.Routing;
 using ViewModels.Result;
 
 namespace ant.mgr.core.Filter
@@ -22,6 +23,17 @@ namespace ant.mgr.core.Filter
             if (filterContext.HttpContext.Request.IsAjaxRequest())
             {
                 HandleAjaxRequestException(filterContext);
+            }
+            else
+            {
+                var http403 = new RouteValueDictionary(new
+                {
+                    area = "Admin",
+                    action = "Http500",
+                    controller = "error",
+                    exception = filterContext.Exception.Message
+                });
+                filterContext.Result = new RedirectToRouteResult(http403);
             }
         }
 

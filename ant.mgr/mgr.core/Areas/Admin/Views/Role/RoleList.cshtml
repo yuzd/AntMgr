@@ -138,7 +138,7 @@
                         showLoaderOnConfirm: true,
                         preConfirm: function (isConfirm) {
                             if (isConfirm) {
-                                QQT.ajax('/Role/DeleteRole',
+                                QQT.ajax('/Admin/Role/DeleteRole',
                                     'Post',
                                     { tid: tid })
                                     .done(function (response) {
@@ -173,7 +173,7 @@
                         return;
                     }
                     var ac = getNodeIdAction(zTree);
-                    QQT.ajax('/Role/AddRole',
+                    QQT.ajax('/Admin/Role/AddRole',
                         'POST',
                         {
                             RoleName: vm.roleAddName,
@@ -202,7 +202,7 @@
                     var row = $.extend({}, selectRow[0]);
                     vm.currentRow = row;
 
-                    QQT.ajax('/Home/GetMenuTree',
+                    QQT.ajax('/Admin/Home/GetMenuTree',
                         'POST',
                         {
                             roleId: vm.currentRow.Tid
@@ -236,7 +236,7 @@
                         return;
                     }
                     var ac = getNodeIdAction(editTree);
-                    QQT.ajax('/Role/AddRole',
+                    QQT.ajax('/Admin/Role/AddRole',
                         'POST',
                         {
                             RoleName: vm.currentRow.RoleName,
@@ -324,7 +324,7 @@
             });
 
             //加载所有的menu
-            QQT.ajax('/Home/GetMenuTree', 'Post')
+            QQT.ajax('/Admin/Home/GetMenuTree', 'Post')
                 .done(function (response) {
                     console.log(response);
                     vm.menuTree = response.Data;
@@ -343,7 +343,7 @@
             var pageIndex = params.data.offset / params.data.limit + 1;
             var orderBy = params.data.sort;
             var orderSequence = params.data.order;
-            QQT.ajax('/Role/GetRoleList',
+            QQT.ajax('/Admin/Role/GetRoleList',
                 'POST',
                 {
                     pageIndex: pageIndex,

@@ -1,5 +1,5 @@
 ﻿function auth() {
-    QQT.ajax('/Role/GetSystemUserActions', 'Get', null, false, false)
+    QQT.ajax('/Admin/Role/GetSystemUserActions', 'Get', null, false, false)
     .done(function (response) {
         $('.loading').show();
         var result = response.Data;
@@ -16,7 +16,7 @@
                 '/' +
                 window.appUrl +
                 '/' +
-                'Error' +
+                'Admin/Error' +
                 '/' +
                 'NoPower?acionInfo=' + window.location.pathname;
             return;

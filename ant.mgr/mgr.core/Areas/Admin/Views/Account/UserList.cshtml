@@ -146,7 +146,7 @@
                         return;
                     }
                     vm.currentUser.RoleTid = roleTid;
-                    QQT.ajax('/Account/UserAdd', 'Post', vm.currentUser)
+                    QQT.ajax('/Admin/Account/UserAdd', 'Post', vm.currentUser)
                         .done(function (response) {
                             $('#SystemUsewrTable').bootstrapTable('refresh', { silent: true });
                             swal("成功啦！", "添加成功!", "success");
@@ -207,7 +207,7 @@
                         cancelButtonText: "让朕再考虑一下…",
                         showLoaderOnConfirm: true,
                         preConfirm: function () {
-                            return QQT.ajax('/Account/UserAddRole',
+                            return QQT.ajax('/Admin/Account/UserAddRole',
                                 'Post',
                                 {
                                     UserTid: vm.currentRow.Tid,
@@ -243,7 +243,7 @@
                         cancelButtonText: "让朕再考虑一下…",
                         showLoaderOnConfirm: true,
                         preConfirm: function (isConfirm) {
-                            return QQT.ajax('/Account/UserDelete',
+                            return QQT.ajax('/Admin/Account/UserDelete',
                                     'Post',
                                     {
                                         UserTid: row.Tid
@@ -363,7 +363,7 @@
 
                     },
                     onEditableSave: function (field, row, oldValue, $el) {
-                        QQT.ajax('/Account/ChangeField',
+                        QQT.ajax('/Admin/Account/ChangeField',
                             'Post',
                             {
                                 tid: row.Tid,
@@ -397,7 +397,7 @@
             });
 
             //加载所有的角色
-            QQT.ajax('/Role/GetAllRoleList', 'Post')
+            QQT.ajax('/Admin/Role/GetAllRoleList', 'Post')
                 .done(function (response) {
                     if (response.Data.length > 0) {
                         vm.noRole = false;
@@ -518,7 +518,7 @@
             var pageIndex = params.data.offset / params.data.limit + 1;
             var orderBy = params.data.sort;
             var orderSequence = params.data.order;
-            QQT.ajax('/Account/GetUserList',
+            QQT.ajax('/Admin/Account/GetUserList',
                 'POST',
                 {
                     pageIndex: pageIndex,

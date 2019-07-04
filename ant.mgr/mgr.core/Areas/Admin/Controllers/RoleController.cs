@@ -9,10 +9,11 @@ using ServicesModel;
 using ViewModels.Result;
 using ViewModels.Reuqest;
 
-namespace ant.mgr.core.Controllers
+namespace ant.mgr.core.Areas.Admin.Controllers
 {
     [AuthorizeFilter]
     [API("角色")]
+    [Area("Admin")]
     public class RoleController : BaseController
     {
         private readonly IRoleRespository RoleRespository;

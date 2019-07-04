@@ -39,7 +39,7 @@ namespace ant.mgr.core
                 using (var sw = new StringWriter())
                 {
                     IView view = null;
-                    var getViewResult = _razorViewEngine.GetView(executingFilePath: null, viewPath: viewName, isMainPage: true);
+                    var getViewResult = _razorViewEngine.GetView(executingFilePath: "~/", viewPath: "~/"+viewName + ".cshtml", isMainPage: true);
                     if (getViewResult.Success)
                     {
                         view = getViewResult.View;
@@ -47,8 +47,26 @@ namespace ant.mgr.core
 
                     if (view == null)
                     {
-                        var viewResult = _razorViewEngine.FindView(actionContext, viewName, false);
+                        var viewResult = _razorViewEngine.FindView(actionContext, viewName, true);
                         view = viewResult?.View;
+                    }
+
+                    if (view == null)
+                    {
+                        var arr = viewName.Split('/');
+                        if (arr.Length == 3)
+                        {
+                            var routeData = new RouteData();
+                            routeData.Values["area"] = arr[0];
+                            routeData.Values["controller"] = arr[1];
+                            var routeDesc = new ActionDescriptor();
+                            routeDesc.RouteValues["area"] = arr[0];
+                            routeDesc.RouteValues["controller"] = arr[1];
+                            actionContext = new ActionContext(httpContext, routeData, routeDesc);
+                            var viewResult = _razorViewEngine.FindView(actionContext, arr[2], true);
+                            view = viewResult?.View;
+                        }
+                       
                     }
 
                     if (view == null)

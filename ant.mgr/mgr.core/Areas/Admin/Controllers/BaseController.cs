@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Mvc;
 using ServicesModel;
 
-namespace ant.mgr.core.Controllers
+namespace ant.mgr.core.Areas.Admin.Controllers
 {
     /// <summary>
     /// 基础控制器
     /// </summary>
     [EnableCors("Any")]//统一设置Cors策略
-    public class BaseController : Controller
+    public class BaseController : Microsoft.AspNetCore.Mvc.Controller
     {
         /// <summary>
         /// 用户登录态

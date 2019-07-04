@@ -40,7 +40,7 @@
                         </li>
                     </li>
                     <li>
-                        <a class="J_menuItem" href="~/Home/DashBord" data-id="Home/DashBord"><i class="fa fa-home"></i> <span class="nav-label">首页</span></a>
+                        <a class="J_menuItem" href="~/Admin/Home/DashBord" data-id="Home/DashBord"><i class="fa fa-home"></i> <span class="nav-label">首页</span></a>
                     </li>
                     @await Component.InvokeAsync("MenuHeader")
                 </ul>
@@ -67,7 +67,7 @@
                             <a href="mailto:1877682825@qq.com?subject=[AntMgr] Support" data-index="0"><i class="fa fa-envelope"></i> 技术支持</a>
                         </li>
                         <li class="dropdown hidden-xs">
-                            <a class="J_menuItem right-sidebar-toggle" data-toggle="dropdown" aria-expanded="false" href="~/Account/UserDetail">
+                            <a class="J_menuItem right-sidebar-toggle" data-toggle="dropdown" aria-expanded="false" href="~/Admin/Account/UserDetail">
                                 <i class="glyphicon glyphicon-user"></i> <font id="Eid">@ViewBag.Eid<font style="font-size: 5px;">(@ViewBag.RoleName)</font></font><b class="caret"></b>
                             </a>
                             
@@ -108,10 +108,10 @@
                         </li>
                     </ul>
                 </div>
-                <a href="@Url.Action("Logout","Account")"  class="roll-nav roll-right J_tabExit"><i class="fa fa fa-sign-out"></i> 退出</a>
+                <a href="@Url.Page("/Account/Logout", new { area = "Admin" })"  class="roll-nav roll-right J_tabExit"><i class="fa fa fa-sign-out"></i> 退出</a>
             </div>
             <div class="row J_mainContent" id="content-main">
-                <iframe class="J_iframe" name="iframe0" width="100%" height="100%" src="~/Home/DashBord" frameborder="0" data-id="Home/DashBord" seamless></iframe>
+                <iframe class="J_iframe" name="iframe0" width="100%" height="100%" src="~/Admin/Home/DashBord" frameborder="0" data-id="Admin/Home/DashBord" seamless></iframe>
             </div>
             <div class="footer">
                 <div class="pull-right">

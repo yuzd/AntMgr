@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ant.mgr.core.Filter;
 using Configuration;
@@ -11,13 +10,13 @@ using ServicesModel;
 using ViewModels.Result;
 using ViewModels.Reuqest;
 
-namespace ant.mgr.core.Controllers
+namespace ant.mgr.core.Areas.Admin.Controllers
 {
     /// <summary>
     /// 系统用户
     /// </summary>
     [API("用户")]
-    [Route("Account",Name = "系统用户")]
+    [Area("Admin")]
     public class AccountController : BaseController
     {
         private readonly IAccountRespository AccountRespository;
@@ -35,7 +34,6 @@ namespace ant.mgr.core.Controllers
         /// </summary>
         /// <param name="returnUrl"></param>
         /// <returns></returns>
-        [Route("Login")]
         public ActionResult Login(string returnUrl)
         {
             ViewBag.returnUrl = returnUrl;
@@ -46,7 +44,6 @@ namespace ant.mgr.core.Controllers
         /// 个人信息页面
         /// </summary>
         /// <returns></returns>
-        [Route("UserDetail")]
         [AuthorizeFilter]
         public async Task<ActionResult> UserDetail()
         {
@@ -60,7 +57,6 @@ namespace ant.mgr.core.Controllers
         /// 更新个人信息
         /// </summary>
         /// <returns></returns>
-        [Route("UpdateUserInfo")]
         [ValidateAntiForgeryToken]
         [API("更新个人信息")]
         [AuthorizeFilter]
@@ -87,7 +83,6 @@ namespace ant.mgr.core.Controllers
         /// 更新登录密码
         /// </summary>
         /// <returns></returns>
-        [Route("UpdatePwd")]
         [ValidateAntiForgeryToken]
         [API("更新登录密码")]
         [AuthorizeFilter]
@@ -114,7 +109,6 @@ namespace ant.mgr.core.Controllers
         /// 退出系统
         /// </summary>
         /// <returns></returns>
-        [Route("Logout")]
         public ActionResult Logout()
         {
             SessionClear();
@@ -128,7 +122,6 @@ namespace ant.mgr.core.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("LogOn")]
         public async Task<JsonResult> LogOn([FromForm] LogOnVM info)
         {
             var result = new ResultJsonNoDataInfo();
@@ -152,7 +145,6 @@ namespace ant.mgr.core.Controllers
         /// </summary>
         /// <returns></returns>
         [AuthorizeFilter]
-        [Route("UserList")]
         public ActionResult UserList()
         {
             return View();
@@ -166,7 +158,6 @@ namespace ant.mgr.core.Controllers
         [AuthorizeFilter]
         [HttpPost]
         [API("获取所有的用户")]
-        [Route("GetUserList")]
         public async Task<JsonResult> GetUserList([FromForm] AccountVm model)
         {
             var result = new SearchResult<List<UserSM>>();
@@ -187,7 +178,6 @@ namespace ant.mgr.core.Controllers
         [AuthorizeFilter]
         [ValidateAntiForgeryToken]
         [API("给用户赋予角色")]
-        [Route("UserAddRole")]
         public async Task<JsonResult> UserAddRole([FromForm] UserAddRoleVm info)
         {
             var result = new ResultJsonNoDataInfo();
@@ -213,7 +203,6 @@ namespace ant.mgr.core.Controllers
         [HttpPost]
         [AuthorizeFilter]
         [API("手动添加用户")]
-        [Route("UserAdd")]
         public async Task<JsonResult> UserAdd([FromForm] SystemUsers info)
         {
             var result = new ResultJsonNoDataInfo();
@@ -240,7 +229,6 @@ namespace ant.mgr.core.Controllers
         [AuthorizeFilter]
         [ValidateAntiForgeryToken]
         [API("禁用用户")]
-        [Route("UserDelete")]
         public async Task<JsonResult> UserDelete(long UserTid)
         {
             var result = new ResultJsonNoDataInfo();
@@ -267,7 +255,6 @@ namespace ant.mgr.core.Controllers
         [AuthorizeFilter]
         [ValidateAntiForgeryToken]
         [API("改变某个属性值")]
-        [Route("ChangeField")]
         public async Task<JsonResult> ChangeField([FromForm] ChangeFieldVm info)
         {
             var result = new ResultJsonNoDataInfo();

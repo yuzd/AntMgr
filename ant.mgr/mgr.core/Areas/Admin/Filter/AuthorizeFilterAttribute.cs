@@ -11,7 +11,7 @@ using ServicesModel;
 using System;
 using System.Linq;
 using System.Reflection;
-using ant.mgr.core.Controllers;
+using ant.mgr.core.Areas.Admin.Controllers;
 using DbModel;
 
 namespace ant.mgr.core.Filter

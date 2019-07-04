@@ -65,7 +65,7 @@
         <img src="~/img/403.png">
         <h1>403</h1>
         <p>
-            <small>啊哦，这个页面您暂时无权访问,请申请权限，<a href="@Url.Action("Login", "Account")">重新登录</a></small>
+            <small>啊哦，这个页面您暂时无权访问,请申请权限，<a href="@Url.Page("/Account/Login", new { area = "Admin" })">重新登录</a></small>
         </p>
      
     </div>

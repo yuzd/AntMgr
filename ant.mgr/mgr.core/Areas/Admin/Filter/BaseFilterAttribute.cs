@@ -35,6 +35,7 @@ namespace ant.mgr.core.Filter
                 {
                     var http403 = new RouteValueDictionary(new
                     {
+                        area="Admin",
                         action = "http403",
                         controller = "error",
                         userInfo = userInfo
@@ -42,7 +43,7 @@ namespace ant.mgr.core.Filter
                     filterContext.Result = new RedirectToRouteResult(http403);
                     return;
                 }
-                filterContext.Result = new RedirectResult("~/Error/http403");
+                filterContext.Result = new RedirectResult("~/Admin/Error/http403");
             }
         }
 
@@ -68,15 +69,15 @@ namespace ant.mgr.core.Filter
                 if ((currentContext.controllerName.ToLower().Equals("home") &&
                      currentContext.actionName.ToLower().Equals("index")))
                 {
-                    filterContext.Result = new RedirectResult("~/Account/Login");
+                    filterContext.Result = new RedirectResult("~/Admin/Account/Login");
                     return;
                 }
-                else if (!string.IsNullOrEmpty(requestUrl) && !requestUrl.ToLower().Contains("home/index"))
+                else if (!string.IsNullOrEmpty(requestUrl) && !requestUrl.ToLower().Contains("admin/home/index"))
                 {
-                    filterContext.Result = new RedirectResult("~/Account/Login?returnUrl=" + WebUtils.UrlEncode(requestUrl));
+                    filterContext.Result = new RedirectResult("~/Admin/Account/Login?returnUrl=" + WebUtils.UrlEncode(requestUrl));
                     return;
                 }
-                filterContext.Result = new RedirectResult("~/Account/Login");
+                filterContext.Result = new RedirectResult("~/Admin/Account/Login");
             }
         }
         #endregion

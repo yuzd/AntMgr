@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Text;
 using ant.mgr.core.Filter;
 using Configuration;
 using Microsoft.AspNetCore.Mvc;
@@ -8,10 +7,11 @@ using ServicesModel;
 using ViewModels.Result;
 using ViewModels.Reuqest;
 
-namespace ant.mgr.core.Controllers
+namespace ant.mgr.core.Areas.Admin.Controllers
 {
     [ServiceFilter(typeof(AuthorizeFilterAttribute))]
     [API("Home")]
+    [Area("Admin")]
     public class HomeController : BaseController
     {
         private readonly IMenuRespository MenuRespository;

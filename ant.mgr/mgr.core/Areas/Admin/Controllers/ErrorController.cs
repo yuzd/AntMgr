@@ -4,11 +4,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ViewModels.Result;
 
-namespace ant.mgr.core.Controllers
+namespace ant.mgr.core.Areas.Admin.Controllers
 {
     /// <summary>
     /// 错误
     /// </summary>
+    [Area("Admin")]
     public class ErrorController : BaseController
     {
 
@@ -19,7 +20,7 @@ namespace ant.mgr.core.Controllers
             HttpContextAccessor = httpContextAccessor;
         }
 
-        [Route("error/404")]
+        [Route("admin/error/404")]
         public ActionResult Http404()
         {
             if (HttpContextAccessor.HttpContext.Request.IsAjaxRequest())
@@ -29,14 +30,12 @@ namespace ant.mgr.core.Controllers
             return View();
         }
 
-        [Route("Http403")]
         public ActionResult Http403(string userInfo)
         {
             ViewBag.userInfo = userInfo;
             return View();
         }
 
-        [Route("NoPower")]
         public ActionResult NoPower(string acionInfo)
         {
             ViewBag.ActionInfo = acionInfo;
@@ -46,7 +45,6 @@ namespace ant.mgr.core.Controllers
         /// <summary>
         /// 未登录
         /// </summary>
-        [Route("NoLogin")]
         public ActionResult NoLogin()
         {
             return RedirectToAction("Login", "Account");
@@ -56,7 +54,7 @@ namespace ant.mgr.core.Controllers
         /// 没有权限
         /// </summary>
         /// <returns>ActionResult.</returns>
-        [Route("error/401")]
+        [Route("admin/error/401")]
         public JsonResult Http401()
         {
             var result = new ResultJsonNoDataInfo();
@@ -69,15 +67,15 @@ namespace ant.mgr.core.Controllers
         /// 系统错误
         /// </summary>
         /// <returns></returns>
-        [Route("error/500")]
-        public JsonResult Http500()
+        [Route("admin/error/500")]
+        public JsonResult Http500(string exception =null)
         {
             var result = new ResultJsonNoDataInfo();
             result.Status = ResultConfig.Fail;
-            result.Info = ResultConfig.FailMessageForSystem;
+            result.Info = ResultConfig.FailMessageForSystem + (exception!=null?$"【Exception:{exception}】":"");
             return Json(result);
         }
-        [Route("Http405")]
+
         public ActionResult Http405()
         {
             var result = new ResultJsonNoDataInfo();

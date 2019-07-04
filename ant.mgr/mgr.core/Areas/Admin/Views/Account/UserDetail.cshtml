@@ -89,7 +89,7 @@
             },
             methods: {
                 _UpdateUserInfo: function () {
-                    QQT.ajax('/Account/UpdateUserInfo',
+                    QQT.ajax('/Admin/Account/UpdateUserInfo',
                         'POST', vm.currentRow)
                         .done(function (response) {
                             swal("成功啦！", "更新成功!", "success");
@@ -114,7 +114,7 @@
                         return;
                     }
 
-                    QQT.ajax('/Account/UpdatePwd',
+                    QQT.ajax('/Admin/Account/UpdatePwd',
                             'POST', vm.currentRow)
                         .done(function (response) {
                             swal("更新成功！", "请退出系统重新登录!", "success");

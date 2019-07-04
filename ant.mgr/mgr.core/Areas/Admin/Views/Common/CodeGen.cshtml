@@ -86,7 +86,7 @@
                     if (currentIndex === 2) return;
                     var tableName = $('#tables').select2('data') && $('#tables').select2('data').id;
                     if (!tableName) return;
-                    QQT.ajax('/Common/GetDbTableColumns',
+                    QQT.ajax('/Admin/Common/GetDbTableColumns',
                         'Post',
                         { tableName: tableName.split('→')[0] }
                     )
@@ -117,7 +117,7 @@
                         showLoaderOnConfirm: true,
                         preConfirm: function () {
                             debugger;
-                            $.fileDownload(window.appUrl + '/Common/CodeGenDown',
+                            $.fileDownload(window.appUrl + '/Admin/Common/CodeGenDown',
                                 {
                                     httpMethod: 'POST',
                                     dataType: "json",
@@ -146,7 +146,7 @@
             });
 
 
-            QQT.ajax('/Common/GetDbTables', 'Post')
+            QQT.ajax('/Admin/Common/GetDbTables', 'Post')
                 .done(function (response) {
                     InitTablesCombobox(response.Data);
                 });

@@ -1,6 +1,6 @@
 @{
     ViewBag.Title = "登录";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~//Views/Shared/_Layout.cshtml";
 }
 
 <div class="middle-box text-center loginscreen  animated fadeInDown">
@@ -67,7 +67,7 @@
             }
 
 
-            QQT.ajax('/Account/LogOn',
+            QQT.ajax('/Admin/Account/LogOn',
                 'POST',
                 {
                     eid: userName,
@@ -87,7 +87,7 @@
                         if (returnUrl) {
                             window.location.replace(returnUrl);
                         } else {
-                            window.location.replace(window.appUrl + '/Home/Index');
+                            window.location.replace(window.appUrl + '/Admin/Home/Index');
                         }
                     }
                 });

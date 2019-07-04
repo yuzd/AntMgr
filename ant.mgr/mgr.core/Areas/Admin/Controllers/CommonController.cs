@@ -1,21 +1,21 @@
-﻿using Configuration;
+﻿using System.Collections.Generic;
+using System.IO;
+using ant.mgr.core.Filter;
+using Configuration;
 using Infrastructure.Web;
 using Microsoft.AspNetCore.Mvc;
 using Repository.Interface;
 using ServicesModel;
-using System.Collections.Generic;
-using System.IO;
-using ant.mgr.core.Filter;
 using ViewModels.Result;
 using ViewModels.Reuqest;
 
-namespace ant.mgr.core.Controllers
+namespace ant.mgr.core.Areas.Admin.Controllers
 {
     /// <summary>
     /// 公共
     /// </summary>
     [API("公共")]
-    [Route("Common")]
+    [Area("Admin")]
     public class CommonController : BaseController
     {
         private readonly ICommonRespository CommonRespository;
@@ -42,7 +42,6 @@ namespace ant.mgr.core.Controllers
         [AuthorizeFilter]
         [API("获取所有的表名称和列")]
         [HttpPost]
-        [Route("GetDbTablesAndColumns")]
         public JsonResult GetDbTablesAndColumns()
         {
             var result = new ResultJsonInfo<string>();
@@ -61,7 +60,6 @@ namespace ant.mgr.core.Controllers
         [AuthorizeFilter]
         [API("获取数据库表")]
         [HttpPost]
-        [Route("GetDbTables")]
         public JsonResult GetDbTables()
         {
             var result = new ResultJsonInfo<List<CodeGenTable>>();
@@ -79,7 +77,6 @@ namespace ant.mgr.core.Controllers
         [AuthorizeFilter]
         [API("获取数据表下的所有字段")]
         [HttpPost]
-        [Route("GetDbTableColumns")]
         public JsonResult GetDbTableColumns(string tableName)
         {
             var result = new ResultJsonInfo<List<CodeGenField>>();
@@ -98,7 +95,6 @@ namespace ant.mgr.core.Controllers
         [HttpPost, FileDownload]
         [AuthorizeFilter]
         [API("生成代码")]
-        [Route("CodeGenDown")]
         public ActionResult CodeGenDown([FromForm] CodeGenVm model)
         {
             var data = CommonRespository.CodeGen(model);
@@ -117,7 +113,6 @@ namespace ant.mgr.core.Controllers
         /// </summary>
         /// <returns></returns>
         [AuthorizeFilter]
-        [Route("CodeGen")]
         public ActionResult CodeGen()
         {
             return View();
@@ -135,7 +130,6 @@ namespace ant.mgr.core.Controllers
         /// <returns></returns>
         [AuthorizeFilter]
         [API("下载文件")]
-        [Route("Download")]
         public ActionResult Download(string fileName)
         {
             fileName = fileName.Replace("'", "");
