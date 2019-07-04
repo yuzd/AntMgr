@@ -3526,7 +3526,7 @@ video {
     padding: 20px;
 }
 
-#page-wrapper {
+.page-wrapper {
     padding: 0 15px;
     position: inherit;
     margin: 0 0 0 220px;

@@ -131,6 +131,7 @@ function SmoothlyMenu() {
         setTimeout(
             function () {
                 $('#side-menu').fadeIn(500);
+                $('#page-wrapper').attr('style', '');
             }, 300);
     } else {
         $('#side-menu').removeAttr('style');
@@ -288,6 +289,11 @@ function iframeZoom(flag) {
         $('.navbar-static-top').show();
         $('.footer').show();
         $('#content-main').css('height', 'calc(100% - 140px)');
-        $('#page-wrapper').css('margin', '0 0 0 220px');
+       
+        if ($('body').hasClass('fixed-sidebar')) {
+            $('#page-wrapper').attr('style', '');
+        } else {
+            $('#page-wrapper').css('margin', '0 0 0 220px');
+        }
     }
 }
