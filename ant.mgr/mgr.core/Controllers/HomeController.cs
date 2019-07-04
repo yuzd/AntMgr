@@ -12,5 +12,15 @@ namespace ant.mgr.core.Controller
         {
             return RedirectToAction("Index", "Home", new { area = "Admin" });
         }
+
+        /// <summary>
+        /// 首页
+        /// </summary>
+        /// <returns></returns>
+
+        public ActionResult DashBord()
+        {
+            return Content("DashBord");
+        }
     }
 }

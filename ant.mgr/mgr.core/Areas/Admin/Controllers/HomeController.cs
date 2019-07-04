@@ -40,10 +40,6 @@ namespace ant.mgr.core.Areas.Admin.Controllers
         }
 
 
-        public ActionResult DashBord()
-        {
-            return Content("DashBord");
-        }
 
         #region 菜单
 

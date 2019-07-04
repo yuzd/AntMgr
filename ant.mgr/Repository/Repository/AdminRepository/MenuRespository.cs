@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Repository.Interface;
 using ServicesModel;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using DbModel;
@@ -23,6 +24,9 @@ namespace Repository
     [Bean(typeof(IMenuRespository), Interceptor = typeof(AsyncInterceptor))]
     public class MenuRespository : BaseRepository<SystemMenu>, IMenuRespository
     {
+
+        private static readonly ConcurrentDictionary<string, List<SystemMenuSM>> _cache = new ConcurrentDictionary<string, List<SystemMenuSM>>();
+
         /// <summary>
         /// Autofac属性注入
         /// </summary>
@@ -429,7 +433,7 @@ namespace Repository
             }
         }
 
-       
+
         private List<SystemMenuSM> GetAllRightsMenusTwo(string eid, string menuRights, bool isGod = false)
         {
             var isGlod = GlobalSetting.GoldList.Contains(eid) || isGod;
@@ -492,14 +496,18 @@ namespace Repository
             if (string.IsNullOrEmpty(url)) return new List<SystemMenuSM>();
             if (url.StartsWith("http")) return new List<SystemMenuSM>();
 
+            if (_cache.TryGetValue(url, out var cache)) return cache;
             var body = ViewRenderService.RenderToStringAsync(url.Replace("~/", ""), null).ConfigureAwait(false).GetAwaiter().GetResult();
             var actionList = body.GetValueAndNameByClass("action-id", "action-name", "authorization");
-            var result = actionList.Select(r => new SystemMenuSM
+            cache = actionList.Select(r => new SystemMenuSM
             {
                 ActionId = r.Key,
                 Name = r.Value
             }).ToList();
-            return result;
+
+            _cache.TryAdd(url, cache);
+
+            return cache;
         }
 
         #endregion

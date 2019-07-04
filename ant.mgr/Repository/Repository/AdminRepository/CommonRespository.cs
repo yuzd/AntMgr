@@ -1,5 +1,4 @@
-﻿using AntData.ORM;
-using AntData.ORM.Data;
+﻿using AntData.ORM.Data;
 using AntData.ORM.Mapping;
 using Autofac.Annotation;
 using Castle.DynamicProxy;
@@ -10,14 +9,12 @@ using Newtonsoft.Json;
 using Repository.Interface;
 using ServicesModel;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using ViewModels.Reuqest;
-using Infrastructure;
-using System.Text;
 
 namespace Repository
 {
@@ -28,6 +25,10 @@ namespace Repository
     public class CommonRespository : BaseRepository, ICommonRespository
     {
 
+        private static string _dbTableAndColumnsCache = string.Empty;
+        private static List<CodeGenTable> _dbTableCache = null;
+        private static readonly ConcurrentDictionary<string, List<CodeGenField>> _dbColumnsCache = new ConcurrentDictionary<string, List<CodeGenField>>();
+
 
         /// <summary>
         /// 获取所有的Table和Columns
@@ -35,6 +36,7 @@ namespace Repository
         /// <returns></returns>
         public string GetDbTablesAndColumns()
         {
+            if (!string.IsNullOrEmpty(_dbTableAndColumnsCache)) return _dbTableAndColumnsCache;
             Dictionary<string, List<string>> result = new Dictionary<string, List<string>>();
             List<string> tables = this.DB.Query<string>("show tables").ToList();
             foreach (var table in tables)
@@ -42,7 +44,8 @@ namespace Repository
                 var columns = getAllFields(table);
                 result.Add(table, columns);
             }
-            return JsonConvert.SerializeObject(result);
+            _dbTableAndColumnsCache = JsonConvert.SerializeObject(result);
+            return _dbTableAndColumnsCache;
         }
 
         /// <summary>
@@ -51,8 +54,12 @@ namespace Repository
         /// <returns></returns>
         public List<CodeGenTable> GetDbTables()
         {
-
-            return this.GetDbTabless();
+            if (_dbTableCache != null)
+            {
+                return _dbTableCache;
+            }
+            _dbTableCache = this.GetDbTabless();
+            return _dbTableCache;
         }
 
         /// <summary>
@@ -62,7 +69,10 @@ namespace Repository
         /// <returns></returns>
         public List<CodeGenField> GetDbTablesColumns(string tableName)
         {
-            return this.GetDbModels(tableName);
+            if (_dbColumnsCache.TryGetValue(tableName, out var cache)) return cache;
+            cache = this.GetDbModels(tableName);
+            _dbColumnsCache.TryAdd(tableName, cache);
+            return cache;
         }
 
 
