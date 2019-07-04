@@ -11,7 +11,7 @@ CREATE TABLE `system_menu` (
   `Class` VARCHAR(100) CHARACTER SET utf8 DEFAULT NULL COMMENT '样式',
   PRIMARY KEY (`Tid`),
   KEY `idx_DataChange_LastTime` (`DataChangeLastTime`)
-) ENGINE=INNODB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COMMENT='系统菜单表'
+) ENGINE=INNODB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COMMENT='系统菜单表';
 
 
 CREATE TABLE `system_page_action` (
@@ -22,7 +22,7 @@ CREATE TABLE `system_page_action` (
   `ActionName` VARCHAR(255) DEFAULT NULL COMMENT 'ActionName',
   `ControlName` VARCHAR(255) DEFAULT NULL COMMENT 'ControlName',
   PRIMARY KEY (`Tid`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT='菜单按钮'
+) ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT='菜单按钮';
 
 
 
@@ -39,7 +39,7 @@ CREATE TABLE `system_role` (
   PRIMARY KEY (`Tid`),
   UNIQUE KEY `idx_RoleName` (`RoleName`),
   KEY `idx_DataChange_LastTime` (`DataChangeLastTime`)
-) ENGINE=INNODB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='角色表'
+) ENGINE=INNODB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='角色表';
 
 
 
@@ -62,7 +62,7 @@ CREATE TABLE `system_users` (
   UNIQUE KEY `idx_Eid` (`Eid`),
   KEY `idx_roleTid` (`RoleTid`),
   KEY `idx_DataChange_LastTime` (`DataChangeLastTime`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT='后台系统用户表'
+) ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT='后台系统用户表';
 
 
 
@@ -72,22 +72,22 @@ insert into `system_menu` (`Tid`,`DataChangeLastTime`, `IsActive`, `ParentTid`, 
  
 insert into `system_menu` (`DataChangeLastTime`, `IsActive`, `ParentTid`, `Name`, `Ico`, `Url`, `OrderRule`, `Level`, `Class`)
  values
- (now(),'1','1','菜单管理',NULL,'~/Home/MenuList','1','2',NULL);
+ (now(),'1','1','菜单管理',NULL,'~/Admin/Home/MenuList','1','2',NULL);
  
  insert into `system_menu` (`DataChangeLastTime`, `IsActive`, `ParentTid`, `Name`, `Ico`, `Url`, `OrderRule`, `Level`, `Class`)
- values(now(),'1','1','权限配置',NULL,'~/Role/RoleAction','2','2',NULL);
+ values(now(),'1','1','权限配置',NULL,'~/Admin/Role/RoleAction','2','2',NULL);
  
 insert into `system_menu` (`DataChangeLastTime`, `IsActive`, `ParentTid`, `Name`, `Ico`, `Url`, `OrderRule`, `Level`, `Class`)
- values(now(),'1','1','角色管理',NULL,'~/Role/RoleList','3','2',NULL);
+ values(now(),'1','1','角色管理',NULL,'~/Admin/Role/RoleList','3','2',NULL);
  
 insert into `system_menu` (`DataChangeLastTime`, `IsActive`, `ParentTid`, `Name`, `Ico`, `Url`, `OrderRule`, `Level`, `Class`) 
- values(now(),'1','1','系统用户',NULL,'~/Account/UserList','4','2',NULL);
+ values(now(),'1','1','系统用户',NULL,'~/Admin/Account/UserList','4','2',NULL);
  
 insert into `system_menu` (`DataChangeLastTime`, `IsActive`, `ParentTid`, `Name`, `Ico`, `Url`, `OrderRule`, `Level`, `Class`)
- values(now(),'1','1','代码生成',NULL,'~/Common/CodeGen','5','2',NULL);
+ values(now(),'1','1','代码生成',NULL,'~/Admin/Common/CodeGen','5','2',NULL);
 
 INSERT INTO `system_users` 
 (`DataChangeLastTime`, `IsActive`, `Eid`, `UserName`, `Pwd`, `Phone`, `LoginIp`, `MenuRights`, `RoleTid`, `LastLoginTime`, `UserAgent`, `CreateRoleName`, `CreateUser`) 
-VALUES(NOW(),'1','zdyu','admin','e10adc3949ba59abbe56e057f20f883e','13000000000','114.80.11.236',NULL,'0','2019-05-15 12:22:52','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36',NULL,'');
+VALUES(NOW(),'1','zdyu','admin','e10adc3949ba59abbe56e057f20f883e','13000000000','114.80.11.236',NULL,'0','2019-05-15 12:22:52','Mozilla/5.0',NULL,'');
 
 
