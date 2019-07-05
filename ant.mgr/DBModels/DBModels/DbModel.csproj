@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <AssemblyName>DbModel</AssemblyName>
     <RootNamespace>DbModel</RootNamespace>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -13,11 +13,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="ant.db.json" />
+    <None Remove="ant.mssql.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="ant.db.json">
+    <Content Include="ant.mssql.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>

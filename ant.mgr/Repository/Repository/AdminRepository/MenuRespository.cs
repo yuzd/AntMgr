@@ -25,6 +25,7 @@ namespace Repository
     public class MenuRespository : BaseRepository<SystemMenu>, IMenuRespository
     {
 
+        private static readonly int DisableMenuLevel = 88;
         private static readonly ConcurrentDictionary<string, List<SystemMenuSM>> _cache = new ConcurrentDictionary<string, List<SystemMenuSM>>();
 
         /// <summary>
@@ -72,9 +73,13 @@ namespace Repository
             if (menu == null)
             {
                 return 0;
-                //menu = DB.Query<SystemMenu>("select * from system_menu where url like @url ",new {url="~/"+controlname +"%"}).FirstOrDefault();
-                //if(menu == null)return 0;
             }
+
+            if (menu.Level.HasValue && menu.Level.Value == DisableMenuLevel)//已经被逻辑删除了
+            {
+                return 0;
+            }
+
             var rights = new BigInteger(menuRights);
             if (!rights.TestBit((int)menu.Tid))
             {
@@ -171,7 +176,7 @@ namespace Repository
             }
             else
             {
-                allMenusList = this.Entity.MappperTo<SystemMenuSM>().ToList();
+                allMenusList = this.Entity.Where(r=>r.Level != DisableMenuLevel).MappperTo<SystemMenuSM>().ToList();
 
             }
             var parentMenu = allMenusList.Where(r => r.ParentTid.Equals(0))
@@ -201,7 +206,8 @@ namespace Repository
         {
             var updateResult = this.Entity.Where(r => r.Tid.Equals(menuTid))
                 .Set(r => r.DataChangeLastTime, DateTime.Now)
-                .Set(r => r.IsActive, false)
+                .Set(r=>r.IsActive,false)
+                .Set(r => r.Level, DisableMenuLevel)//目前最多支持2级。。 88是代表这个菜单不用了
                 .Update() > 0;
             if (!updateResult)
             {
@@ -305,7 +311,7 @@ namespace Repository
         /// <returns></returns>
         public List<SystemMenuSM> GetSubMenus(long menuTid)
         {
-            var allMenus = this.Entity.Where(r => r.ParentTid == menuTid)
+            var allMenus = this.Entity.Where(r => r.ParentTid == menuTid && r.Level != DisableMenuLevel)
                 .OrderBy(r => r.OrderRule)
                 .MappperTo<SystemMenuSM>()
                 .ToList();
@@ -318,7 +324,7 @@ namespace Repository
         /// <returns></returns>
         public List<SystemMenuSM> GetAllParentMenus()
         {
-            var allMenus = this.Entity.Where(r => r.ParentTid == 0)
+            var allMenus = this.Entity.Where(r => r.ParentTid == 0 && r.Level!=DisableMenuLevel)
                 .OrderBy(r => r.OrderRule)
                 .MappperTo<SystemMenuSM>().ToList();
             return allMenus;
@@ -442,7 +448,7 @@ namespace Repository
                 return new List<SystemMenuSM>();
             }
             var right = new BigInteger(menuRights ?? "0");
-            var allMenus = this.Entity.MappperTo<SystemMenuSM>().ToList();
+            var allMenus = this.Entity.Where(r=>r.Level!=DisableMenuLevel).MappperTo<SystemMenuSM>().ToList();
             var parentMenu = allMenus.Where(r => r.ParentTid.Equals(0) && (right.TestBit((int)r.Tid) || isGlod))
                 .OrderBy(r => r.OrderRule).ToList();
             //递归构建

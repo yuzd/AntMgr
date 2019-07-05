@@ -269,13 +269,11 @@ namespace Repository
         /// <returns></returns>
         public async Task<Tuple<bool, string>> ChangeField(ChangeFieldVm model)
         {
-            if (model == null || string.IsNullOrEmpty(model.Field) || string.IsNullOrEmpty(model.Value) || !string.IsNullOrEmpty(model.Tid))
+            if (model == null || string.IsNullOrEmpty(model.Field) || string.IsNullOrEmpty(model.Value) || model.Tid < 1)
             {
                 return new Tuple<bool, string>(false, Tip.BadRequest);
             }
-            IUpdatable<SystemUsers> updateQuery = null;
-
-            updateQuery = this.Entity.Where(r => r.Tid.Equals(model.Tid))
+            IUpdatable<SystemUsers> updateQuery = this.Entity.Where(r => r.Tid.Equals(model.Tid))
                 .Set2(model.Field, model.Value)
                 .Set(r => r.DataChangeLastTime, DateTime.Now);
 
@@ -362,7 +360,7 @@ namespace Repository
 
             if (string.IsNullOrEmpty(user.UserName) && string.IsNullOrEmpty(user.Phone)) return Tip.BadRequest;
 
-            var query = this.Entity.Where(r => r.Eid.Equals(user.Eid)).Set(r=>r.DataChangeLastTime,DateTime.Now);
+            var query = this.Entity.Where(r => r.Eid.Equals(user.Eid)).Set(r => r.DataChangeLastTime, DateTime.Now);
 
             if (!string.IsNullOrEmpty(user.UserName))
             {
@@ -404,7 +402,7 @@ namespace Repository
             }
 
             var newPwd = CodingUtils.MD5(user.Pwd);
-            var rt = this.Entity.Where(r => r.Eid.Equals(user.Eid)).Set(r => r.DataChangeLastTime, DateTime.Now).Set(r=>r.Pwd,newPwd).Update()>0;
+            var rt = this.Entity.Where(r => r.Eid.Equals(user.Eid)).Set(r => r.DataChangeLastTime, DateTime.Now).Set(r => r.Pwd, newPwd).Update() > 0;
             if (!rt) return Tip.UpdateError;
             return string.Empty;
         }

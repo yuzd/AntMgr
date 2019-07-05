@@ -40,7 +40,7 @@ namespace ViewModels.Reuqest
         /// <summary>
         /// 主键
         /// </summary>
-        public string Tid { get; set; }
+        public long Tid { get; set; }
 
         /// <summary>
         /// 字段
