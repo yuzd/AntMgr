@@ -20,14 +20,6 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "IIS": {
-      "commandName": "IIS",
-      "launchBrowser": true,
-      "launchUrl": "http://localhost/ant.mgr.core",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
     "console": {
       "commandName": "Project",
       "launchBrowser": true,

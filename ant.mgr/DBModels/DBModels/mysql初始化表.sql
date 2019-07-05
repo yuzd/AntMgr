@@ -72,19 +72,22 @@ insert into `system_menu` (`Tid`,`DataChangeLastTime`, `IsActive`, `ParentTid`, 
  
 insert into `system_menu` (`DataChangeLastTime`, `IsActive`, `ParentTid`, `Name`, `Ico`, `Url`, `OrderRule`, `Level`, `Class`)
  values
- (now(),'1','1','菜单管理',NULL,'~/Admin/Home/MenuList','1','2',NULL);
+ (now(),'1','1','菜单管理',NULL,'~/Admin/Home/MenuList','1','2','fa fa-reorder');
  
  insert into `system_menu` (`DataChangeLastTime`, `IsActive`, `ParentTid`, `Name`, `Ico`, `Url`, `OrderRule`, `Level`, `Class`)
- values(now(),'1','1','权限配置',NULL,'~/Admin/Role/RoleAction','2','2',NULL);
+ values(now(),'1','1','权限配置',NULL,'~/Admin/Role/RoleAction','2','2','fa fa-shield');
  
 insert into `system_menu` (`DataChangeLastTime`, `IsActive`, `ParentTid`, `Name`, `Ico`, `Url`, `OrderRule`, `Level`, `Class`)
- values(now(),'1','1','角色管理',NULL,'~/Admin/Role/RoleList','3','2',NULL);
+ values(now(),'1','1','角色管理',NULL,'~/Admin/Role/RoleList','3','2','fa fa-th-large');
  
 insert into `system_menu` (`DataChangeLastTime`, `IsActive`, `ParentTid`, `Name`, `Ico`, `Url`, `OrderRule`, `Level`, `Class`) 
- values(now(),'1','1','系统用户',NULL,'~/Admin/Account/UserList','4','2',NULL);
+ values(now(),'1','1','系统用户',NULL,'~/Admin/Account/UserList','4','2','fa fa-users');
  
+insert into `system_menu` (`DataChangeLastTime`, `IsActive`, `ParentTid`, `Name`, `Ico`, `Url`, `OrderRule`, `Level`, `Class`) 
+ values(now(),'0','1','用户信息',NULL,'~/Admin/Account/UserDetail','5','2','fa fa-user-plus');
+
 insert into `system_menu` (`DataChangeLastTime`, `IsActive`, `ParentTid`, `Name`, `Ico`, `Url`, `OrderRule`, `Level`, `Class`)
- values(now(),'1','1','代码生成',NULL,'~/Admin/Common/CodeGen','5','2',NULL);
+ values(now(),'1','1','代码生成',NULL,'~/Admin/Common/CodeGen','6','2','fa fa-clone');
 
 INSERT INTO `system_users` 
 (`DataChangeLastTime`, `IsActive`, `Eid`, `UserName`, `Pwd`, `Phone`, `LoginIp`, `MenuRights`, `RoleTid`, `LastLoginTime`, `UserAgent`, `CreateRoleName`, `CreateUser`) 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ant.mgr.core.Controller
+namespace ant.mgr.core.Controllers
 {
     public class HomeController : ControllerBase
     {
@@ -20,7 +20,7 @@ namespace ant.mgr.core.Controller
 
         public ActionResult DashBord()
         {
-            return Content("DashBord");
+            return Content($"Version：{ typeof(Startup).Assembly.GetName().Version.ToString()}");
         }
     }
 }

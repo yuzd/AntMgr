@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Version>2.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -50,7 +51,9 @@
     <None Include="wwwroot\Content\static\images\joinbottom.gif" />
     <None Include="wwwroot\Content\static\images\jzx.gif" />
   </ItemGroup>
-
+  <PropertyGroup>
+    <IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
+  </PropertyGroup>
   <ItemGroup>
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
