@@ -16,4 +16,8 @@
     <ProjectReference Include="..\..\Infrastructure\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Reuqest\" />
+  </ItemGroup>
+
 </Project>
