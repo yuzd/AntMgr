@@ -14,33 +14,39 @@ namespace DbModel
         /// 后台系统采用的是什么数据库
         /// </summary>
         private static readonly string dbType;
+        private static readonly string dbMappingName;
         static DbContext()
         {
 
             try
             {
                 //读取当前采用的是什么数据库
-                dbType = ConfigHelper.GetConfig<string>("AntDbType");
+                dbMappingName = ConfigHelper.GetConfig<string>("AntDbType");
+                if (string.IsNullOrEmpty(dbMappingName))
+                {
+                    throw new ArgumentException("AntDbType");
+                }
+                var dbProvider = AntData.ORM.Common.Configuration.DBSettings.DatabaseSettings.FirstOrDefault(r => r.Name.Equals(dbMappingName));
+                dbType = dbProvider?.Provider;
             }
             catch (Exception)
             {
                 dbType = "mysql";
             }
-
-            if (string.IsNullOrEmpty(dbType)) dbType = "mysql";
+           
         }
         public static DbContext<AntEntity> DB
         {
             get
             {
                 DbContext<AntEntity> db;
-                if (dbType.ToLower().Equals("mysql"))
+                if (dbType.ToLower().Contains("mysql"))
                 {
-                    db = new MysqlDbContext<AntEntity>("ant_mysql");
+                    db = new MysqlDbContext<AntEntity>(dbMappingName);
                 }
                 else
                 {
-                    db = new SqlServerlDbContext<AntEntity>("ant_sqlserver");
+                    db = new SqlServerlDbContext<AntEntity>(dbMappingName);
                 }
 #if DEBUG
                 db.IsEnableLogTrace = true;
