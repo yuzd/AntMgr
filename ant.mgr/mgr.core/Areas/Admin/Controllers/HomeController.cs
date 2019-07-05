@@ -48,6 +48,7 @@ namespace ant.mgr.core.Areas.Admin.Controllers
         /// 获取所有的Menu
         /// </summary>
         /// <returns></returns>
+        [API("菜单页面访问")]
         public ActionResult MenuList()
         {
             return View();

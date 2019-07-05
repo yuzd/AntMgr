@@ -7,15 +7,13 @@
 
         if (!result.IsGod &&  (result.ActionList && result.ActionList.indexOf('index') < 0)) {
             $('.loading').hide();
-            window.location.href = window.location.protocol +
-                '//' +
-                window.location.host +
-                '/' +
+            debugger
+            window.location.href =
                 window.appUrl +
                 '/' +
                 'Admin/Error' +
                 '/' +
-                'NoPower?acionInfo=' + window.location.pathname;
+                'Http403';
             return;
             //mvcJump('Error', 'Http403', { acionInfo: window.location.pathname });
         }

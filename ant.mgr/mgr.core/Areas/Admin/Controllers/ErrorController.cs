@@ -36,18 +36,13 @@ namespace ant.mgr.core.Areas.Admin.Controllers
             return View();
         }
 
-        public ActionResult NoPower(string acionInfo)
-        {
-            ViewBag.ActionInfo = acionInfo;
-            return View();
-        }
 
         /// <summary>
         /// 未登录
         /// </summary>
         public ActionResult NoLogin()
         {
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction("Login", "Account",new {area="Admin"});
         }
 
         /// <summary>

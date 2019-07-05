@@ -113,6 +113,9 @@ namespace ant.mgr.core.Filter
             //获取ACTION 名称
             actionName = filterContext.RouteData.Values["action"].ToString();
 
+
+            area = filterContext.RouteData.Values["area"]?.ToString();
+
             #endregion 获取链接中的字符
         }
 
@@ -132,5 +135,6 @@ namespace ant.mgr.core.Filter
         /// 获取ACTION 名称
         /// </summary>
         public string actionName { get; set; }
+        public string area { get; set; }
     }
 }

@@ -113,6 +113,7 @@ namespace ant.mgr.core.Areas.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [AuthorizeFilter]
+        [API("代码生成页面访问")]
         public ActionResult CodeGen()
         {
             return View();

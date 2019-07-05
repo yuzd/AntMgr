@@ -109,6 +109,10 @@ namespace ant.mgr.core.Filter
             //检查当前用户是否有访问当前menu的权限
             var currentUrl = currentContext.controllerName + "/" + currentContext.actionName;
 
+            if (!string.IsNullOrEmpty(currentContext.area))
+            {
+                currentUrl = currentContext.area + "/" + currentUrl;
+            }
 
             //检查是否是上帝模式//
             if (GlobalSetting.GoldList.Contains(systemUser.Eid))
@@ -137,6 +141,10 @@ namespace ant.mgr.core.Filter
                         if (s1.Count < 2) return;
                         var s2 = s1.Take(2).Reverse().ToList();
                         currentUrl = s2[0] + "/" + s2[1];
+                        if (!string.IsNullOrEmpty(currentContext.area))
+                        {
+                            currentUrl = currentContext.area + "/" + currentUrl;
+                        }
                         menuTid = MenuRespository.HaveMenuPermission(currentUrl, systemUser.MenuRights);
                     }
                 }

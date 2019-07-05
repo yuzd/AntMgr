@@ -26,7 +26,8 @@ namespace ant.mgr.core.Controllers
         /// 进入{{ModelName}}页面
         /// </summary>
         /// <returns></returns>
-        public ActionResult {{ModelClassName}}()
+        [API("页面访问")]
+		public ActionResult {{ModelClassName}}()
         {
             return View();
         }

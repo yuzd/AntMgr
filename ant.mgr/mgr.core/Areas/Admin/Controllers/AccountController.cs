@@ -45,6 +45,7 @@ namespace ant.mgr.core.Areas.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [AuthorizeFilter]
+        [API("用户信息页面访问")]
         public async Task<ActionResult> UserDetail()
         {
             var currentUser = await AccountRespository.GetUserInfo(UserToken);
@@ -145,6 +146,7 @@ namespace ant.mgr.core.Areas.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [AuthorizeFilter]
+        [API("用户列表页面访问")]
         public ActionResult UserList()
         {
             return View();

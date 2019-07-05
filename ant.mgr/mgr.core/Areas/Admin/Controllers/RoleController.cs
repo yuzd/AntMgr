@@ -22,11 +22,12 @@ namespace ant.mgr.core.Areas.Admin.Controllers
             RoleRespository = _roleRespository;
         }
 
+        [API("角色页面访问")]
         public ViewResult RoleList()
         {
             return View();
         }
-
+        [API("权限页面访问")]
         public ViewResult RoleAction()
         {
             return View();
