@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -26,9 +27,18 @@ namespace ant.mgr.core
     }
 
 
+    internal class APIMetaData
+    {
+        public string ClassName { get; set; }
+        public Type Type { get; set; }
+        public APIAttribute Attribute { get; set; }
+    }
 
     public class APIAttibuteHelper
     {
+
+        private static ConcurrentDictionary<Assembly,List<APIMetaData>> _cache = new ConcurrentDictionary<Assembly, List<APIMetaData>>(); 
+        
         //获取当前的程序集里面所有继承了BaseController的类
         //获取当前class上打了API标签的属性 + className
         //在获取当前class里面的所有打了API标签的method + methodName
@@ -36,17 +46,20 @@ namespace ant.mgr.core
         {
             if (current == null) current = typeof(APIAttibuteHelper).Assembly;
             var result = new List<APIDescription>();
-            var types = current.GetExportedTypes();
-            var maps = (from t in types
-                        where t.IsClass && t.BaseType == typeof(BaseController) &&
-                              !t.IsAbstract && !t.IsInterface
-                        select new
-                        {
-                            ClassName = t.Name,
-                            Type = t,
-                            Attribute = t.GetCustomAttribute<APIAttribute>()
-                        }).ToArray();
-
+            if (!_cache.TryGetValue(current, out var maps))
+            {
+                var types = current.GetExportedTypes();
+                maps = (from t in types
+                    where t.IsClass && t.BaseType == typeof(BaseController) &&
+                          !t.IsAbstract && !t.IsInterface
+                    select new APIMetaData
+                    {
+                        ClassName = t.Name,
+                        Type = t,
+                        Attribute = t.GetCustomAttribute<APIAttribute>()
+                    }).ToList();
+                _cache.TryAdd(current, maps);
+            }
             var div = new Dictionary<string,List<string>>();
             if (pageActions != null)
             {
