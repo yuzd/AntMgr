@@ -6,6 +6,10 @@
 
 
 <style>
+    body{
+        min-width: 800px;
+        overflow-x: auto;
+    }
     .top {
         position: fixed;
         top: 50%;
@@ -40,6 +44,7 @@
             height: 80%;
             overflow: auto;
             padding-top: 250px;
+            text-align: center;
         }
 </style>
 
@@ -105,6 +110,11 @@
             },
             ready: function () {
                 auth();
+                
+                //设置tree的初始化高度
+                $('.left').css('height',$(window).height());
+                $('.right').css('height',$(window).height());
+                
                 //获取总的数据
                 QQT.ajax('/Admin/Home/GetMenuActionTree', 'Post', {})
                     .done(function (response) {
