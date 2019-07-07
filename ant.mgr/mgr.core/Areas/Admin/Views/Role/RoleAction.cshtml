@@ -111,7 +111,12 @@
             ready: function () {
                 auth();
                 
-                //设置tree的初始化高度
+                 $(window).resize(function () {
+                     //设置tree的初始化高度
+                    $('.left').css('height',$(window).height());
+                    $('.right').css('height',$(window).height());
+                 });
+                 
                 $('.left').css('height',$(window).height());
                 $('.right').css('height',$(window).height());
                 
