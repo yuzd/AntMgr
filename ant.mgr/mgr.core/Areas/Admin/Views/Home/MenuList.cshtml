@@ -79,12 +79,9 @@
                 <h1 v-else class="modal-title" style="color: red">修改菜单</h1>
             </div>
             <div class="modal-body">
-                <div class="form-group">
+                 <div class="form-group">
                     <label class="control-label">菜单：</label>
-                    <select name="parentId" id="parentId" onchange="setMUR()" title="菜单" style="width: 300px;">
-                        <option value="0">顶级菜单</option>
-                        <option v-for="item in parentList" value="{{item.Tid}}" onclick="">{{item.name}}</option>
-                    </select>
+                    <input class="js-example-data-array-selected text-box" id="menuComb" style="width: 350px;" />
                 </div>
                 <input type="hidden" name="menuId" id="menuId" />
                 <input type="hidden" name="pId" id="pId" />
@@ -95,7 +92,7 @@
 
                 <div class="form-group">
                     <label class="control-label">地址：</label>
-                    <input class="form-control" name="menuUrl" id="menuUrl" type="text" placeholder="这里输入链接地址">
+                    <input class="form-control" name="menuUrl" id="menuUrl" type="text" placeholder="这里输入链接地址,一级菜单不用填">
                 </div>
 
                 <div class="form-group">
@@ -3340,7 +3337,7 @@
                 },
                 _CloseAddMenu: function () {
                     vm.currentRow = {};
-                    $("#parentId").val('0');
+                    $('#menuComb').val('0').trigger("change");
                     $('#menuId').val('');
                     $('#pId').val('');
                     $('#menuName').val('');
@@ -3388,7 +3385,7 @@
                         QQT.ajax('/Admin/Home/AddMenu',
                             'Post',
                             {
-                                ParentTid: $("#parentId").val(),
+                                ParentTid: $('#menuComb').select2('data') && $('#menuComb').select2('data').id||0,
                                 Name: $('#menuName').val(),
                                 Url: $('#menuUrl').val(),
                                 OrderRule: $('#menuOrder').val(),
@@ -3414,7 +3411,7 @@
                         QQT.ajax('/Admin/Home/UpdateMenu',
                             'Post',
                             {
-                                ParentTid: $("#parentId").val(),
+                                ParentTid: $('#menuComb').select2('data') && $('#menuComb').select2('data').id||0,
                                 Name: $('#menuName').val(),
                                 Url: $('#menuUrl').val(),
                                 OrderRule: $('#menuOrder').val(),
@@ -3457,18 +3454,38 @@
                 .done(function (response) {
                     if (!response || !response.Data) return;
                     vm.parentList = response.Data;
+                     var searchList = new Array();
+                     searchList.push({id:0,text:'顶级菜单'});
+                                $.each(response.Data,
+                                    function (index, item) {
+                                        searchList.push({
+                                            id: item.Tid,
+                                            text: item.name
+                                        });
+                                    });
+                    
+                    //设置select2
+                    $('#menuComb').select2({
+                                    data: searchList,
+                                    placeholder: '请选择',
+                                    multiple: false
+                                });
+                    $('#menuComb').val('0').trigger("change");
+                    $('#menuComb').on("change", function (e) { 
+                        setMUR(e.added);
+                    });
                 });
 
             $('.fa-hover').click(function () { icoSelect(this) });
             $('.bs-glyphicons-list li').click(function () { icoSelectLi(this) });
         }
 
-        function setMUR(flag) {
-            if ($("#parentId").val() == "0") {
+        function setMUR(item,url) {
+            if (!item||item.id == 0) {
                 $('#checkBoxActive').hide();
                 $("#menuUrl").attr("readonly", true);
-                if (flag) {
-                    $("#menuUrl").val(flag);
+                if (url) {
+                    $("#menuUrl").val(url);
                 } else {
                     $("#menuUrl").val('');
                 }
@@ -3491,6 +3508,7 @@
                 .done(function (response) {
                     var menu = response.Data;
                     $('#menuId').val(menu.Tid);
+                    $('#menuComb').val(menu.ParentTid).trigger("change");
                     $('#pId').val(menu.ParentTid);
                     $('#menuName').val(menu.name);
                     $('#menuUrl').val(menu.Url);
@@ -3498,8 +3516,7 @@
                     $('#menuClass').val(menu.Class);
                     vm.add = false;
                     changeSwitcheryState('isActive', menu.IsActive);
-                    $("#parentId").val(menu.ParentTid);
-                    setMUR(menu.Url);
+                    setMUR($('#menuComb').select2('data'),menu.Url);
                     $('#myModal').modal({ backdrop: 'static', keyboard: false });
                     $('#myModal').modal('show');
                 });
