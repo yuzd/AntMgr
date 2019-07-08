@@ -17,6 +17,10 @@
 
   "OutFileName": "DbModels", //生成的cs文件名称
 
+  "PerClassPerFile": false, //每一个class生成一个独立的cs文件 如果这个为true就会忽略OutFileName参数值
+
+  "TableFilter": [], //指定要生成class的表，如果为空代表不限制
+
   "SetFkList": [ //逻辑(非物理,不提倡物理建外键)
     //格式: A表名称，A表字段，B表名称，B表字段，外键关系(OneToOne,OneToMany,ManyToOne) 例如 "good_category,GoodTid,goods,Tid,OneToOne"
   ],
