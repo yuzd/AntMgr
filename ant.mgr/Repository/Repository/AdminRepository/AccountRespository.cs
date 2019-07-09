@@ -189,7 +189,7 @@ namespace Repository
         /// <returns></returns>
         public async Task<Tuple<bool, string>> UserAddRole(UserAddRoleVm info)
         {
-            if (info == null || info.RoleTid < 1 || !string.IsNullOrEmpty(info.UserTid))
+            if (info == null || info.RoleTid < 1 || info.UserTid<1)
             {
                 return new Tuple<bool, string>(false, Tip.BadRequest);
             }

@@ -118,11 +118,6 @@ namespace Infrastructure.Web
                 result = HttpContext.Current.Connection.RemoteIpAddress.ToString();
             }
 
-            if (string.IsNullOrEmpty(result) || !Regex.IsMatch(result, @"^((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)$"))
-            {
-                return "127.0.0.1";
-            }
-
             return result;
         }
 

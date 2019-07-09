@@ -26,7 +26,7 @@ namespace ViewModels.Reuqest
         /// <summary>
         /// 用户Tid
         /// </summary>
-        public string UserTid { get; set; }
+        public long UserTid { get; set; }
 
         /// <summary>
         /// 角色Tid
