@@ -1,6 +1,5 @@
 ﻿using AntData.ORM;
 using Autofac.Annotation;
-using Castle.DynamicProxy;
 using Configuration;
 using Infrastructure.StaticExt;
 using Infrastructure.View;
@@ -14,6 +13,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using DbModel;
+using Repository.Interceptors;
 using ViewModels.Reuqest;
 
 namespace Repository
@@ -21,7 +21,7 @@ namespace Repository
     /// <summary>
     /// 菜单处理
     /// </summary>
-    [Bean(typeof(IMenuRespository), Interceptor = typeof(AsyncInterceptor))]
+    [Component(typeof(IMenuRespository), Interceptor = typeof(AsyncTimeoutInterceptor))]
     public class MenuRespository : BaseRepository<SystemMenu>, IMenuRespository
     {
 

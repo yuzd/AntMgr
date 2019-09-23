@@ -16,7 +16,7 @@ using DbModel;
 
 namespace ant.mgr.core.Filter
 {
-    [Bean]
+    [Component]
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class AuthorizeFilterAttribute : AuthorizeServiceFilterAttribute, IFilterFactory, IFilterMetadata
     {

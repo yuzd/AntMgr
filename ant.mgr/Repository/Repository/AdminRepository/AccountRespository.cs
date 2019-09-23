@@ -1,7 +1,6 @@
 ﻿using AntData.ORM;
 using AntData.ORM.Linq;
 using Autofac.Annotation;
-using Castle.DynamicProxy;
 using Configuration;
 using Infrastructure.Logging;
 using Infrastructure.StaticExt;
@@ -13,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DbModel;
+using Repository.Interceptors;
 using ViewModels.Reuqest;
 
 namespace Repository
@@ -20,7 +20,7 @@ namespace Repository
     /// <summary>
     /// 系统用户
     /// </summary>
-    [Bean(typeof(IAccountRespository), Interceptor = typeof(AsyncInterceptor))]
+    [Component(typeof(IAccountRespository), Interceptor = typeof(AsyncTimeoutInterceptor))]
     public class AccountRespository : BaseRepository<SystemUsers>, IAccountRespository
     {
 

@@ -52,7 +52,7 @@ namespace ant.mgr.core
             //autofac打标签模式 文档：https://github.com/yuzd/Autofac.Annotation
             builder.RegisterModule(new AutofacAnnotationModule(this.GetType().Assembly, typeof(BaseRepository<>).Assembly)
                 .SetAllowCircularDependencies(true)
-                .InstancePerLifetimeScope());
+                .SetDefaultAutofacScopeToInstancePerLifetimeScope());
 
             var container = builder.Build();
             var serviceProvider = new AutofacServiceProvider(container);

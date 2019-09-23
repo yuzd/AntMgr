@@ -1,7 +1,7 @@
 ﻿using AntData.ORM;
 using AntData.ORM.Linq;
 using Autofac.Annotation;
-using Castle.DynamicProxy;
+using Repository.Interceptors;
 using Configuration;
 using DbModel;
 using Infrastructure.Logging;
@@ -18,7 +18,7 @@ using ViewModels.Reuqest;
 
 namespace Repository
 {
-    [Bean(typeof(I{{ModelClassName}}Respository), Interceptor = typeof(AsyncInterceptor))]
+    [Component(typeof(I{{ModelClassName}}Respository), Interceptor = typeof(AsyncTimeoutInterceptor))]
     public class {{ModelClassName}}Respository : BaseRepository<{{ModelClassName}}>, I{{ModelClassName}}Respository
     {
 

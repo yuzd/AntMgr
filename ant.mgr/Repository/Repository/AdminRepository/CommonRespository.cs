@@ -1,7 +1,6 @@
 ﻿using AntData.ORM.Data;
 using AntData.ORM.Mapping;
 using Autofac.Annotation;
-using Castle.DynamicProxy;
 using DbModel;
 using Infrastructure.CodeGen;
 using Infrastructure.Logging;
@@ -14,6 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Repository.Interceptors;
 using ViewModels.Reuqest;
 
 namespace Repository
@@ -21,7 +21,7 @@ namespace Repository
     /// <summary>
     /// 公共处理
     /// </summary>
-    [Bean(typeof(ICommonRespository), Interceptor = typeof(AsyncInterceptor))]
+    [Component(typeof(ICommonRespository), Interceptor = typeof(AsyncTimeoutInterceptor))]
     public class CommonRespository : BaseRepository, ICommonRespository
     {
 

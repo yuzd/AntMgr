@@ -10,7 +10,7 @@ namespace Repository.Interceptors
     /// <summary>
     /// 接口超时拦截器
     /// </summary>
-    [Bean(typeof(AsyncInterceptor))]
+    [Component]
     public class AsyncTimeoutInterceptor : AsyncInterceptor
     {
 

@@ -1,7 +1,6 @@
 ﻿using AntData.ORM;
 using AntData.ORM.Data;
 using Autofac.Annotation;
-using Castle.DynamicProxy;
 using Configuration;
 using Infrastructure.StaticExt;
 using Newtonsoft.Json;
@@ -12,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DbModel;
+using Repository.Interceptors;
 using ViewModels.Reuqest;
 
 namespace Repository
@@ -19,7 +19,7 @@ namespace Repository
     /// <summary>
     /// 角色权限管理
     /// </summary>
-    [Bean(typeof(IRoleRespository), Interceptor = typeof(AsyncInterceptor))]
+    [Component(typeof(IRoleRespository), Interceptor = typeof(AsyncTimeoutInterceptor))]
     public class RoleRespository : BaseRepository<SystemRole>, IRoleRespository
     {
         /// <summary>
