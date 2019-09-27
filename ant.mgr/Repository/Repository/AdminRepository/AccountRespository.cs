@@ -20,7 +20,7 @@ namespace Repository
     /// <summary>
     /// 系统用户
     /// </summary>
-    [Component(typeof(IAccountRespository), Interceptor = typeof(AsyncTimeoutInterceptor))]
+    [Component(Interceptor = typeof(AsyncTimeoutInterceptor))]
     public class AccountRespository : BaseRepository<SystemUsers>, IAccountRespository
     {
 

@@ -18,7 +18,7 @@ using ViewModels.Reuqest;
 
 namespace Repository
 {
-    [Component(typeof(I{{ModelClassName}}Respository), Interceptor = typeof(AsyncTimeoutInterceptor))]
+    [Component(Interceptor = typeof(AsyncTimeoutInterceptor))]
     public class {{ModelClassName}}Respository : BaseRepository<{{ModelClassName}}>, I{{ModelClassName}}Respository
     {
 

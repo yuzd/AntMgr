@@ -21,7 +21,7 @@ namespace Repository
     /// <summary>
     /// 菜单处理
     /// </summary>
-    [Component(typeof(IMenuRespository), Interceptor = typeof(AsyncTimeoutInterceptor))]
+    [Component(Interceptor = typeof(AsyncTimeoutInterceptor))]
     public class MenuRespository : BaseRepository<SystemMenu>, IMenuRespository
     {
 

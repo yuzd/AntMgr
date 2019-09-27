@@ -19,7 +19,7 @@ namespace Repository
     /// <summary>
     /// 角色权限管理
     /// </summary>
-    [Component(typeof(IRoleRespository), Interceptor = typeof(AsyncTimeoutInterceptor))]
+    [Component(Interceptor = typeof(AsyncTimeoutInterceptor))]
     public class RoleRespository : BaseRepository<SystemRole>, IRoleRespository
     {
         /// <summary>

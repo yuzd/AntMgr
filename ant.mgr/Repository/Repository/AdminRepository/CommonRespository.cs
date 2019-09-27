@@ -21,7 +21,7 @@ namespace Repository
     /// <summary>
     /// 公共处理
     /// </summary>
-    [Component(typeof(ICommonRespository), Interceptor = typeof(AsyncTimeoutInterceptor))]
+    [Component(Interceptor = typeof(AsyncTimeoutInterceptor))]
     public class CommonRespository : BaseRepository, ICommonRespository
     {
 
