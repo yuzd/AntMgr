@@ -66,8 +66,7 @@ namespace ant.mgr.core
 
             #region AntORM
             //文档：https://github.com/yuzd/AntData.ORM
-            AntData.ORM.Common.Configuration.UseDBConfig(Configuration);
-            AntData.ORM.Common.Configuration.Linq.AllowMultipleQuery = true;
+            app.UseAntData();
             #endregion
 
             #region NLOG

@@ -12,6 +12,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac.Aspect;
 using DbModel;
 using Repository.Interceptors;
 using ViewModels.Reuqest;
@@ -21,7 +22,8 @@ namespace Repository
     /// <summary>
     /// 菜单处理
     /// </summary>
-    [Component(Interceptor = typeof(AsyncTimeoutInterceptor))]
+    [Component(typeof(IMenuRespository))]
+    [Aspect(InterceptorType.Interface)]
     public class MenuRespository : BaseRepository<SystemMenu>, IMenuRespository
     {
 

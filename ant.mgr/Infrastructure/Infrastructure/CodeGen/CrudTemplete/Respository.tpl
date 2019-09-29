@@ -14,11 +14,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ViewModels.Reuqest;
-
+using Autofac.Aspect;
 
 namespace Repository
 {
-    [Component(Interceptor = typeof(AsyncTimeoutInterceptor))]
+    [Component(typeof(I{{ModelClassName}}Respository))]
+	[Aspect(InterceptorType.Interface)]
     public class {{ModelClassName}}Respository : BaseRepository<{{ModelClassName}}>, I{{ModelClassName}}Respository
     {
 

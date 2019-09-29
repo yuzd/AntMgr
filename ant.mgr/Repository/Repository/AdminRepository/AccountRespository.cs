@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac.Aspect;
 using DbModel;
 using Repository.Interceptors;
 using ViewModels.Reuqest;
@@ -20,7 +21,8 @@ namespace Repository
     /// <summary>
     /// 系统用户
     /// </summary>
-    [Component(Interceptor = typeof(AsyncTimeoutInterceptor))]
+    [Component(typeof(IAccountRespository))]
+    [Aspect(InterceptorType.Interface)]
     public class AccountRespository : BaseRepository<SystemUsers>, IAccountRespository
     {
 

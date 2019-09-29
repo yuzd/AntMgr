@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac.Aspect;
 using DbModel;
 using Repository.Interceptors;
 using ViewModels.Reuqest;
@@ -19,7 +20,8 @@ namespace Repository
     /// <summary>
     /// 角色权限管理
     /// </summary>
-    [Component(Interceptor = typeof(AsyncTimeoutInterceptor))]
+    [Component(typeof(IRoleRespository))]
+    [Aspect(InterceptorType.Interface)]
     public class RoleRespository : BaseRepository<SystemRole>, IRoleRespository
     {
         /// <summary>
@@ -141,6 +143,7 @@ namespace Repository
         /// </summary>
         /// <param name="role"></param>
         /// <returns></returns>
+        [EnableTransactionScope]
         public async Task<string> AddRole(AddRoleVm role, Token user)
         {
             if (role == null)
@@ -200,32 +203,26 @@ namespace Repository
             }
             else
             {
-                var update = false;
-                this.DB.UseTransaction(con =>
-                {
-                    //更新角色
-                    var updateResult = con.Tables.SystemRole.Where(r => r.Tid.Equals(role.Tid))
-                                                     .Set(r => r.DataChangeLastTime, DateTime.Now)
-                                                     .Set(r => r.RoleName, systemRole.RoleName)
-                                                     .Set(r => r.Description, systemRole.Description)
-                                                     .Set(r => r.MenuRights, systemRole.MenuRights)
-                                                     .Set(r => r.ActionList, systemRole.ActionList)
-                                                     .Update() > 0;
+                //更新角色
+                var updateResult = this.Entity.Where(r => r.Tid.Equals(role.Tid))
+                                       .Set(r => r.DataChangeLastTime, DateTime.Now)
+                                       .Set(r => r.RoleName, systemRole.RoleName)
+                                       .Set(r => r.Description, systemRole.Description)
+                                       .Set(r => r.MenuRights, systemRole.MenuRights)
+                                       .Set(r => r.ActionList, systemRole.ActionList)
+                                       .Update() > 0;
 
-                    if (!updateResult)
-                    {
-                        return false;
-                    }
+                if (!updateResult)
+                { 
+                    return Tip.UpdateError;
+                }
 
-                    //更新所有角色下的用户菜单权限
-                    con.Tables.SystemUsers.Where(r => r.RoleTid.Equals(role.Tid))
-                       .Set(r => r.MenuRights, systemRole.MenuRights)
-                       .Set(r => r.DataChangeLastTime, DateTime.Now)
-                       .Update();
+                //更新所有角色下的用户菜单权限
+                var update = Entitys.SystemUsers.Where(r => r.RoleTid.Equals(role.Tid))
+                    .Set(r => r.MenuRights, systemRole.MenuRights)
+                    .Set(r => r.DataChangeLastTime, DateTime.Now)
+                    .Update() > 0;
 
-                    update = true;
-                    return true;
-                });
 
                 if (!update)
                 {

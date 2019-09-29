@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Autofac.Aspect;
 using Repository.Interceptors;
 using ViewModels.Reuqest;
 
@@ -21,7 +22,8 @@ namespace Repository
     /// <summary>
     /// 公共处理
     /// </summary>
-    [Component(Interceptor = typeof(AsyncTimeoutInterceptor))]
+    [Component(typeof(ICommonRespository))]
+    [Aspect(InterceptorType.Interface)]
     public class CommonRespository : BaseRepository, ICommonRespository
     {
 
