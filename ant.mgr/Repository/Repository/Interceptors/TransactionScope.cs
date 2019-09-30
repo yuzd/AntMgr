@@ -27,8 +27,9 @@ namespace Repository.Interceptors
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 await proceed(invocation);
-
-                scope.Complete();
+                
+                if(Transaction.Current.TransactionInformation.Status == TransactionStatus.Active)
+                    scope.Complete();
             }
         }
 
@@ -46,7 +47,8 @@ namespace Repository.Interceptors
             {
                 var r = await proceed(invocation);
 
-                scope.Complete();
+                if(Transaction.Current.TransactionInformation.Status == TransactionStatus.Active)
+                    scope.Complete();
 
                 return r;
             }
