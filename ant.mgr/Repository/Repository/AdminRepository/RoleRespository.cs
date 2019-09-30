@@ -218,16 +218,11 @@ namespace Repository
                 }
 
                 //更新所有角色下的用户菜单权限
-                var update = Entitys.SystemUsers.Where(r => r.RoleTid.Equals(role.Tid))
+                Entitys.SystemUsers.Where(r => r.RoleTid.Equals(role.Tid))
                     .Set(r => r.MenuRights, systemRole.MenuRights)
                     .Set(r => r.DataChangeLastTime, DateTime.Now)
-                    .Update() > 0;
+                    .Update() ;
 
-
-                if (!update)
-                {
-                    return Tip.UpdateError;
-                }
             }
 
             return string.Empty;
