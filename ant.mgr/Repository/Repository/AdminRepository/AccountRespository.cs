@@ -21,7 +21,7 @@ namespace Repository
     /// <summary>
     /// 系统用户
     /// </summary>
-    [Component(typeof(IAccountRespository))]
+    [Component]
     [Aspect(InterceptorType.Interface)]
     public class AccountRespository : BaseRepository<SystemUsers>, IAccountRespository
     {

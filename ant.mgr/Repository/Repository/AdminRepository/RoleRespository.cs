@@ -20,7 +20,7 @@ namespace Repository
     /// <summary>
     /// 角色权限管理
     /// </summary>
-    [Component(typeof(IRoleRespository))]
+    [Component]
     [Aspect(InterceptorType.Interface)]
     public class RoleRespository : BaseRepository<SystemRole>, IRoleRespository
     {

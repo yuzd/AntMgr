@@ -69,11 +69,6 @@ namespace ant.mgr.core
             app.UseAntData();
             #endregion
 
-            #region NLOG
-            NLog.LogManager.LoadConfiguration("nlog.config");
-            logging.AddNLog();
-            #endregion
-
             #region AutoMapperConfig
             var autoMapperConfig = new Mapping.AutoMapper();
             autoMapperConfig.ExecuteByAssemblyName("DbModel", "ServicesModel");

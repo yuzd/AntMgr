@@ -22,7 +22,7 @@ namespace Repository
     /// <summary>
     /// 公共处理
     /// </summary>
-    [Component(typeof(ICommonRespository))]
+    [Component]
     [Aspect(InterceptorType.Interface)]
     public class CommonRespository : BaseRepository, ICommonRespository
     {

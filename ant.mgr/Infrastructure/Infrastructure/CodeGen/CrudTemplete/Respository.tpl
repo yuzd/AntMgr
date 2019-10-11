@@ -18,7 +18,7 @@ using Autofac.Aspect;
 
 namespace Repository
 {
-    [Component(typeof(I{{ModelClassName}}Respository))]
+    [Component]
 	[Aspect(InterceptorType.Interface)]
     public class {{ModelClassName}}Respository : BaseRepository<{{ModelClassName}}>, I{{ModelClassName}}Respository
     {

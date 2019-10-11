@@ -22,7 +22,7 @@ namespace Repository
     /// <summary>
     /// 菜单处理
     /// </summary>
-    [Component(typeof(IMenuRespository))]
+    [Component]
     [Aspect(InterceptorType.Interface)]
     public class MenuRespository : BaseRepository<SystemMenu>, IMenuRespository
     {
