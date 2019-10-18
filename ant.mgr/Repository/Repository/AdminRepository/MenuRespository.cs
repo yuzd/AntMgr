@@ -211,11 +211,7 @@ namespace Repository
                 .Set(r=>r.IsActive,false)
                 .Set(r => r.Level, DisableMenuLevel)//目前最多支持2级。。 88是代表这个菜单不用了
                 .Update() > 0;
-            if (!updateResult)
-            {
-                return Tip.UpdateError;
-            }
-            return String.Empty;
+            return !updateResult ? Tip.UpdateError : String.Empty;
         }
 
         /// <summary>
@@ -226,11 +222,7 @@ namespace Repository
         public SystemMenuSM GetCurrentMenu(long menuTid)
         {
             var menu = this.Entity.FirstOrDefault(r => r.Tid.Equals(menuTid));
-            if (menu != null)
-            {
-                return MapperTo<SystemMenu, SystemMenuSM>(menu);
-            }
-            return new SystemMenuSM();
+            return menu != null ? MapperTo<SystemMenu, SystemMenuSM>(menu) : new SystemMenuSM();
         }
 
         /// <summary>
@@ -253,11 +245,7 @@ namespace Repository
                 .Set(r => r.OrderRule, model.OrderRule)
                 .Set(r => r.IsActive, model.IsActive)
                 .Update() > 0;
-            if (!updateResult)
-            {
-                return Tip.UpdateError;
-            }
-            return String.Empty;
+            return !updateResult ? Tip.UpdateError : String.Empty;
         }
 
         /// <summary>
@@ -299,11 +287,7 @@ namespace Repository
                 DataChangeLastTime = DateTime.Now
             };
             var result = this.Save(menu) > 0;
-            if (!result)
-            {
-                return Tip.InserError;
-            }
-            return String.Empty;
+            return !result ? Tip.InserError : String.Empty;
         }
 
         /// <summary>

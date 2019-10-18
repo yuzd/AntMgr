@@ -13,7 +13,7 @@
 
 
   <ItemGroup>
-    <PackageReference Include="Autofac.Annotation" Version="3.0.3" />
+    <PackageReference Include="Autofac.Annotation" Version="3.0.4" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />

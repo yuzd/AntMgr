@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Transactions;
 using Autofac.Aspect;
 using DbModel;
 using Repository.Interceptors;
@@ -29,6 +30,7 @@ namespace Repository
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        [EnableTransactionScope]
         public async Task<string> AddRoleActions(RoleAction model)
         {
             if (model == null || model.MenuId < 1 || string.IsNullOrEmpty(model.ActionId)) return Tip.BadRequest;
@@ -90,13 +92,7 @@ namespace Repository
             }
 
             var rt = this.Entity.Where(r => r.Tid.Equals(tid)).Delete() > 0;
-            if (!rt)
-            {
-                return Tip.UpdateError;
-            }
-
-            return string.Empty;
-
+            return !rt ? Tip.UpdateError : string.Empty;
         }
 
         /// <summary>
@@ -214,6 +210,7 @@ namespace Repository
 
                 if (!updateResult)
                 { 
+                    Transaction.Current.Rollback();
                     return Tip.UpdateError;
                 }
 
