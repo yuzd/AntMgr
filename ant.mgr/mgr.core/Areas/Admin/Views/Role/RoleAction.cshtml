@@ -10,15 +10,6 @@
         min-width: 800px;
         overflow-x: auto;
     }
-    .top {
-        position: fixed;
-        top: 50%;
-        right: 0;
-        height: 200px;
-        width: 200px;
-        margin-top: -200px;
-        margin-right: 10%;
-    }
 
     div {
         display: inline;
@@ -77,7 +68,7 @@
                 RoleActionSave: function () {
                     var tree1Obj = $.fn.zTree.getZTreeObj("tree");
                     var nodes1 = tree1Obj.getSelectedNodes();
-                    if (nodes1.length != 1) {
+                    if (nodes1.length !== 1) {
                         swal({
                             title: "提交失败！",
                             text: '没有要修改的!',
@@ -136,10 +127,10 @@
         function ready(zNodes) {
             var setting = {
                 view: {
-                    selectedMulti: false,
+                    selectedMulti: false
                 },
                 check: {
-                    enable: false,
+                    enable: false
                 },
                 callback: {
                     onClick: onClick
@@ -154,10 +145,10 @@
         function ready2(zNodes) {
             var setting = {
                 view: {
-                    selectedMulti: true,
+                    selectedMulti: true
                 },
                 check: {
-                    enable: true,
+                    enable: true
                 }
             };
 
@@ -168,7 +159,7 @@
         }
 
         function onClick(event, treeId, treeNode, clickFlag) {
-            if (treeNode.Tid != 0) {
+            if (treeNode.Tid !== 0) {
                 vm.showControl = false;
                 return;
             }

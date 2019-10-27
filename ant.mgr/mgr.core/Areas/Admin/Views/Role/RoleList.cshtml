@@ -17,6 +17,7 @@
                             <div class="btn-group hidden-xs" id="RoleTableEventsToolbar" role="group">
                                 <button type="button" class="btn btn-w-m btn-success authorization" action-id="role-add" action-name="新增角色" style="display: none; margin-right: 10px" v-on:click="_roleAdd">新增角色</button>
                                 <button type="button" class="btn btn-w-m btn-success authorization" action-id="role-edit" action-name="修改角色" style="display: none;margin-right: 10px" v-on:click="_roleEdit">修改角色</button>
+                                <button type="button" class="btn btn-w-m btn-primary authorization" action-id="role-copy" action-name="复制角色" style="display: none;margin-right: 10px" v-on:click="_roleCopy">复制角色</button>
                                 <button type="button" class="btn btn-w-m btn-danger authorization" action-id="role-delete" action-name="删除角色" style="display: none;margin-right: 10px" v-on:click="_roleDelete">删除角色</button>
                                 <div class="input-group" style="display: inline-block">
                                     <input type="text" placeholder="请输入角色名称" class="form-control input-md" id="roleName" style="width: 150px;display: inline-block" v-on:keyup.enter="_FreshTable" data-pure-clear-button />
@@ -84,7 +85,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-white" v-on:click="_roleEditClose">关闭</button>
-                <button type="button" class="btn btn-primary" v-on:click="_roleEditSave">更新</button>
+                <button type="button" class="btn btn-primary" v-on:click="_roleEditSave">保存</button>
             </div>
         </div>
     </div>
@@ -114,6 +115,37 @@
                     } catch (e) {
 
                     }
+                },
+                _roleCopy:function(){
+                    var selectRow = $('#RoleTable').bootstrapTable('getSelections');
+                    if (selectRow.length < 1) {
+                        swal({
+                            title: "",
+                            text: "请选择角色！",
+                            type: "error"
+                        });
+                        return;
+                    }
+                    var tid = selectRow[0].Tid;
+                    QQT.ajax('/Admin/Home/GetMenuTree','POST',
+                        {
+                            roleId: tid
+                        }
+                    )
+                    .done(function (response) {
+                        if (editTree)editTree.destroy();
+                        //加载Menu
+                        var setting = {
+                            check: {
+                                enable: true
+                            }
+                        };
+
+                        editTree = $.fn.zTree.init($("#menu_tree_edit"), setting, response.Data);
+                        $('#editModal').modal({ backdrop: 'static', keyboard: false });
+                        $('#editModal').modal('show');
+                    });
+
                 },
                 _roleDelete: function () {
                     var selectRow = $('#RoleTable').bootstrapTable('getSelections');
@@ -154,9 +186,9 @@
                     });
                 },
                 _roleAdd: function () {
-                    vm.roleAddName = '',
-                        vm.roleAddDesc = '',
-                        $('#myModal').modal({ backdrop: 'static', keyboard: false });
+                    vm.roleAddName = '';
+                    vm.roleAddDesc = '';
+                    $('#myModal').modal({ backdrop: 'static', keyboard: false });
                     $('#myModal').modal('show');
                 },
                 _roleAddClose: function () {
@@ -199,8 +231,8 @@
                         });
                         return;
                     }
-                    var row = $.extend({}, selectRow[0]);
-                    vm.currentRow = row;
+                    
+                    vm.currentRow = $.extend({}, selectRow[0]);
 
                     QQT.ajax('/Admin/Home/GetMenuTree',
                         'POST',
@@ -212,7 +244,7 @@
                             //加载Menu
                             var setting = {
                                 check: {
-                                    enable: true,
+                                    enable: true
                                 }
                             };
 
@@ -249,6 +281,8 @@
                         .done(function (response) {
                             $('#editModal').modal('hide');
                             resetTree(zTree);
+                            vm.currentRow.RoleName = '';
+                            vm.currentRow.Description = '';
                             $('#RoleTable').bootstrapTable('refresh', { silent: true });
                             swal("成功啦！", "更新成功!", "success");
                         });
@@ -330,7 +364,7 @@
                     vm.menuTree = response.Data;
                     var setting = {
                         check: {
-                            enable: true,
+                            enable: true
                         }
                     };
                     zTree = $.fn.zTree.init($("#menu_tree"), setting, response.Data);
@@ -370,7 +404,7 @@
             var actions = [];
             for (var i = 0; i < nodes.length; i++) {
                 tmpNode = nodes[i];
-                if (tmpNode.Tid != 0) {
+                if (tmpNode.Tid !== 0) {
                     ids.push(tmpNode.Tid);
                 } else {
                     actions.push({

@@ -63,23 +63,16 @@
             $("#form").steps({
                 bodyTag: "fieldset",
                 onStepChanging: function (event, currentIndex, newIndex) {
-
                     if (currentIndex === 1 && newIndex === 2) {
                         var columns = $('#columns').select2('data');
-                        if (columns.length === 0) {
-                            return false;
-                        }
+                        return columns.length!==0;
+                        
+                    } else if (currentIndex === 2 && newIndex === 1) {
                         return true;
-                    } else if (currentIndex == 2 && newIndex == 1) {
-                        return true;
-                    } else if (currentIndex == 1 && newIndex == 0) {
+                    } else if (currentIndex === 1 && newIndex === 0) {
                         return true;
                     } else {
-                        var tableName = $('#tables').select2('data');
-                        if (!tableName) {
-                            return false;
-                        }
-                        return true;
+                        return $('#tables').select2('data');
                     }
                 },
                 onStepChanged: function (event, currentIndex, priorIndex) {
@@ -95,8 +88,7 @@
                         });
                 },
                 onFinishing: function (event, currentIndex) {
-                    if (currentIndex < 2) return false;
-                    return true;
+                    return currentIndex>=2;
                 },
                 onFinished: function (event, currentIndex) {
                     var cc = $('#columns').select2('data');
@@ -153,7 +145,7 @@
         });
 
         function InitTablesCombobox(data) {
-            var searchList = new Array();
+            var searchList = [];
             $.each(data,
                 function (index, item) {
                     searchList.push({
@@ -172,7 +164,7 @@
         }
 
         function InitDbTablesColumns(data) {
-            var searchList = new Array();
+            var searchList = [];
             $.each(data,
                 function (index, item) {
                     searchList.push({
