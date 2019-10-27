@@ -23,7 +23,6 @@ namespace Repository
     /// 菜单处理
     /// </summary>
     [Component]
-    [Aspect(InterceptorType.Interface)]
     public class MenuRespository : BaseRepository<SystemMenu>, IMenuRespository
     {
 
@@ -317,8 +316,6 @@ namespace Repository
         }
 
         #endregion
-
-
 
         #region Private
 

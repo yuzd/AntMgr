@@ -23,7 +23,6 @@ namespace Repository
     /// 公共处理
     /// </summary>
     [Component]
-    [Aspect(InterceptorType.Interface)]
     public class CommonRespository : BaseRepository, ICommonRespository
     {
 
@@ -76,12 +75,6 @@ namespace Repository
             _dbColumnsCache.TryAdd(tableName, cache);
             return cache;
         }
-
-
-
-
-
-
 
         /// <summary>
         /// 自动生成代码

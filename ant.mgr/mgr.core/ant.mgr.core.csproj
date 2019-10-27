@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Version>2.5</Version>
+    <Version>2.6</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -13,7 +13,7 @@
 
 
   <ItemGroup>
-    <PackageReference Include="Autofac.Annotation" Version="3.0.4" />
+    <PackageReference Include="Autofac.Annotation" Version="3.0.5" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
