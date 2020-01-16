@@ -13,6 +13,8 @@ using NLog.Extensions.Logging;
 using Repository;
 using System;
 using ant.mgr.core.Filter;
+using Infrastructure.Web;
+using Microsoft.Extensions.Hosting;
 
 namespace ant.mgr.core
 {
@@ -25,9 +27,22 @@ namespace ant.mgr.core
 
         public IConfiguration Configuration { get; }
 
+        public ILifetimeScope AutofacContainer { get; private set; }
+
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            //autofac打标签模式 文档：https://github.com/yuzd/Autofac.Annotation
+            builder.RegisterModule(new AutofacAnnotationModule(
+                    this.GetType().Assembly,
+                    typeof(BaseRepository<>).Assembly,
+                    typeof(HttpContext).Assembly)
+                .SetAllowCircularDependencies(true)
+                .SetDefaultAutofacScopeToInstancePerLifetimeScope());
+
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors(o => o.AddPolicy("Any", r =>
             {
@@ -36,34 +51,20 @@ namespace ant.mgr.core
                     .AllowAnyHeader();
             }));
 
+            services.AddControllersWithViews(op => op.Filters.Add<GlobalExceptionFilter>());
+            services.AddRazorPages().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ContractResolver =
+                    new DefaultContractResolver()); 
+
             services.AddScoped<IViewRenderService, ViewRenderService>();
-            services.AddMvc(o => { o.Filters.Add<GlobalExceptionFilter>(); })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-                .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver())
-                .AddControllersAsServices();
-
-
 
             services.AddHttpContextAccessor();
 
-            var builder = new ContainerBuilder();
-            builder.Populate(services);
-
-            //autofac打标签模式 文档：https://github.com/yuzd/Autofac.Annotation
-            builder.RegisterModule(new AutofacAnnotationModule(this.GetType().Assembly, typeof(BaseRepository<>).Assembly)
-                .SetAllowCircularDependencies(true)
-                .SetDefaultAutofacScopeToInstancePerLifetimeScope());
-
-            var container = builder.Build();
-            var serviceProvider = new AutofacServiceProvider(container);
-            Infrastructure.Web.HttpContext.ServiceProvider = serviceProvider;
-            return serviceProvider;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory logging)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory logging)
         {
-
             #region AntORM
             //文档：https://github.com/yuzd/AntData.ORM
             app.UseAntData();
@@ -78,17 +79,24 @@ namespace ant.mgr.core
 
             app.UseStatusCodePagesWithReExecute("/admin/error/{0}");
 
-            app.UseMvc(routes =>
-            {
-                // areas
-                routes.MapRoute(
-                    name: "Admin",
-                    template: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+            app.UseRouting();
 
-                routes.MapRoute(
+            app.UseCors();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapRazorPages();
+                endpoints.MapAreaControllerRoute(
+                    name: "Admin", "Admin",
+                    pattern: "Admin/{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+            
             });
+
+            Infrastructure.Web.HttpContext.ServiceProvider = this.AutofacContainer = app.ApplicationServices.GetAutofacRoot();
         }
     }
 }

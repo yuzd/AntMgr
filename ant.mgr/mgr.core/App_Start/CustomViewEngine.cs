@@ -2,20 +2,14 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
-using System.Text.Encodings.Web;
 using Configuration;
 using DbModel;
 using Infrastructure.StaticExt;
 using Infrastructure.Web;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
-using Microsoft.AspNetCore.Razor.Language;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Repository.Interface;
 using ServicesModel;
 

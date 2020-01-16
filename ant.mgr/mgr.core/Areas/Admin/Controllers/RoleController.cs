@@ -13,7 +13,8 @@ namespace ant.mgr.core.Areas.Admin.Controllers
 {
     [AuthorizeFilter]
     [API("角色")]
-    [Area("Admin")]
+    [Area(nameof(Admin))]
+    [Route("Admin/[controller]/[action]")]
     public class RoleController : BaseController
     {
         private readonly IRoleRespository RoleRespository;

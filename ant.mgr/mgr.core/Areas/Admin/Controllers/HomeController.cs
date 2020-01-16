@@ -10,8 +10,8 @@ using ViewModels.Reuqest;
 namespace ant.mgr.core.Areas.Admin.Controllers
 {
     [ServiceFilter(typeof(AuthorizeFilterAttribute))]
-    [API("Home")]
-    [Area("Admin")]
+    [Area(nameof(Admin))]
+    [Route("Admin/[controller]/[action]")]
     public class HomeController : BaseController
     {
         private readonly IMenuRespository MenuRespository;

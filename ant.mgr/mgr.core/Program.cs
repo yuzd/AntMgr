@@ -1,6 +1,8 @@
 ﻿using System;
+using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
 
@@ -14,7 +16,7 @@ namespace ant.mgr.core
             try
             {
                 logger.Debug("init main");
-                CreateWebHostBuilder(args).Build().Run();
+                CreateHostBuilder(args).Build().Run();
             }
             catch (Exception ex)
             {
@@ -28,20 +30,24 @@ namespace ant.mgr.core
                 NLog.LogManager.Shutdown();
             }
         }
-
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .ConfigureLogging(logging =>
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+                .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    logging.ClearProviders();
+                    webBuilder.UseStartup<Startup>()
+                        .ConfigureLogging(logging =>
+                        {
+                             logging.ClearProviders();
 #if DEBUG
-                    logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Debug);
+                             logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Debug);
 
 #else
-                    logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                             logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
 #endif
-                })
-                .UseNLog();
+                        }).UseNLog();
+                });
+
+     
     }
 }

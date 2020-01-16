@@ -15,7 +15,8 @@ namespace ant.mgr.core.Areas.Admin.Controllers
     /// 公共
     /// </summary>
     [API("公共")]
-    [Area("Admin")]
+    [Area(nameof(Admin))]
+    [Route("Admin/[controller]/[action]")]
     public class CommonController : BaseController
     {
         private readonly ICommonRespository CommonRespository;
