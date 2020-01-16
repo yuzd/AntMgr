@@ -2,6 +2,7 @@
 
 # AntMgr
 基于netcore2.0  mvc 开发的 快速搭建具有如下特色的后台管理系统
+最新版已升级到aspnetcore3.1
 
 # 特色：
 1. 用户管理
