@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac.Annotation" Version="3.0.7" />
+    <PackageReference Include="Autofac.Annotation" Version="3.0.8" />
   </ItemGroup>
 
   <ItemGroup>
