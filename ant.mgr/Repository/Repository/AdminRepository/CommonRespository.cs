@@ -10,10 +10,15 @@ using ServicesModel;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Policy;
+using System.Threading.Tasks;
 using Autofac.Aspect;
+using Configuration;
+using Infrastructure.StaticExt;
 using Repository.Interceptors;
 using ViewModels.Reuqest;
 
@@ -30,6 +35,59 @@ namespace Repository
         private static List<CodeGenTable> _dbTableCache = null;
         private static readonly ConcurrentDictionary<string, List<CodeGenField>> _dbColumnsCache = new ConcurrentDictionary<string, List<CodeGenField>>();
 
+
+
+        #region SQL
+
+        /// <summary>
+        /// 执行sql语句返回DataTable
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <returns></returns>
+
+        public DataTable SelectSqlExcute(string sql)
+        {
+            if (string.IsNullOrEmpty(sql))
+            {
+                return new DataTable();
+            }
+            return this.DB.QueryTable(sql);
+        }
+
+        /// <summary>
+        /// 执行sql语句返回受影响条数
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <returns></returns>
+        public Tuple<int, string> SQLExcute(string sql)
+        {
+            int result = -1;
+            if (string.IsNullOrEmpty(sql))
+            {
+                return new Tuple<int, string>(-1, Tip.BadRequest);
+            }
+
+            try
+            {
+                this.DB.UseTransaction(con =>
+                {
+                    result = con.Execute(sql);
+                    return true;
+                });
+
+            }
+            catch (Exception ex)
+            {
+                return new Tuple<int, string>(-1, ex.Message);
+            }
+            if (result == -1)
+            {
+                return new Tuple<int, string>(result, "请使用Select按钮查询！");
+            }
+            return new Tuple<int, string>(result, string.Empty);
+        }
+
+        #endregion
 
         /// <summary>
         /// 获取所有的Table和Columns

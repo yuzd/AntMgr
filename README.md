@@ -10,8 +10,9 @@
 3. 角色管理
 4. 权限管理[精确到按钮]）
 5. 代码生成器
-6. 约定大于配置，开发简单效率高,权限配置友好不复杂
-7. 支持mysql和sqlserver两种数据库。切换数据库不用改任何代码
+6. SQL工具(智能字段提示)
+7. 约定大于配置，开发简单效率高,权限配置友好不复杂
+8. 支持mysql和sqlserver两种数据库。切换数据库不用改任何代码
 
 角色支持遗传，比如 ：共有ABCD四个功能权限，分配了 A B 2个权限给 超级管理员角色的用户，支持让超级管理员用户还能自己创建角色。但是只能选择 A B 2个。无法看到 C D！
 
@@ -62,24 +63,28 @@
 登录成功如下图：
 
 ### 首页
-![image](https://images4.c-ctrip.com/target/zb0v15000000yzg3xAD3E.png)
+![image](https://images4.c-ctrip.com/target/zb081e000001fgemwEB45.png)
 
 
 ### 菜单管理
-![image](https://images4.c-ctrip.com/target/zb0g15000000yp3b5F941.png)
+![image](https://images4.c-ctrip.com/target/zb0h1e000001fhsa4146E.png)
 
 ### 权限管理
-![image](https://images4.c-ctrip.com/target/zb0e15000000yr5fyC8C3.png)
+![image](https://images4.c-ctrip.com/target/zb0h1e000001fhsarEC6C.png)
 
 ### 角色管理
-![image](https://images4.c-ctrip.com/target/zb0815000000yolhh6D74.png)
-![image](https://images4.c-ctrip.com/target/zb0o15000000yn8sd0269.png)
+![image](https://images4.c-ctrip.com/target/zb0c1e000001fiuw76AD4.png)
+![image](https://images4.c-ctrip.com/target/zb0f1e000001fg8ec6A05.png)
 
 ### 系统用户
-![image](https://images4.c-ctrip.com/target/zb0715000000z534t2E42.png)
+![image](https://images4.c-ctrip.com/target/zb091e000001fim7m7EF4.png)
 
 ### 代码自动生成
-![image](https://images4.c-ctrip.com/target/zb0k15000000ysl2f602B.png)
+![image](https://images4.c-ctrip.com/target/zb081e000001fgeq1EC8F.png)
+![image](https://images4.c-ctrip.com/target/zb0d1e000001feqhn5B6D.png)
+
+### SQL工具(智能字段提示,写sql再也不用担心忘记字段名称了)
+![image](https://images4.c-ctrip.com/target/zb0v1e000001fr9j98114.png)
 
 
 ### 权限如何设计的

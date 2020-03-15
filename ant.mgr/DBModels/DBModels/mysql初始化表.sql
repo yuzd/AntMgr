@@ -89,6 +89,9 @@ insert into `system_menu` (`DataChangeLastTime`, `IsActive`, `ParentTid`, `Name`
 insert into `system_menu` (`DataChangeLastTime`, `IsActive`, `ParentTid`, `Name`, `Ico`, `Url`, `OrderRule`, `Level`, `Class`)
  values(now(),'1','1','代码生成',NULL,'~/Admin/Common/CodeGen','6','2','fa fa-clone');
 
+insert into `system_menu` (`DataChangeLastTime`, `IsActive`, `ParentTid`, `Name`, `Ico`, `Url`, `OrderRule`, `Level`, `Class`)
+ values(now(),'1','1','SQL工具',NULL,'~/Admin/Common/SQL','7','2','glyphicon glyphicon-zoom-in');
+ 
 INSERT INTO `system_users` 
 (`DataChangeLastTime`, `IsActive`, `Eid`, `UserName`, `Pwd`, `Phone`, `LoginIp`, `MenuRights`, `RoleTid`, `LastLoginTime`, `UserAgent`, `CreateRoleName`, `CreateUser`) 
 VALUES(NOW(),'1','zdyu','admin','e10adc3949ba59abbe56e057f20f883e','13000000000','114.80.11.236',NULL,'0','2019-05-15 12:22:52','Mozilla/5.0',NULL,'');

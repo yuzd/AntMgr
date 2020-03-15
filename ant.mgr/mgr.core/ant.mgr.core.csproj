@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-    <Version>3.2</Version>
+    <Version>3.3</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -28,25 +28,6 @@
     <ProjectReference Include="..\Repository\Repository\Repository.csproj" />
     <ProjectReference Include="..\ServicesModel\ServicesModel\ServicesModel.csproj" />
     <ProjectReference Include="..\ViewModels\ViewModels\ViewModels.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\Content\static\css\ace-responsive.min.css" />
-    <None Include="wwwroot\Content\static\css\ace-skins.min.css" />
-    <None Include="wwwroot\Content\static\css\ace.min.css" />
-    <None Include="wwwroot\Content\static\css\chosen-sprite%402x.png" />
-    <None Include="wwwroot\Content\static\css\chosen-sprite.png" />
-    <None Include="wwwroot\Content\static\css\font-awesome.min.css" />
-    <None Include="wwwroot\Content\static\css\loading.css" />
-    <None Include="wwwroot\Content\static\font\fontawesome-webfont.eot" />
-    <None Include="wwwroot\Content\static\font\fontawesome-webfont.svg" />
-    <None Include="wwwroot\Content\static\font\fontawesome-webfont.ttf" />
-    <None Include="wwwroot\Content\static\font\fontawesome-webfont.woff" />
-    <None Include="wwwroot\Content\static\font\FontAwesome.otf" />
-    <None Include="wwwroot\Content\static\images\jiazai.gif" />
-    <None Include="wwwroot\Content\static\images\join.gif" />
-    <None Include="wwwroot\Content\static\images\joinbottom.gif" />
-    <None Include="wwwroot\Content\static\images\jzx.gif" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="appsettings.json">

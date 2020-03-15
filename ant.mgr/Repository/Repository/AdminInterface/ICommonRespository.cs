@@ -6,6 +6,8 @@
 // <summary></summary>
 //-----------------------------------------------------------------------
 
+using System;
+using System.Data;
 using System.IO;
 using System.Threading.Tasks;
 using DbModel;
@@ -22,6 +24,20 @@ namespace Repository.Interface
     /// </summary>
     public interface ICommonRespository : IRepository
     {
+        /// <summary>
+        /// 查询sql
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <returns></returns>
+        DataTable SelectSqlExcute(string sql);
+
+        /// <summary>
+        /// 执行sql
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <returns></returns>
+        Tuple<int, string> SQLExcute(string sql);
+
         /// <summary>
         /// 获取所有的Table和Columns
         /// </summary>
