@@ -9,7 +9,8 @@ namespace ant.mgr.core.Areas.Admin.Controllers
     /// <summary>
     /// 错误
     /// </summary>
-    [Area("Admin")]
+    [Area(nameof(Admin))]
+    [Route("Admin/[controller]/[action]")]
     public class ErrorController : BaseController
     {
 

@@ -5,10 +5,10 @@
 }
 
 
-<link rel="stylesheet" href="~/Content/static/css/font-awesome.min.css?201811201906" />
-<link rel="stylesheet" href="~/Content/static/css/ace.min.css?201811201906" />
-<link rel="stylesheet" href="~/Content/static/css/ace-responsive.min.css?201811201906" />
-<link rel="stylesheet" href="~/Content/static/css/ace-skins.min.css?201811201906" />
+<link rel="stylesheet" href="~/css/ace/font-awesome.min.css?201811201906" />
+<link rel="stylesheet" href="~/css/ace/ace.min.css?201811201906" />
+<link rel="stylesheet" href="~/css/ace/ace-responsive.min.css?201811201906" />
+<link rel="stylesheet" href="~/css/ace/ace-skins.min.css?201811201906" />
 <style>
 
     .table thead tr th {
@@ -44,8 +44,16 @@
                 <tr v-for="item in parentList" id="tr_{{item.Tid}}">
                     <td class="center">{{$index+1}}</td>
                     <td class='center'>
-                        <i class="{{item.Class}}">&nbsp;</i>{{item.name}}&nbsp;
-                        <span class="label label-success arrowed">一级</span>
+                       
+                        <template v-if="item.IsActive">
+                            <i class="{{item.Class}}">&nbsp;</i>{{item.name}}&nbsp;
+                            <span class="label label-success arrowed">一级</span>
+                        </template>
+                        <template v-else>
+                             <i class="{{item.Class}}">&nbsp;</i><font color="red">{{item.name}}</font>&nbsp;
+                            <span class="label label-danger arrowed">隐藏</span>
+                        </template>
+                        
                     </td>
                     <td>{{item.Url}}</td>
                     <td class='center'>{{item.OrderRule}}</td>
@@ -104,7 +112,7 @@
                     <label class="control-label">Class图标：</label><button type="button" class="btn btn-success" v-on:click="_SelectIco">选择图标</button>
                     <input class="form-control" type="text" name="menuClass" id="menuClass" placeholder="这里输入Ico" value="" title="Class图标">
                 </div>
-                <div class="form-group" id="checkBoxActive" style="display: none">
+                <div class="form-group" id="checkBoxActive">
                     <label class="control-label">菜单展示：&nbsp;&nbsp;&nbsp;</label>
                     <input type="checkbox" class="js-switch" v-model="currentRow.IsActive" id="isActive" />&nbsp;&nbsp;{{currentRow.IsActive ? "是" : "否"}}
                 </div>
@@ -3329,8 +3337,7 @@
             methods: {
                 _toAddMenu: function () {
                     vm.add = true;
-                    changeSwitcheryState('isActive', true);
-                    $('#checkBoxActive').hide();
+                    changeSwitcheryState('isActive', true)
                     $("#menuUrl").attr("readonly", true);
                     $('#myModal').modal({ backdrop: 'static', keyboard: false });
                     $('#myModal').modal('show');
@@ -3481,8 +3488,7 @@
         }
 
         function setMUR(item,url) {
-            if (!item||item.id == 0) {
-                $('#checkBoxActive').hide();
+            if (!item||item.id === 0) {
                 $("#menuUrl").attr("readonly", true);
                 if (url) {
                     $("#menuUrl").val(url);
@@ -3492,7 +3498,6 @@
                 $("#form-field-radio1").attr("disabled", false);
                 $("#form-field-radio2").attr("disabled", false);
             } else {
-                $('#checkBoxActive').show();
                 $("#menuUrl").attr("readonly", false);
                 $("#form-field-radio1").attr("disabled", true);
                 $("#form-field-radio2").attr("disabled", true);
@@ -3585,11 +3590,11 @@
                                     if (i == data.length - 1)
                                         html += "<img src='" +
                                             window.appUrl +
-                                            "/Content/static/images/joinbottom.gif' style='vertical-align: middle;'/>";
+                                            "/img/joinbottom.gif' style='vertical-align: middle;'/>";
                                     else
                                         html += "<img src='" +
                                             window.appUrl +
-                                            "/Content/static/images/join.gif' style='vertical-align: middle;'/>";
+                                            "/img/join.gif' style='vertical-align: middle;'/>";
                                     html += "<span style='width:100px;text-align:left;display:inline-block;" + (!this.IsActive ? "color:red" : "") +
                                         "' class='" + this.Class + "'" + ">&nbsp;" +
                                         this.name +

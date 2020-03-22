@@ -1,0 +1,303 @@
+@{
+    ViewBag.Title = "SQL工具";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/plugins/jQueryUI/jquery-ui.css" rel="stylesheet" />
+<link href="~/css/plugins/sql/sql.css" rel="stylesheet" />
+<style type="text/css">
+    body {
+        font-family: sans-serif;
+        font-size: 14px;
+        margin: 0px;
+        overflow: auto !important;
+    }
+
+
+    #data-container {
+        overflow: auto;
+    }
+
+    .dataTable {
+        font-size: 14px;
+    }
+
+    table.dataTable tbody td {
+        padding: 5px;
+    }
+
+    #data-table_length {
+        clear: both;
+        margin-top: 10px;
+    }
+
+    .no-close .ui-dialog-titlebar-close {
+        display: none
+    }
+</style>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="wrapper wrapper-content animated fadeInRight" style="display:none;" id="bodyDiv">
+        <div class="ibox float-e-margins">
+            @*<div class="ibox-title" style="margin-bottom: 5px">
+                <h5 style="display: initial;">SQL工具</h5><img id="sqlFormatter" src="~/img/sql_formater.png" width="30px" />
+            </div>*@
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+                        <div>
+                            <div>
+                                <textarea id="code" name="code"></textarea>
+
+                                <div class="row wrapper wrapper-content animated fadeInRight" style="margin: 15px;">
+                                    <button type="button" id="select" action-id="sql-select-table" action-name="执行(Select)" class="btn btn-w-m btn-success authorization" style="margin-right: 15px;">执行(Select)</button>
+                                    <button type="button" id="fomatter" class="btn btn-w-m btn-success" style="margin-right: 15px;">格式化SQL</button>
+                                    <button type="button" id="excute" action-id="sql-excute" action-name="执行(Insert,Update,Delete)" class="btn btn-w-m btn-primary authorization" style="float: right">执行(Insert,Update,Delete)</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="data-container"></div>
+    <div id="data-error"></div>
+</div>
+<div class="loading2" data-asd="12" style="display: none">
+    <div class="loading-spinner">
+        <div class="spinner-container container1">
+            <div class="circle1"></div>
+            <div class="circle2"></div>
+            <div class="circle3"></div>
+            <div class="circle4"></div>
+        </div>
+        <div class="spinner-container container2">
+            <div class="circle1"></div>
+            <div class="circle2"></div>
+            <div class="circle3"></div>
+            <div class="circle4"></div>
+        </div>
+        <div class="spinner-container container3">
+            <div class="circle1"></div>
+            <div class="circle2"></div>
+            <div class="circle3"></div>
+            <div class="circle4"></div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script src="~/js/plugins/jquery-ui/jqueryui.js?201811201906"></script>
+    <script src="~/js/plugins/sql/sql.all.js"></script>
+    <script src="~/js/jquery.base64.min.js"></script>
+
+
+    <script type="text/javascript">
+
+
+        var ExcludedIntelliSenseTriggerKeys =
+        {
+            "8": "backspace",
+            "9": "tab",
+            "13": "enter",
+            "16": "shift",
+            "17": "ctrl",
+            "18": "alt",
+            "19": "pause",
+            "20": "capslock",
+            "27": "escape",
+            "33": "pageup",
+            "34": "pagedown",
+            "35": "end",
+            "36": "home",
+            "37": "left",
+            "38": "up",
+            "39": "right",
+            "40": "down",
+            "45": "insert",
+            "46": "delete",
+            "91": "left window key",
+            "92": "right window key",
+            "93": "select",
+            "107": "add",
+            "109": "subtract",
+            "110": "decimal point",
+            "111": "divide",
+            "112": "f1",
+            "113": "f2",
+            "114": "f3",
+            "115": "f4",
+            "116": "f5",
+            "117": "f6",
+            "118": "f7",
+            "119": "f8",
+            "120": "f9",
+            "121": "f10",
+            "122": "f11",
+            "123": "f12",
+            "144": "numlock",
+            "145": "scrolllock",
+            "186": "semicolon",
+            "187": "equalsign",
+            "188": "comma",
+            "189": "dash",
+            "191": "slash",
+            "192": "graveaccent",
+            "220": "backslash",
+            "222": "quote",
+            "32": "space"
+        }
+
+        var editor;
+        $(function () {
+
+            $('.loading2').show();
+            QQT.ajax('/Admin/Common/GetDbTablesAndColumns',
+                'Post'
+            )
+                .done(function (response) {
+                    $('.loading2').hide();
+                    $('#bodyDiv').show();
+                    eval(response.Data);
+                    if (schema) {
+                        createEditor(schema);
+                    }
+                });
+        });
+
+
+        function createEditor(data) {
+            editor = CodeMirror.fromTextArea(document.getElementById('code'),
+                {
+                    lineNumbers: true,
+                    extraKeys: { "Ctrl": "autocomplete" }, //输入s然后ctrl就可以弹出选择项
+                    mode: { name: "text/x-mysql" },
+                    theme: "ambiance", //主题
+                    hint: CodeMirror.hint.sql,
+                    hintOptions: {
+                        tables: data ? data : {}
+                    }
+                });
+            editor.on("keyup",
+                function (editor, event) {
+
+                    var __Cursor = editor.getDoc().getCursor();
+                    var __Token = editor.getTokenAt(__Cursor);
+
+                    if (!editor.state.completionActive &&
+                        !ExcludedIntelliSenseTriggerKeys[(event.keyCode || event.which).toString()]) {
+                        CodeMirror.commands.autocomplete(editor, null, { completeSingle: false });
+                    }
+                });
+        }
+
+
+        function custom_alert(output_msg, title_msg) {
+            if (!title_msg)
+                title_msg = 'Alert';
+
+            if (!output_msg)
+                output_msg = 'No Message to Display.';
+
+            $("<div></div>")
+                .html(output_msg)
+                .dialog({
+                    dialogClass: 'no-close',
+                    title: title_msg,
+                    resizable: false,
+                    modal: true,
+                    buttons: {
+                        "知道啦": function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+        }
+
+        $(function () {
+           
+
+            $('#select').click(function () {
+                var selection = editor.getSelection();
+                var sql = editor.getValue();
+                if ($.trim(sql).length < 1) {
+                    custom_alert('请填写正确的sql语句!', 'Error');
+                    return false;
+                }
+                if ($.trim(selection).length > 0) {
+                    sql = selection;
+                }
+                QQT.ajax('/Admin/Common/SQLTable',
+                    'Post',
+                    {
+                        sql: Base64.encode(sql)
+                    })
+                    .done(function (response) {
+                        initDataTable(response.Data);
+                        return false;
+                    });
+                return false;
+
+            });
+
+            $('#fomatter')
+                .click(function () {
+                    editor.setValue(sqlFormatter.format(editor.getValue(), { language: 'SQL' }));
+                });
+
+            $('#excute')
+                .click(function () {
+                    var selection = editor.getSelection();
+                    var sql = editor.getValue();
+                    if ($.trim(sql).length < 1) {
+                        custom_alert('请填写正确的sql语句!', 'Error');
+                        return false;
+                    }
+                    if ($.trim(selection).length > 0) {
+                        sql = selection;
+                    }
+                    QQT.ajax('/Admin/Common/SQLExcute',
+                        'Post',
+                        {
+                            sql: Base64.encode(sql)
+                        })
+                        .done(function (response) {
+                            if (response.Data < 0) {
+                                custom_alert(response.Info, '执行错误!');
+                                return false;
+                            }
+                            custom_alert('共有' + response.Data + '条受到影响!', '执行成功!');
+                            return false;
+                        });
+                    return false;
+                });
+        });
+        function initDataTable(result) {
+            $('#data-error').text();
+            $("#data-container").empty();
+            if (result['type'] == 'table') {
+
+
+                $("#data-container").append('<table id="data-table" class="display" cellspacing="0" width="80%"><thead><tr></tr></thead></table>');
+
+                $('#data-table').DataTable({
+                    dom: 'Blfrtip',
+                    buttons: [{
+                        extend: 'copyHtml5',
+                        text: '复制当前页',
+                        header: false,
+                        exportOptions: {
+                            modifier: {
+                                page: 'current'
+                            },
+                            orthogonal: 'copy'
+                        }
+                    }, 'csv', 'excel'],
+                    data: result['data'],
+                    columns: result['columns']
+                });
+            }
+            else {
+                $('#data-container').html('<span>' + result['data'] + '</span>');
+            }
+        }
+    </script>
+}

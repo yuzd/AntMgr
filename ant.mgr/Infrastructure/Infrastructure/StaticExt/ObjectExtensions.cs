@@ -18,7 +18,18 @@ namespace Infrastructure.StaticExt
     /// </summary>
     public static class ObjectExtensions
     {
-
+        public static string DecodeBase64(this string str)
+        {
+            try
+            {
+                byte[] data = Convert.FromBase64String(str);
+                return Encoding.UTF8.GetString(data);
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
 
 
         /// <summary>

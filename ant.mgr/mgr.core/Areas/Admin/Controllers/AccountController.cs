@@ -16,7 +16,8 @@ namespace ant.mgr.core.Areas.Admin.Controllers
     /// 系统用户
     /// </summary>
     [API("用户")]
-    [Area("Admin")]
+    [Area(nameof(Admin))]
+    [Route("Admin/[controller]/[action]")]
     public class AccountController : BaseController
     {
         private readonly IAccountRespository AccountRespository;

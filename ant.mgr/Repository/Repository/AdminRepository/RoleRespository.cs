@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Transactions;
 using Autofac.Aspect;
 using DbModel;
 using Repository.Interceptors;
@@ -20,7 +21,7 @@ namespace Repository
     /// <summary>
     /// 角色权限管理
     /// </summary>
-    [Component(typeof(IRoleRespository))]
+    [Component]
     [Aspect(InterceptorType.Interface)]
     public class RoleRespository : BaseRepository<SystemRole>, IRoleRespository
     {
@@ -29,6 +30,7 @@ namespace Repository
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        [EnableTransactionScope]
         public async Task<string> AddRoleActions(RoleAction model)
         {
             if (model == null || model.MenuId < 1 || string.IsNullOrEmpty(model.ActionId)) return Tip.BadRequest;
@@ -90,13 +92,7 @@ namespace Repository
             }
 
             var rt = this.Entity.Where(r => r.Tid.Equals(tid)).Delete() > 0;
-            if (!rt)
-            {
-                return Tip.UpdateError;
-            }
-
-            return string.Empty;
-
+            return !rt ? Tip.UpdateError : string.Empty;
         }
 
         /// <summary>
@@ -214,20 +210,16 @@ namespace Repository
 
                 if (!updateResult)
                 { 
+                    Transaction.Current.Rollback();
                     return Tip.UpdateError;
                 }
 
                 //更新所有角色下的用户菜单权限
-                var update = Entitys.SystemUsers.Where(r => r.RoleTid.Equals(role.Tid))
+                Entitys.SystemUsers.Where(r => r.RoleTid.Equals(role.Tid))
                     .Set(r => r.MenuRights, systemRole.MenuRights)
                     .Set(r => r.DataChangeLastTime, DateTime.Now)
-                    .Update() > 0;
+                    .Update() ;
 
-
-                if (!update)
-                {
-                    return Tip.UpdateError;
-                }
             }
 
             return string.Empty;

@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.IO;
+using System.Linq;
 using ant.mgr.core.Filter;
 using Configuration;
+using Infrastructure.StaticExt;
 using Infrastructure.Web;
 using Microsoft.AspNetCore.Mvc;
 using Repository.Interface;
@@ -15,7 +19,8 @@ namespace ant.mgr.core.Areas.Admin.Controllers
     /// 公共
     /// </summary>
     [API("公共")]
-    [Area("Admin")]
+    [Area(nameof(Admin))]
+    [Route("Admin/[controller]/[action]")]
     public class CommonController : BaseController
     {
         private readonly ICommonRespository CommonRespository;
@@ -30,7 +35,67 @@ namespace ant.mgr.core.Areas.Admin.Controllers
             CommonRespository = _commonRespository;
         }
 
+        #region SQL
+        [AuthorizeFilter]
+        public ActionResult SQL()
+        {
+            return View();
+        }
 
+        /// <summary>
+        /// 查询sql 显示Datatable
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <returns></returns>
+        [AuthorizeFilter]
+        [API("执行查询SQL")]
+        [HttpPost]
+        public JsonResult SQLTable(string sql)
+        {
+            var result = new ResultJsonInfo<DbTablesAndColumnsSM>();
+            result.Data = new DbTablesAndColumnsSM();
+            sql = sql.DecodeBase64();
+            var table = CommonRespository.SelectSqlExcute(sql);
+            result.Data.columns = table.Columns
+                   .Cast<DataColumn>()
+                   .Select(x => new DynamicColumn(x.ColumnName))
+                   .ToList();
+            result.Data.data = table.Rows.Cast<DataRow>()
+                .Select(r => r.ItemArray).ToList();
+            result.Status = ResultConfig.Ok;
+            result.Info = ResultConfig.SuccessfulMessage;
+            return Json(result);
+        }
+
+
+        /// <summary>
+        /// 执行Insert update delete 语句
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <returns></returns>
+        [AuthorizeFilter]
+        [API("执行Insert,Delete,Update")]
+        [HttpPost]
+        public JsonResult SQLExcute(string sql)
+        {
+            var result = new ResultJsonInfo<int>();
+            sql = sql.DecodeBase64();
+            var respositoryResult = CommonRespository.SQLExcute(sql);
+            if (string.IsNullOrEmpty(respositoryResult.Item2))
+            {
+                result.Status = ResultConfig.Ok;
+                result.Info = ResultConfig.SuccessfulMessage;
+                result.Data = respositoryResult.Item1;
+            }
+            else
+            {
+                result.Status = ResultConfig.Ok;//故意要这样的
+                result.Info = respositoryResult.Item2;
+                result.Data = respositoryResult.Item1;
+            }
+            return Json(result);
+        }
+        #endregion
 
 
         #region CodeGen

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -14,8 +14,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac.Annotation" Version="3.0.7" />
     <PackageReference Include="DotLiquid" Version="2.0.314" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.12" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.16" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
     <PackageReference Include="NLog" Version="4.6.7" />

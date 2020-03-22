@@ -2,22 +2,14 @@
     ViewBag.Title = "权限管理";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<link href="~/js/plugins/zTree/3.5/metroStyle/metroStyle.css?201811201906" rel="stylesheet" />
+
+<link rel="stylesheet" href="~/js/plugins/zTree/3.5/metroStyle/metroStyle.css?201811201906" />
 
 
 <style>
     body{
         min-width: 800px;
         overflow-x: auto;
-    }
-    .top {
-        position: fixed;
-        top: 50%;
-        right: 0;
-        height: 200px;
-        width: 200px;
-        margin-top: -200px;
-        margin-right: 10%;
     }
 
     div {
@@ -33,8 +25,8 @@
 
         div.right {
             float: left;
-            width: 400px;
-            height: 80%;
+            width: 500px;
+            height: 100%;
             overflow: auto;
         }
 
@@ -45,6 +37,11 @@
             overflow: auto;
             padding-top: 250px;
             text-align: center;
+        }
+        
+        .ztree li span.button.chk.checkbox_true_full {
+            background-position: -26px -5px;
+            background-color: #05ef834d;
         }
 </style>
 
@@ -59,6 +56,13 @@
 </div>
 
 <div class="right" style="display: none" v-show="showControl">
+    <div class="searchAreaBox">
+    	<div class="searchArea">
+    		<input type="text" name="searchArea" placeholder="输入搜索关键字">
+    		<i class="searchAreaBtn fa fa-search"></i>
+    	</div>
+    	<div class="clearft"></div>
+    </div>	
     <ul id="tree2" class="ztree"></ul>
 </div>
 
@@ -77,7 +81,7 @@
                 RoleActionSave: function () {
                     var tree1Obj = $.fn.zTree.getZTreeObj("tree");
                     var nodes1 = tree1Obj.getSelectedNodes();
-                    if (nodes1.length != 1) {
+                    if (nodes1.length !== 1) {
                         swal({
                             title: "提交失败！",
                             text: '没有要修改的!',
@@ -115,11 +119,12 @@
                      //设置tree的初始化高度
                     $('.left').css('height',$(window).height());
                     $('.right').css('height',$(window).height());
+                    $('.right').css('width',$(window).width()-250-100);
                  });
                  
                 $('.left').css('height',$(window).height());
                 $('.right').css('height',$(window).height());
-                
+                $('.right').css('width',$(window).width()-250-100);
                 //获取总的数据
                 QQT.ajax('/Admin/Home/GetMenuActionTree', 'Post', {})
                     .done(function (response) {
@@ -136,14 +141,34 @@
         function ready(zNodes) {
             var setting = {
                 view: {
-                    selectedMulti: false,
+                    selectedMulti: false
                 },
                 check: {
-                    enable: false,
+                    enable: false
                 },
                 callback: {
                     onClick: onClick
-                }
+                },
+                 usericon:{
+                     // 折叠icon
+                     OPEN: "open fa ftopen fa-folder-open", // 打开文件图标
+                     CLOSE: "close fa ftclose fa-folder",   // 折叠文件图标
+                     OPENDK:'open icon-folder ace-icon tree-minus',  // 打开状态图标
+                     CLOSEZD:'close icon-folder ace-icon tree-plus', // 折叠状态图标
+                     DOCU: "docu",
+                     // 子节点图标
+                     CHILDRENNODE: "fa-book",
+                     // 复选框图标
+                     UNFACHECK: "fa fa-check",
+                     FACHECKED: "fa fa-times",
+                     // 编辑图标
+                     EDIT: "fa-pencil-square-o",
+                     // 移除图标
+                     REMOVE: "fa-eraser",
+                     // 增加节点图标
+                     ADDNODE: "fa-plus-square"
+                 }
+                
             };
 
             $.fn.zTree.init($("#tree"), setting, zNodes);
@@ -154,11 +179,30 @@
         function ready2(zNodes) {
             var setting = {
                 view: {
-                    selectedMulti: true,
+                    selectedMulti: true
                 },
                 check: {
-                    enable: true,
-                }
+                    enable: true
+                },
+              usericon:{
+                  // 折叠icon
+                  OPEN: "open fa ftopen fa-folder-open", // 打开文件图标
+                  CLOSE: "close fa ftclose fa-folder",   // 折叠文件图标
+                  OPENDK:'open icon-folder ace-icon tree-minus',  // 打开状态图标
+                  CLOSEZD:'close icon-folder ace-icon tree-plus', // 折叠状态图标
+                  DOCU: "docu",
+                  // 子节点图标
+                  CHILDRENNODE: "fa-book",
+                  // 复选框图标
+                  UNFACHECK: "fa fa-check",
+                  FACHECKED: "fa fa-times",
+                  // 编辑图标
+                  EDIT: "fa-pencil-square-o",
+                  // 移除图标
+                  REMOVE: "fa-eraser",
+                  // 增加节点图标
+                  ADDNODE: "fa-plus-square"
+              }
             };
 
             $.fn.zTree.init($("#tree2"), setting, zNodes);
@@ -168,7 +212,7 @@
         }
 
         function onClick(event, treeId, treeNode, clickFlag) {
-            if (treeNode.Tid != 0) {
+            if (treeNode.Tid !== 0) {
                 vm.showControl = false;
                 return;
             }
@@ -197,7 +241,169 @@
             return re;
         }
 
+        
+    // 地区搜索
+    var parentArray = [];
+    var childArray = [];
 
+    // 递归获取目标节点所有父节点
+    function getParentsNode(treeNode){
+        var thisParentNode = treeNode.getParentNode(); //得到该节点的父节点
+        if( thisParentNode != null ){ // 父节点存在
+            parentArray.push(thisParentNode); // 储存至数组
+            getParentsNode(thisParentNode); // 重调 
+        }else{
+            return false;
+        }           
+    }
+    // 递归获取目标节点所有子节点
+    function getChildrenNode(treeNode){
+        var thisIsParent = treeNode.isParent; // 获取目标节点 isParent 属性，判断是否为父节点
+        if( thisIsParent == true ){
+            var thisChildrenNode = treeNode.children; // 得到该节点的子节点集合
+            for(var i=0;i<thisChildrenNode.length;i++){
+                childArray.push(thisChildrenNode[i]); // 将该子节点加入数组中
+                getChildrenNode(thisChildrenNode[i]); // 重调       
+            }
+        }else{
+            return false;
+        }
+    }
+    //匹配节点
+    function matchNode(treeNode,num){
+        var inputArea = $("input[name='searchArea']");
+        var name = treeNode.name;
+        var entityCode = treeNode.entity_code|| '';
+        var val = inputArea.val(); // 获取检索值
+        var numName = name.indexOf(val);
+        var numCode = entityCode.indexOf(val);
+        var num = -1;
+        if( numName != -1 || numCode !=-1 ){
+            num = 1;
+        }
+        if( numName == -1 && numCode == -1 ){
+            num = -1;   
+        }
+        return num;
+    }
+    // 节点匹配成功
+    function checkTrueArray(arr,treeNode){
+        var thisTid = treeNode.tId;
+        var thisLi = $("#"+thisTid);
+        for(var n=0;n<arr.length;n++){
+            var thisNodeId = arr[n].tId;
+            var thisNodeLi = $("#"+thisNodeId);
+            thisLi.show();
+            thisNodeLi.show();
+        }
+    }
+    // 节点匹配失败
+    function checkFalseArray(arr,treeNode){
+        var result = [];
+        var result2 = [];
+        var thisTid = treeNode.tId;
+        var thisLi = $("#"+thisTid);
+        var val = inputArea.val(); // 获取检索值
+        var thisParent =  treeNode.getParentNode();  // 获取目标节点父节点
+        if( thisParent != null ){  // 有父节点
+            var thisBrotherArr =  treeNode.getParentNode().children; // 得到包含自身的兄弟数组
+            for(var m=0;m<arr.length;m++){ // 匹配父节点
+                var num = matchNode(arr[m]);
+                if( num != -1 ){
+                    result.push(arr[m]);
+                }
+            }
+            var resultLength = result.length;
+            for( var m=0;m<thisBrotherArr.length;m++ ){ // 匹配兄弟节点
+                var num = matchNode(thisBrotherArr[m]);
+                if( num != -1 ){
+                    result2.push(thisBrotherArr[m]);
+                }
+            }
+            var resultLength2 = result2.length;
+            // 对于自身匹配失败的节点，要显示必须满足有父节点匹配成功，且兄弟级节点都匹配失败
+            if( (resultLength == 0 && resultLength2 == 0) || resultLength2 != 0 ){
+                thisLi.hide();
+            }
+            if( resultLength !=0 && resultLength2 == 0 ){
+                thisLi.show();
+            }
+        }else{
+            thisLi.hide();
+        }    
+    }
+    // 目标节点匹配失败 目标节点即有父节点又有子节点
+    function checkAllArray(arr,arr2,treeNode){
+        var result = [];
+        var result2 = [];
+        var thisTid = treeNode.tId;
+        var thisLi = $("#"+thisTid);
+        var val = inputArea.val(); // 获取检索值
+        for(var m=0;m<arr.length;m++){ // 匹配子节点或父节点
+            var num = matchNode(arr[m]);
+            if( num != -1 ){
+                result.push(arr[m]); // 匹配成功储存至数组
+            }
+        }
+        var resultLength = result.length; // 获取匹配成功后返回的数组长度
+        for(var m=0;m<arr2.length;m++){ // 匹配子节点或父节点
+            var num = matchNode(arr2[m]);
+            if( num != -1 ){
+                result2.push(arr2[m]); // 匹配成功储存至数组
+            }
+        }
+        var resultLength2 = result2.length; // 获取匹配成功后返回的数组长度
+        if( resultLength == 0 && resultLength2 == 0 ){ // 子节点和父节点都匹配失败
+            thisLi.hide();
+        }else{ 
+            thisLi.show(); // 有一种匹配成功或都匹配成功
+        }
+    }
+    function searchArea(treeId, treeNode){ // 定义搜索方法
+        var inputArea = $("input[name='searchArea']");
+        var val = inputArea.val(); // 获取检索值
+        var treeObj=$.fn.zTree.getZTreeObj("tree2"); // 设置根节点
+        var node = treeObj.getNodes(); // 获取根节点
+        var nodes = treeObj.transformToArray(node); // 获取所有节点
+        console.log(nodes);
+        for(var i=0;i<nodes.length;i++){
+            var thisNodePid = nodes[i].pId;
+            var thisParentNode =  
+            parentArray = [];
+            childArray = [];
+            getParentsNode(nodes[i]); // 获取目标节点所有父节点 返回数组
+            getChildrenNode(nodes[i]); // 获取目标节点所有子节点 返回数组
+            var num = matchNode(nodes[i]);
+            if( nodes[i].isParent == false ){ 
+                if( num != -1 ){
+                    checkTrueArray(parentArray,nodes[i]);
+                }else{
+                    checkFalseArray(parentArray,nodes[i]);
+                }
+            }
+            if( nodes[i].isParent == true ){
+                if( num != -1 ){
+                    checkTrueArray(parentArray,nodes[i]);  
+                    checkTrueArray(childArray,nodes[i]);                  
+                }else{
+                    checkAllArray(parentArray,childArray,nodes[i]);
+                }
+            }            
+        }
+       
+    }
+     // 调用搜索方法
+        $(".searchAreaBtn").click(function(treeId, treeNode){
+            searchArea(treeId, treeNode);
+        });
+        var inputArea = $("input[name='searchArea']");
+        inputArea.keyup(function(treeId, treeNode,e){
+            var e = event || window.event;
+            var val = inputArea.val();
+            if( e.keyCode == 13 || val == "" ){
+                searchArea(treeId, treeNode);
+            }
+        });
     </script>
 
 }

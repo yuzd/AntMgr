@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Version>2.3</Version>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <Version>3.3</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -13,14 +13,11 @@
 
 
   <ItemGroup>
-    <PackageReference Include="Autofac.Annotation" Version="2.0.6" />
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="5.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-    <PackageReference Include="NLog.Extensions.Logging" Version="1.5.4" />
-    <PackageReference Include="NLog.MailKit" Version="3.1.0" />
+    <PackageReference Include="Autofac.Annotation" Version="3.0.8" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="5.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.9.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,25 +28,6 @@
     <ProjectReference Include="..\Repository\Repository\Repository.csproj" />
     <ProjectReference Include="..\ServicesModel\ServicesModel\ServicesModel.csproj" />
     <ProjectReference Include="..\ViewModels\ViewModels\ViewModels.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\Content\static\css\ace-responsive.min.css" />
-    <None Include="wwwroot\Content\static\css\ace-skins.min.css" />
-    <None Include="wwwroot\Content\static\css\ace.min.css" />
-    <None Include="wwwroot\Content\static\css\chosen-sprite%402x.png" />
-    <None Include="wwwroot\Content\static\css\chosen-sprite.png" />
-    <None Include="wwwroot\Content\static\css\font-awesome.min.css" />
-    <None Include="wwwroot\Content\static\css\loading.css" />
-    <None Include="wwwroot\Content\static\font\fontawesome-webfont.eot" />
-    <None Include="wwwroot\Content\static\font\fontawesome-webfont.svg" />
-    <None Include="wwwroot\Content\static\font\fontawesome-webfont.ttf" />
-    <None Include="wwwroot\Content\static\font\fontawesome-webfont.woff" />
-    <None Include="wwwroot\Content\static\font\FontAwesome.otf" />
-    <None Include="wwwroot\Content\static\images\jiazai.gif" />
-    <None Include="wwwroot\Content\static\images\join.gif" />
-    <None Include="wwwroot\Content\static\images\joinbottom.gif" />
-    <None Include="wwwroot\Content\static\images\jzx.gif" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="appsettings.json">
