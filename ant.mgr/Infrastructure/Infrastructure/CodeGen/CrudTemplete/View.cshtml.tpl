@@ -12,9 +12,11 @@
                         <div>
                             <div class="btn-group hidden-xs" id="{{ModelClassName}}EventsToolbar" role="group">
 								<!--<input placeholder="输入openID" class="ibox-input" v-on:keyup.enter="_FreshTable" id="openID" style="margin-left: 10px;">-->
-                                <button type="button" action-id="{{ModelClassName}}-add" action-name="添加{{ModelName}}" class="btn btn-w-m btn-success authorization" style="margin-right: 10px;display:none" v-on:click="_{{ModelClassName}}Add">添加{{ModelName}}</button>
-                                <button type="button" action-id="{{ModelClassName}}-update" action-name="修改{{ModelName}}" class="btn btn-w-m btn-primary authorization" style="margin-right: 10px;display:none" v-on:click="_{{ModelClassName}}Update">修改{{ModelName}}</button>
-                                <button type="button" action-id="{{ModelClassName}}-delete" action-name="删除{{ModelName}}" class="btn btn-w-m btn-danger authorization" style="margin-right: 10px;display:none" v-on:click="_{{ModelClassName}}Delete">删除{{ModelName}}</button>
+                                <button type="button" action-id="{{ModelClassName}}-add" action-name="添加{{ModelName}}" class="btn btn-success authorization" style="margin-right: 10px;display:none" v-on:click="_{{ModelClassName}}Add">添加{{ModelName}}</button>
+                                <button type="button" action-id="{{ModelClassName}}-update" action-name="修改{{ModelName}}" class="btn btn-primary authorization" style="margin-right: 10px;display:none" v-on:click="_{{ModelClassName}}Update">修改{{ModelName}}</button>
+                                <button type="button" action-id="{{ModelClassName}}-delete" action-name="删除{{ModelName}}" class="btn btn-danger authorization" style="margin-right: 10px;display:none" v-on:click="_{{ModelClassName}}Delete">删除{{ModelName}}</button>
+								<button type="button" action-id="{{ModelClassName}}-export" action-name="导出{{ModelName}}" class="btn btn-navigate authorization" style="margin-right: 10px;display:none" v-on:click="_{{ModelClassName}}Export">导出{{ModelName}}</button>
+                                <button type="button" action-id="{{ModelClassName}}-import" action-name="导入{{ModelName}}" class="btn btn-navigate authorization" style="margin-right: 10px;display:none" v-on:click="_{{ModelClassName}}Import">导入{{ModelName}}</button>
                             </div>
                             <table id="{{ModelClassName}}Table" data-side-pagination="server" data-sort-order="desc" data-mobile-responsive="true"></table>
                         </div>
@@ -57,6 +59,29 @@
     </div>
 </div>
  
+ <div class="modal inmodal" id="uploadModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">导入{{ModelName}}</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="control-label">选择Excel：</label>
+                    <input id="upload" type="file" class="file" data-show-upload="false" />
+                </div>
+                <div class="form-group">
+                    <a href="~/{{ModelClassName}}/ExcelTemplete">下载Excel模板</a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" v-on:click="_Close">关闭</button>
+                <button type="button" class="btn btn-primary" v-on:click="_SaveImport">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+
  @section Scripts{ 
 		<script type="text/javascript">
 
@@ -89,6 +114,10 @@
 				_Close: function () {
 					vm.currentRow = {};
 					$('#myModal').modal('hide');
+
+				    $("#upload").val("");
+                    $('.fileinput-remove-button') && $('.fileinput-remove-button').click();
+                    $('#uploadModal').modal('hide');
 				},
 				_Save: function () {
 					//if (!vm.currentRow.Value) {
@@ -151,7 +180,42 @@
                     }).catch(function() {
                     
                     });
-				}
+				},
+                _SaveImportImport: function() {
+                    $('#uploadModal').modal({ backdrop: 'static', keyboard: false });
+                    $('#uploadModal').modal('show');
+                },
+                _{{ModelClassName}}Import: function() {
+                    if ($('#upload').val().length < 1) {
+                        swal({
+                            title: "",
+                            text: "请选择Excel文件！",
+                            type: "error"
+                        });
+                        return;
+                    }
+                    var data = new FormData();
+                    var files = $("#upload").get(0).files;
+                    data.append("UploadedFile", files[0]);
+                    QQT.ajax('/{{ModelClassName}}/Upload', 'Post', data, false, false, true)
+                        .done(function (response) {
+                            vm._Close();
+                            swal("成功啦！", response.Info, "success");
+                            $('#{{ModelClassName}}Table').bootstrapTable('refresh', { silent: true });
+                        });
+                },
+                _{{ModelClassName}}Export: function() {
+                    $.fileDownload(window.appUrl + '/{{ModelClassName}}/Export',
+                        {
+                            httpMethod: 'POST',
+                            dataType: "json",
+                            contentType: "application/json",
+                            data: getParam(),
+                            preparingMessageHtml: "正在下载中,请稍后...",
+                            failMessageHtml: "下载出错！"
+                        });
+                    return false;
+                }
 			}
 		});
 
@@ -239,6 +303,12 @@
 			}
 		}
 
+        function getParam() {
+            //这里可以写你的其他筛选条件字段
+            return {
+                //xx: $.trim($('#yyyy').val())
+            }
+        }
 
 		function ajaxRequest(params) {
 			var pageSize = params.data.limit;
@@ -247,12 +317,12 @@
 			var orderSequence = params.data.order;
 			QQT.ajax('/{{ModelClassName}}/Get{{ModelClassName}}List',
 				'POST',
-				{
-					pageIndex: pageIndex,
-					pageSize: pageSize,
-					orderBy: orderBy,
-					orderSequence: orderSequence
-				})
+				$.extend(getParam(), {
+                    pageIndex: pageIndex,
+                    pageSize: pageSize,
+                    orderBy: orderBy,
+                    orderSequence: orderSequence,
+                }))
 			.done(function (response) {
 				params.success({
 					total: response.Total,

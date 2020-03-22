@@ -40,6 +40,10 @@ namespace ServicesModel
 
     public class CodeGenTable
     {
+        public string DbName { get; set; }
+        /// <summary>
+        /// class的名称
+        /// </summary>
         public string Name { get; set; }
         public string TableName { get; set; }
         public string Comment { get; set; }
@@ -47,8 +51,12 @@ namespace ServicesModel
     public class CodeGenField
     {
         public string Name { get; set; }    
+        public bool IsPrimary { get; set; }    
+        public bool Identity { get; set; }    
         public string FieldName { get; set; }    
         public string Comment { get; set; }    
+        public string TableName { get; set; }    
+        public long Length { get; set; }    
     }
 
    

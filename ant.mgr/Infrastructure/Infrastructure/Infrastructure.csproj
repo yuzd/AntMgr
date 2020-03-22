@@ -13,6 +13,11 @@
     <EmbeddedResource Include="CodeGen\CrudTemplete\*.tpl" />
   </ItemGroup>
 
+  
+  <ItemGroup>
+    <None Remove="CodeGen\CrudTemplete\ServiceModel.tpl" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Autofac.Annotation" Version="3.0.8" />
     <PackageReference Include="DotLiquid" Version="2.0.325" />

@@ -11,8 +11,8 @@ namespace ViewModels.Reuqest
     public class {{ModelClassName}}Vm : ConditionBase
     {
         
-        //在这里写入
-
+        //在这里写入筛选条件
+        //public string XXX { get; set; }
     }
 
    

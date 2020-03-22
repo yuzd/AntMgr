@@ -24,6 +24,7 @@ namespace Repository.Interface
     /// </summary>
     public interface ICommonRespository : IRepository
     {
+
         /// <summary>
         /// 查询sql
         /// </summary>
@@ -54,8 +55,9 @@ namespace Repository.Interface
         /// 获取表下面所有的字段
         /// </summary>
         /// <param name="tableName"></param>
+        /// <param name="dbName"></param>
         /// <returns></returns>
-        List<CodeGenField> GetDbTablesColumns(string tableName);
+        List<CodeGenField> GetDbTablesColumns(string dbName,string tableName);
 
         /// <summary>
         /// 自动生成代码

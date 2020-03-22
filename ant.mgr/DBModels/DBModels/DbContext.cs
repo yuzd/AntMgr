@@ -68,7 +68,7 @@ namespace DbModel
                 try
                 {
                     sql = customerTraceInfo.CustomerParams.Aggregate(customerTraceInfo.SqlText,
-                        (current, item) => current.Replace(item.Key, item.Value == null? "":  item.Value.Value.ToString()));
+                        (current, item) => current.Replace(item.Key, item.Value == null || item.Value.Value == null? "":  item.Value.Value.ToString()));
                 }
                 catch (Exception)
                 {

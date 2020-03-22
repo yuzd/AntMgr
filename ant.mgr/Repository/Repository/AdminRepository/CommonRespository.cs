@@ -33,8 +33,6 @@ namespace Repository
 
         private static string _dbTableAndColumnsCache = string.Empty;
         private static List<CodeGenTable> _dbTableCache = null;
-        private static readonly ConcurrentDictionary<string, List<CodeGenField>> _dbColumnsCache = new ConcurrentDictionary<string, List<CodeGenField>>();
-
 
 
         #region SQL
@@ -124,13 +122,15 @@ namespace Repository
         /// <summary>
         /// 获取表下面所有的字段
         /// </summary>
+        /// <param name="dbName"></param>
         /// <param name="tableName"></param>
         /// <returns></returns>
-        public List<CodeGenField> GetDbTablesColumns(string tableName)
+        public List<CodeGenField> GetDbTablesColumns(string dbName, string tableName)
         {
-            if (_dbColumnsCache.TryGetValue(tableName, out var cache)) return cache;
-            cache = this.GetDbModels(tableName);
-            _dbColumnsCache.TryAdd(tableName, cache);
+            var key = (string.IsNullOrEmpty(dbName) ? "" : dbName + ".") + tableName;
+            if (_dbColumnsCache.TryGetValue(key, out var cache)) return cache;
+            cache = this.GetDbModels(dbName, tableName);
+            _dbColumnsCache.TryAdd(key, cache);
             return cache;
         }
 
@@ -195,6 +195,7 @@ namespace Repository
                     }
                     result.Add(new CodeGenTable
                     {
+                        DbName = tart.Db,
                         Name = tt.Name,
                         TableName = tart.Name,
                         Comment = comment.Replace(",", "").Replace("→", "")
@@ -210,40 +211,7 @@ namespace Repository
             return result;
         }
 
-        /// <summary>
-        /// 获取所有的DBClass
-        /// </summary>
-        private List<CodeGenField> GetDbModels(string tableName)
-        {
-            var modelAss = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(assembly => (assembly.GetName().Name.Equals("DbModel")));
-            if (modelAss == null)
-            {
-                throw new ArgumentException("assemblys");
-            }
-            var types = modelAss.GetExportedTypes();
-            var targetClass = (from t in types
-                               where t.BaseType == typeof(LinqToDBEntity) &&
-                                          !t.IsAbstract &&
-                                          !t.IsInterface && t.Name.Equals(tableName)
-                               select t).FirstOrDefault();
 
-            if (targetClass == null)
-            {
-                throw new ArgumentException("targetClass");
-            }
-            
-            var properties = targetClass.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static).Where(e => e.CanWrite).ToArray();
-
-            var result = (from item in properties
-                          let r = item.GetCustomAttribute<ColumnAttribute>()
-                          select new CodeGenField
-                          {
-                              Name = item.Name,
-                              FieldName = r.Name,
-                              Comment = string.IsNullOrEmpty(r.Comment) ? "" : r.Comment.Replace(",", "").Replace("→", "")
-                          }).ToList();
-            return result.OrderBy(r => r.Name).ToList();
-        }
 
 
     }

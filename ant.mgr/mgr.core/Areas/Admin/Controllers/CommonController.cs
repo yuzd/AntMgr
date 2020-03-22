@@ -168,10 +168,10 @@ namespace ant.mgr.core.Areas.Admin.Controllers
         [AuthorizeFilter]
         [API("获取数据表下的所有字段")]
         [HttpPost]
-        public JsonResult GetDbTableColumns(string tableName)
+        public JsonResult GetDbTableColumns(string dbName, string tableName)
         {
             var result = new ResultJsonInfo<List<CodeGenField>>();
-            var respositoryResult = CommonRespository.GetDbTablesColumns(tableName);
+            var respositoryResult = CommonRespository.GetDbTablesColumns(dbName, tableName);
             result.Status = ResultConfig.Ok;
             result.Info = ResultConfig.SuccessfulMessage;
             result.Data = respositoryResult;
@@ -189,7 +189,8 @@ namespace ant.mgr.core.Areas.Admin.Controllers
         public ActionResult CodeGenDown([FromForm] CodeGenVm model)
         {
             var data = CommonRespository.CodeGen(model);
-            return File(data, System.Net.Mime.MediaTypeNames.Application.Zip, "CodeGen_" + model.TableName.Split('→')[0] + ".zip");
+            var arr = model.TableName.Split('→');
+            return File(data, System.Net.Mime.MediaTypeNames.Application.Zip, "CodeGen_" + arr[0] + "_" + arr[1] + ".zip");
         }
         #endregion
 

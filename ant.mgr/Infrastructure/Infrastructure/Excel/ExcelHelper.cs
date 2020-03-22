@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Infrastructure.Logging;
 using Npoi.Mapper;
@@ -30,9 +31,91 @@ namespace Infrastructure.Excel
             }
             catch (Exception ex)
             {
-                LogHelper.Warn("FromExcel", "导出失败", ex);
+                LogHelper.Warn("ReadExcelSheet", "读取excel失败", ex);
                 return null;
             }
+        }
+
+
+        /// <summary>
+        /// excel文件流转的某个sheet成对象集合 并且解析出header
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="data"></param>
+        /// <param name="sheetName"></param>
+        /// <returns></returns>
+        public static Tuple<List<string>, List<T>> ReadExcelSheetWithHeader<T>(this Stream data, string sheetName = "Sheet1") where T : class
+        {
+            try
+            {
+                var importer = new Mapper(data);
+               
+                var items = importer.Take<T>(sheetName).Select(r => r.Value).ToList();
+
+                var sheet = importer.Workbook.GetSheet(sheetName);
+                IRow headerRow = sheet.GetRow(sheet.FirstRowNum);
+                var headerValueList = new List<string>();
+                foreach (ICell cell in headerRow)
+                {
+                    string stringCellValue = cell.StringCellValue;
+                    headerValueList.Add(stringCellValue);
+                }
+
+                return Tuple.Create(headerValueList,items);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Warn("ReadExcelSheetWithHeader", "读取excel失败", ex);
+                return Tuple.Create<List<string>, List<T>>(null,null);
+            }
+        }
+
+        /// <summary>
+        /// 导出excel模板
+        /// </summary>
+        /// <param name="fieldList">Item1是字段名称 Item2是字段的备注</param>
+        /// <param name="isxls"></param>
+        /// <returns></returns>
+        public static byte[] ToExcel(List<Tuple<string, string>> fieldList, bool isxls = false)
+        {
+            IWorkbook workbook = CreateWorkbook(isxls);
+            ICellStyle headerCellStyle = GetCellStyle(workbook, true, isxls);
+            ISheet sheet = workbook.CreateSheet("Sheet1");
+            IRow headerRow = sheet.CreateRow(0);
+            for (int i = 0; i < fieldList.Count; i++)
+            {
+                var item = fieldList[i];
+                ICell headerCell = headerRow.CreateCell(i);
+                headerCell.SetCellValue(item.Item1);
+                if (!string.IsNullOrEmpty(item.Item2))
+                {
+                    IDrawing patriarch = sheet.CreateDrawingPatriarch();
+
+                    IComment comment = isxls ? patriarch.CreateCellComment(new HSSFClientAnchor(0, 0, 0, 0, 2, 1, 4, 4)) : patriarch.CreateCellComment(new XSSFClientAnchor(0, 0, 0, 0, 2, 1, 4, 4));
+                    comment.Author = "Admin";
+                    if (isxls)
+                    {
+                        comment.String = new HSSFRichTextString(item.Item2);
+                    }
+                    else
+                    {
+                        comment.String = new XSSFRichTextString(item.Item2);
+                    }
+                    comment.Visible = false;
+                    headerCell.CellComment = comment;
+                }
+                headerCell.CellStyle = headerCellStyle;
+                sheet.AutoSizeColumn(headerCell.ColumnIndex);
+            }
+
+            byte[] xlsInBytes;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                workbook.Write(ms);
+                xlsInBytes = ms.ToArray();
+            }
+
+            return xlsInBytes;
         }
 
         /// <summary>
@@ -41,11 +124,11 @@ namespace Infrastructure.Excel
         /// <param name="sourceDs">要导出数据的DataSet</param>
         /// <param name="isxls">是否是xls还是xlsx</param>
         /// <returns></returns>
-        public static byte[] ToExcel(this DataSet sourceDs,bool isxls = false)
+        public static byte[] ToExcel(this DataSet sourceDs, bool isxls = false)
         {
 
             IWorkbook workbook = CreateWorkbook(isxls);
-            ICellStyle headerCellStyle = GetCellStyle(workbook, true,isxls);
+            ICellStyle headerCellStyle = GetCellStyle(workbook, true, isxls);
 
             for (int i = 0; i < sourceDs.Tables.Count; i++)
             {
@@ -93,7 +176,101 @@ namespace Infrastructure.Excel
         }
 
 
+        /// <summary>
+        /// 导出Excel
+        /// </summary>
+        /// <param name="list">导出模型数据</param>
+        /// <param name="ExcelSheetName">初始页签名称</param>
+        public static byte[] ExportExcel<T>(IEnumerable<T> list, string ExcelSheetName = "Sheet1")
+        {
+            //创建workbook
+            IWorkbook workbook = CreateWorkbook(false);
+            //创建worksheet
+            ISheet sheet = workbook.CreateSheet(ExcelSheetName);
+            //头样式
+            ICellStyle headerCellStyle = GetCellStyle(workbook, true);
+            //存储头部样式
+            Dictionary<int, ICellStyle> colStyles = new Dictionary<int, ICellStyle>();
+            //获取导出属性
+            Dictionary<PropertyInfo, ExcelFieldAttribute> _excelInfos = GetPropInfo<T>();
+
+            //设置Excel行
+            IRow rowTitle = sheet.CreateRow(0);
+            int _cellIndex = 0;
+            foreach (var item in _excelInfos)
+            {
+                ICell celltitle = rowTitle.CreateCell(_cellIndex);
+                celltitle.SetCellValue(item.Value.Name);
+                celltitle.CellStyle = headerCellStyle;
+                sheet.AutoSizeColumn(celltitle.ColumnIndex);//自动列宽
+                colStyles[celltitle.ColumnIndex] = GetCellStyle(workbook);
+                _cellIndex++;
+            }
+
+            //设置Excel内容
+            int _rowNum = 1;
+            foreach (T rowItem in list)
+            {
+                int _rowCell = 0;
+                IRow _rowValue = sheet.CreateRow(_rowNum);
+                foreach (var cellItem in _excelInfos)
+                {
+                    object _cellItemValue = cellItem.Key.GetValue(rowItem, null);
+                    ICell _cell = _rowValue.CreateCell(_rowCell);
+                    SetCellValue(_cell, _cellItemValue == null ? "" : _cellItemValue.ToString(), cellItem.Key.PropertyType, colStyles);
+                    ReSizeColumnWidth(sheet, _cell, cellItem.Key.PropertyType);
+                    _rowCell++;
+                }
+                _rowNum++;
+            }
+            sheet.ForceFormulaRecalculation = true;
+
+            //导出
+            byte[] xlsInBytes;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                workbook.Write(ms);
+                xlsInBytes = ms.ToArray();
+            }
+            return xlsInBytes;
+        }
         #region Private
+        /// <summary>
+        /// 获取实体类的公共属性
+        /// </summary>
+        /// <typeparam name="T">实体类</typeparam>
+        /// <returns>实体类相应集合</returns>
+        private static Dictionary<PropertyInfo, ExcelFieldAttribute> GetPropInfo<T>()
+        {
+            Dictionary<PropertyInfo, ExcelFieldAttribute> _infos = new Dictionary<PropertyInfo, ExcelFieldAttribute>();
+            Type _type = typeof(T);
+            var classAttr = _type.GetCustomAttributes<ExcelClassAttribute>();
+
+            //获取所有的Properties
+            PropertyInfo[] _propInfos = _type.GetProperties();
+
+            foreach (ExcelClassAttribute classInfo in classAttr)
+            {
+                ExcelFieldAttribute attr = new ExcelFieldAttribute(classInfo.Name);
+                attr.OrderRule = classInfo.OrderRule;
+                var p = _propInfos.FirstOrDefault(r => r.Name.Equals(classInfo.Column));
+                if (p != null)
+                {
+                    _infos.Add(p, attr);
+                }
+            }
+
+            foreach (var propInfo in _propInfos)
+            {
+                var attr = propInfo.GetCustomAttribute<ExcelFieldAttribute>();
+                if (attr!=null)
+                {
+                    _infos.Add(propInfo, attr);
+                }
+            }
+            _infos = _infos.OrderBy(r => r.Value.OrderRule).ToDictionary(r => r.Key, y => y.Value);
+            return _infos;
+        }
 
         /// <summary>
         /// 创建工作薄
@@ -119,7 +296,7 @@ namespace Infrastructure.Excel
         /// <param name="workbook">workbook</param>
         /// <param name="isHeaderRow">是否获取头部样式</param>
         /// <returns></returns>
-        private static ICellStyle GetCellStyle(IWorkbook workbook, bool isHeaderRow = false,bool isXls = false)
+        private static ICellStyle GetCellStyle(IWorkbook workbook, bool isHeaderRow = false, bool isXls = false)
         {
             if (!isXls)
             {
@@ -256,7 +433,7 @@ namespace Infrastructure.Excel
         /// <param name="sheet"></param>
         /// <param name="cell"></param>
         /// <param name="cellType"></param>
-        private static void ReSizeColumnWidth(ISheet sheet, ICell cell,Type cellType)
+        private static void ReSizeColumnWidth(ISheet sheet, ICell cell, Type cellType)
         {
             int cellLength = (Encoding.Default.GetBytes(cell.ToString()).Length + 2) * 256;
             const int maxLength = 60 * 256; //255 * 256;
@@ -272,7 +449,7 @@ namespace Infrastructure.Excel
             }
             else if (cellType == typeof(DateTime))
             {
-                sheet.SetColumnWidth(cell.ColumnIndex, colWidth+10);
+                sheet.SetColumnWidth(cell.ColumnIndex, colWidth + 10);
             }
         }
 

@@ -11,11 +11,11 @@ using AntData.ORM.Mapping;
 namespace DbModel
 {
 	/// <summary>
-	/// Visx Version   : 3.2
+	/// Visx Version   : 3.8
 	/// Github         : https://github.com/yuzd/AntData.ORM
 	/// Database       : antmgr
 	/// Data Source    : localhost
-	/// Server Version : 5.7.25
+	/// Server Version : 5.7.26
 	/// </summary>
 	public partial class AntEntity : IEntity
 	{
@@ -49,6 +49,12 @@ namespace DbModel
 			return this.con.GetTable<T>();
 		}
 
+		public IAntTable<T,T2> Get<T,T2>()
+			 where T2 : new()
+		{
+			return this.con.GetTable<T,T2>();
+		}
+
 		public AntEntity(DataConnection con)
 		{
 			this.con = con;
@@ -66,7 +72,7 @@ namespace DbModel
 		/// <summary>
 		/// MenuId
 		/// </summary>
-		[Column("Tid",                DataType=AntData.ORM.DataType.Int64,    Comment="MenuId"), PrimaryKey, Identity]
+		[Column("Tid",                DataType=AntData.ORM.DataType.Int64,    Precision=19, Scale=0, Comment="MenuId"), PrimaryKey, Identity]
 		public virtual long Tid { get; set; } // bigint(20)
 
 		/// <summary>
@@ -82,13 +88,13 @@ namespace DbModel
 		/// <summary>
 		/// 是否可用
 		/// </summary>
-		[Column("IsActive",           DataType=AntData.ORM.DataType.Boolean,  Comment="是否可用"), NotNull]
+		[Column("IsActive",           DataType=AntData.ORM.DataType.Boolean,  Precision=3, Scale=0, Comment="是否可用"), NotNull]
 		public virtual bool IsActive { get; set; } // tinyint(1)
 
 		/// <summary>
 		/// 父节点Id
 		/// </summary>
-		[Column("ParentTid",          DataType=AntData.ORM.DataType.Int64,    Comment="父节点Id"), NotNull]
+		[Column("ParentTid",          DataType=AntData.ORM.DataType.Int64,    Precision=19, Scale=0, Comment="父节点Id"), NotNull]
 		public virtual long ParentTid { get; set; } // bigint(20)
 
 		/// <summary>
@@ -112,13 +118,13 @@ namespace DbModel
 		/// <summary>
 		/// 排序
 		/// </summary>
-		[Column("OrderRule",          DataType=AntData.ORM.DataType.Int32,    Comment="排序"),    Nullable]
+		[Column("OrderRule",          DataType=AntData.ORM.DataType.Int32,    Precision=10, Scale=0, Comment="排序"),    Nullable]
 		public virtual int? OrderRule { get; set; } // int(11)
 
 		/// <summary>
 		/// 等级
 		/// </summary>
-		[Column("Level",              DataType=AntData.ORM.DataType.Int32,    Comment="等级"),    Nullable]
+		[Column("Level",              DataType=AntData.ORM.DataType.Int32,    Precision=10, Scale=0, Comment="等级"),    Nullable]
 		public virtual int? Level { get; set; } // int(11)
 
 		/// <summary>
@@ -131,7 +137,7 @@ namespace DbModel
 
 		#region Field
 
-		private DateTime _DataChangeLastTime = System.Data.SqlTypes.SqlDateTime.MinValue.Value;
+		private DateTime _DataChangeLastTime = DateTime.Now;
 
 		#endregion
 	}
@@ -147,7 +153,7 @@ namespace DbModel
 		/// <summary>
 		/// 主键
 		/// </summary>
-		[Column("Tid",                DataType=AntData.ORM.DataType.Int64,    Comment="主键"), PrimaryKey, Identity]
+		[Column("Tid",                DataType=AntData.ORM.DataType.Int64,    Precision=19, Scale=0, Comment="主键"), PrimaryKey, Identity]
 		public virtual long Tid { get; set; } // bigint(20)
 
 		/// <summary>
@@ -163,7 +169,7 @@ namespace DbModel
 		/// <summary>
 		/// 访问路径
 		/// </summary>
-		[Column("MenuTid",            DataType=AntData.ORM.DataType.Int64,    Comment="访问路径"), NotNull]
+		[Column("MenuTid",            DataType=AntData.ORM.DataType.Int64,    Precision=19, Scale=0, Comment="访问路径"), NotNull]
 		public virtual long MenuTid { get; set; } // bigint(20)
 
 		/// <summary>
@@ -188,7 +194,7 @@ namespace DbModel
 
 		#region Field
 
-		private DateTime _DataChangeLastTime = System.Data.SqlTypes.SqlDateTime.MinValue.Value;
+		private DateTime _DataChangeLastTime = DateTime.Now;
 
 		#endregion
 	}
@@ -226,7 +232,7 @@ namespace DbModel
 		/// <summary>
 		/// 是否可用
 		/// </summary>
-		[Column("IsActive",           DataType=AntData.ORM.DataType.Boolean,  Comment="是否可用"), NotNull]
+		[Column("IsActive",           DataType=AntData.ORM.DataType.Boolean,  Precision=3, Scale=0, Comment="是否可用"), NotNull]
 		public virtual bool IsActive { get; set; } // tinyint(1)
 
 		/// <summary>
@@ -238,7 +244,7 @@ namespace DbModel
 		/// <summary>
 		/// 主键
 		/// </summary>
-		[Column("Tid",                DataType=AntData.ORM.DataType.Int64,    Comment="主键"), PrimaryKey, Identity]
+		[Column("Tid",                DataType=AntData.ORM.DataType.Int64,    Precision=19, Scale=0, Comment="主键"), PrimaryKey, Identity]
 		public virtual long Tid { get; set; } // bigint(20)
 
 		/// <summary>
@@ -256,14 +262,14 @@ namespace DbModel
 		/// <summary>
 		/// 创建者的角色Tid
 		/// </summary>
-		[Column("CreateRoleTid",      DataType=AntData.ORM.DataType.Int64,    Comment="创建者的角色Tid"), NotNull]
+		[Column("CreateRoleTid",      DataType=AntData.ORM.DataType.Int64,    Precision=19, Scale=0, Comment="创建者的角色Tid"), NotNull]
 		public virtual long CreateRoleTid { get; set; } // bigint(20)
 
 		#endregion
 
 		#region Field
 
-		private DateTime _DataChangeLastTime = System.Data.SqlTypes.SqlDateTime.MinValue.Value;
+		private DateTime _DataChangeLastTime = DateTime.Now;
 
 		#endregion
 	}
@@ -279,7 +285,7 @@ namespace DbModel
 		/// <summary>
 		/// 主键
 		/// </summary>
-		[Column("Tid",                DataType=AntData.ORM.DataType.Int64,    Comment="主键"), PrimaryKey, Identity]
+		[Column("Tid",                DataType=AntData.ORM.DataType.Int64,    Precision=19, Scale=0, Comment="主键"), PrimaryKey, Identity]
 		public virtual long Tid { get; set; } // bigint(20)
 
 		/// <summary>
@@ -295,7 +301,7 @@ namespace DbModel
 		/// <summary>
 		/// 是否可用
 		/// </summary>
-		[Column("IsActive",           DataType=AntData.ORM.DataType.Boolean,  Comment="是否可用"), NotNull]
+		[Column("IsActive",           DataType=AntData.ORM.DataType.Boolean,  Precision=3, Scale=0, Comment="是否可用"), NotNull]
 		public virtual bool IsActive { get; set; } // tinyint(1)
 
 		/// <summary>
@@ -337,7 +343,7 @@ namespace DbModel
 		/// <summary>
 		/// 角色Tid(一个人只有一个角色)
 		/// </summary>
-		[Column("RoleTid",            DataType=AntData.ORM.DataType.Int64,    Comment="角色Tid(一个人只有一个角色)"), NotNull]
+		[Column("RoleTid",            DataType=AntData.ORM.DataType.Int64,    Precision=19, Scale=0, Comment="角色Tid(一个人只有一个角色)"), NotNull]
 		public virtual long RoleTid { get; set; } // bigint(20)
 
 		/// <summary>
@@ -368,7 +374,7 @@ namespace DbModel
 
 		#region Field
 
-		private DateTime _DataChangeLastTime = System.Data.SqlTypes.SqlDateTime.MinValue.Value;
+		private DateTime _DataChangeLastTime = DateTime.Now;
 
 		#endregion
 	}
