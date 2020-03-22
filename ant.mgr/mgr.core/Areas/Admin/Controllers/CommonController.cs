@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using ant.mgr.core.Filter;
 using Configuration;
+using Infrastructure.Excel;
 using Infrastructure.StaticExt;
 using Infrastructure.Web;
 using Microsoft.AspNetCore.Mvc;
@@ -67,6 +68,31 @@ namespace ant.mgr.core.Areas.Admin.Controllers
             return Json(result);
         }
 
+
+        [API("执行sql导出Excel")]
+        [HttpPost, FileDownload]
+        [AuthorizeFilter]
+        public ActionResult SQLSelect(string sql)
+        {
+            return GetReport(sql);
+        }
+
+        /// <summary>
+        /// 导出sql
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <returns></returns>
+        private ActionResult GetReport(string sql)
+        {
+            sql = sql.DecodeBase64();
+            var data = CommonRespository.SelectSqlExcute(sql);
+            var tabelName = $"Report_{DateTime.Now:yyyyMMddHHmmss}";
+            data.TableName = tabelName;
+            DataSet dataSet = new DataSet();
+            dataSet.Tables.Add(data.Copy());
+            var bytes = dataSet.ToExcel();
+            return File(bytes, "application/vnd.ms-excel", tabelName + ".xlsx");
+        }
 
         /// <summary>
         /// 执行Insert update delete 语句

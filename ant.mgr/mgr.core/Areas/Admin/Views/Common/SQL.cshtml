@@ -37,9 +37,6 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="wrapper wrapper-content animated fadeInRight" style="display:none;" id="bodyDiv">
         <div class="ibox float-e-margins">
-            @*<div class="ibox-title" style="margin-bottom: 5px">
-                <h5 style="display: initial;">SQL工具</h5><img id="sqlFormatter" src="~/img/sql_formater.png" width="30px" />
-            </div>*@
             <div class="ibox-content">
                 <div class="row row-lg">
                     <div class="col-sm-12">
@@ -49,6 +46,7 @@
 
                                 <div class="row wrapper wrapper-content animated fadeInRight" style="margin: 15px;">
                                     <button type="button" id="select" action-id="sql-select-table" action-name="执行(Select)" class="btn btn-w-m btn-success authorization" style="margin-right: 15px;">执行(Select)</button>
+                                    <button type="button" id="export" action-id="sql-select-excel" action-name="导出(Select)" class="btn btn-w-m btn-success authorization" style="margin-right: 15px;">导出(Select)</button>
                                     <button type="button" id="fomatter" class="btn btn-w-m btn-success" style="margin-right: 15px;">格式化SQL</button>
                                     <button type="button" id="excute" action-id="sql-excute" action-name="执行(Insert,Update,Delete)" class="btn btn-w-m btn-primary authorization" style="float: right">执行(Insert,Update,Delete)</button>
                                 </div>
@@ -88,7 +86,8 @@
     <script src="~/js/plugins/jquery-ui/jqueryui.js?201811201906"></script>
     <script src="~/js/plugins/sql/sql.all.js"></script>
     <script src="~/js/jquery.base64.min.js"></script>
-
+    <script src="~/js/plugins/jquery-ui/jquery-ui.min.js"></script>
+    <script src="~/js/jquery.fileDownload.js"></script>
 
     <script type="text/javascript">
 
@@ -213,7 +212,7 @@
         }
 
         $(function () {
-           
+
 
             $('#select').click(function () {
                 var selection = editor.getSelection();
@@ -241,6 +240,29 @@
             $('#fomatter')
                 .click(function () {
                     editor.setValue(sqlFormatter.format(editor.getValue(), { language: 'SQL' }));
+                });
+
+            $('#export')
+                .click(function () {
+                    var selection = editor.getSelection();
+                    var sql = editor.getValue();
+                    if ($.trim(sql).length < 1) {
+                        custom_alert('请填写正确的sql语句!', 'Error');
+                        return false;
+                    }
+                    if ($.trim(selection).length > 0) {
+                        sql = selection;
+                    }
+                    $.fileDownload(window.appUrl + '/Admin/Common/SQLSelect',
+                        {
+                            httpMethod: 'POST',
+                            dataType: "json",
+                            contentType: "application/json",
+                            data: { sql: Base64.encode(sql) },
+                            preparingMessageHtml: "数据正在导出中,请稍后...",
+                            failMessageHtml: "导出执行出错,请检查sql语句是否正确！"
+                        });
+                    return false;
                 });
 
             $('#excute')
