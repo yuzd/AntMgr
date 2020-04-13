@@ -139,5 +139,10 @@ https://github.com/yuzd/AntData.ORM
 
 https://marketplace.visualstudio.com/items?itemName=nainaigu.AntDataVS
 
+配合ORM框架的rider一键生成dbmodel 插件：
+
+https://plugins.jetbrains.com/plugin/14033
+
+
 ### WIKI有更详细的教程
 https://github.com/yuzd/AntMgr/wiki
