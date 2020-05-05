@@ -161,3 +161,4 @@ $RECYCLE.BIN/
 .DS_Store
 /CloudBagOffline/packages
 /CloudBagOffline/CloudBag.HermesControl
+ant.mgr/mgr.core/AntDeploy.json

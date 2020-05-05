@@ -60,6 +60,23 @@
     <div id="data-container"></div>
     <div id="data-error"></div>
 </div>
+
+<div class="modal inmodal" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="control-label">请选择DB：</label>
+                    <input class="js-example-data-array-selected text-box" id="dbCombox" style="width: 350px;" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" action-id="Sql-db-select" action-name="查询DB列表" class="btn btn-primary authorization" id="selectDB" >确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="loading2" data-asd="12" style="display: none">
     <div class="loading-spinner">
         <div class="spinner-container container1">
@@ -145,22 +162,70 @@
         }
 
         var editor;
-        $(function () {
+        var dbList;
+        var targetDb = '';
+        $(function() {
+
+            //先查询db列表
+
+          
 
             $('.loading2').show();
-            QQT.ajax('/Admin/Common/GetDbTablesAndColumns',
+            QQT.ajax('/Admin/Common/GetDbs',
                 'Post'
             )
                 .done(function (response) {
-                    $('.loading2').hide();
-                    $('#bodyDiv').show();
-                    eval(response.Data);
-                    if (schema) {
-                        createEditor(schema);
+
+                    InitDbCombobox(response.Data);
+
+                    if (!response.Data) {
+                        //出错了
+                        $('.loading2').hide();
+                        $('#myModal').modal({ backdrop: 'static', keyboard: false });
+                        $('#myModal').modal('show');
+                        return;
+                    }
+                    dbList = response.Data;
+                    if (response.Data.length == 1) {
+                        //直接加载当前
+                        targetDb = response.Data[0];
+                        QQT.ajax('/Admin/Common/GetDbTablesAndColumns?dbName=' + targetDb,
+                                'Post'
+                            )
+                            .done(function (response) {
+                                $('.loading2').hide();
+                                $('#bodyDiv').show();
+                                eval(response.Data);
+                                if (schema) {
+                                    createEditor(schema);
+                                }
+                            });
+
+                    } else {
+                        //自己选
+                        $('.loading2').hide();
+                        $('#myModal').modal({ backdrop: 'static', keyboard: false });
+                        $('#myModal').modal('show');
                     }
                 });
         });
 
+        function InitDbCombobox(data) {
+            var searchList = new Array();
+            $.each(data,
+                function (index, item) {
+                    searchList.push({
+                        id: item,
+                        text: item
+                    });
+                });
+
+            $('#dbCombox').select2({
+                data: searchList,
+                placeholder: '请选择DB',
+                multiple: false,
+            });
+        }
 
         function createEditor(data) {
             editor = CodeMirror.fromTextArea(document.getElementById('code'),
@@ -175,7 +240,7 @@
                     }
                 });
             editor.on("keyup",
-                function (editor, event) {
+                function(editor, event) {
 
                     var __Cursor = editor.getDoc().getCursor();
                     var __Token = editor.getTokenAt(__Cursor);
@@ -203,17 +268,42 @@
                     resizable: false,
                     modal: true,
                     buttons: {
-                        "知道啦": function () {
+                        "知道啦": function() {
                             $(this).dialog("close");
                         }
                     }
                 });
         }
 
-        $(function () {
+        $(function() {
 
+           
 
-            $('#select').click(function () {
+            $('#selectDB').click(function () {
+                targetDb = $('#dbCombox').select2('data') && $('#dbCombox').select2('data').id;
+                if (!targetDb) {
+                    swal({
+                        title: "",
+                        text: "请选择db！",
+                        type: "error"
+                    });
+                    return;
+                }
+                QQT.ajax('/Admin/Common/GetDbTablesAndColumns?dbName=' + targetDb,
+                        'Post'
+                    )
+                    .done(function (response) {
+                        $('.loading2').hide();
+                        $('#myModal').modal('hide');
+                        $('#bodyDiv').show();
+                        eval(response.Data);
+                        if (schema) {
+                            createEditor(schema);
+                        }
+                    });
+            });
+
+            $('#select').click(function() {
                 var selection = editor.getSelection();
                 var sql = editor.getValue();
                 if ($.trim(sql).length < 1) {
@@ -224,11 +314,12 @@
                     sql = selection;
                 }
                 QQT.ajax('/Admin/Common/SQLTable',
-                    'Post',
-                    {
-                        sql: Base64.encode(sql)
-                    })
-                    .done(function (response) {
+                        'Post',
+                         {
+                            db:targetDb,
+                            sql: Base64.encode(sql)
+                        })
+                    .done(function(response) {
                         initDataTable(response.Data);
                         return false;
                     });
@@ -237,12 +328,12 @@
             });
 
             $('#fomatter')
-                .click(function () {
+                .click(function() {
                     editor.setValue(sqlFormatter.format(editor.getValue(), { language: 'SQL' }));
                 });
 
             $('#export')
-                .click(function () {
+                .click(function() {
                     var selection = editor.getSelection();
                     var sql = editor.getValue();
                     if ($.trim(sql).length < 1) {
@@ -257,7 +348,7 @@
                             httpMethod: 'POST',
                             dataType: "json",
                             contentType: "application/json",
-                            data: { sql: Base64.encode(sql) },
+                            data: { sql: Base64.encode(sql) , db: targetDb },
                             preparingMessageHtml: "数据正在导出中,请稍后...",
                             failMessageHtml: "导出执行出错,请检查sql语句是否正确！"
                         });
@@ -265,7 +356,7 @@
                 });
 
             $('#excute')
-                .click(function () {
+                .click(function() {
                     var selection = editor.getSelection();
                     var sql = editor.getValue();
                     if ($.trim(sql).length < 1) {
@@ -276,11 +367,12 @@
                         sql = selection;
                     }
                     QQT.ajax('/Admin/Common/SQLExcute',
-                        'Post',
-                        {
-                            sql: Base64.encode(sql)
-                        })
-                        .done(function (response) {
+                            'Post',
+                            {
+                                db: targetDb,
+                                sql: Base64.encode(sql)
+                            })
+                        .done(function(response) {
                             if (response.Data < 0) {
                                 custom_alert(response.Info, '执行错误!');
                                 return false;
@@ -291,32 +383,36 @@
                     return false;
                 });
         });
+
         function initDataTable(result) {
             $('#data-error').text();
             $("#data-container").empty();
             if (result['type'] == 'table') {
 
 
-                $("#data-container").append('<table id="data-table" class="display" cellspacing="0" width="80%"><thead><tr></tr></thead></table>');
+                $("#data-container")
+                    .append(
+                        '<table id="data-table" class="display" cellspacing="0" width="80%"><thead><tr></tr></thead></table>');
 
                 $('#data-table').DataTable({
                     dom: 'Blfrtip',
-                    buttons: [{
-                        extend: 'copyHtml5',
-                        text: '复制当前页',
-                        header: false,
-                        exportOptions: {
-                            modifier: {
-                                page: 'current'
-                            },
-                            orthogonal: 'copy'
-                        }
-                    }, 'csv', 'excel'],
+                    buttons: [
+                        {
+                            extend: 'copyHtml5',
+                            text: '复制当前页',
+                            header: false,
+                            exportOptions: {
+                                modifier: {
+                                    page: 'current'
+                                },
+                                orthogonal: 'copy'
+                            }
+                        }, 'csv', 'excel'
+                    ],
                     data: result['data'],
                     columns: result['columns']
                 });
-            }
-            else {
+            } else {
                 $('#data-container').html('<span>' + result['data'] + '</span>');
             }
         }

@@ -43,6 +43,7 @@ namespace Repository
         /// </summary>
         public DbContext<AntEntity> DB => DbModel.DbContext.DB;
 
+        public DbContext<EmptyEntity> EmptyDB(string mappingName) => DbModel.DbContext.EmptyDb(mappingName);
 
         /// <summary>
         /// automapper

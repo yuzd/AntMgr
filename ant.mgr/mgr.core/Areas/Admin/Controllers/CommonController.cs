@@ -46,17 +46,18 @@ namespace ant.mgr.core.Areas.Admin.Controllers
         /// <summary>
         /// 查询sql 显示Datatable
         /// </summary>
+        /// <param name="db"></param>
         /// <param name="sql"></param>
         /// <returns></returns>
         [AuthorizeFilter]
         [API("执行查询SQL")]
         [HttpPost]
-        public JsonResult SQLTable(string sql)
+        public JsonResult SQLTable(string db,string sql)
         {
             var result = new ResultJsonInfo<DbTablesAndColumnsSM>();
             result.Data = new DbTablesAndColumnsSM();
             sql = sql.DecodeBase64();
-            var table = CommonRespository.SelectSqlExcute(sql);
+            var table = CommonRespository.SelectSqlExcute(db,sql);
             result.Data.columns = table.Columns
                    .Cast<DataColumn>()
                    .Select(x => new DynamicColumn(x.ColumnName))
@@ -72,20 +73,10 @@ namespace ant.mgr.core.Areas.Admin.Controllers
         [API("执行sql导出Excel")]
         [HttpPost, FileDownload]
         [AuthorizeFilter]
-        public ActionResult SQLSelect(string sql)
-        {
-            return GetReport(sql);
-        }
-
-        /// <summary>
-        /// 导出sql
-        /// </summary>
-        /// <param name="sql"></param>
-        /// <returns></returns>
-        private ActionResult GetReport(string sql)
+        public ActionResult SQLSelect(string db,string sql)
         {
             sql = sql.DecodeBase64();
-            var data = CommonRespository.SelectSqlExcute(sql);
+            var data = CommonRespository.SelectSqlExcute(db,sql);
             var tabelName = $"Report_{DateTime.Now:yyyyMMddHHmmss}";
             data.TableName = tabelName;
             DataSet dataSet = new DataSet();
@@ -94,19 +85,21 @@ namespace ant.mgr.core.Areas.Admin.Controllers
             return File(bytes, "application/vnd.ms-excel", tabelName + ".xlsx");
         }
 
+
         /// <summary>
         /// 执行Insert update delete 语句
         /// </summary>
+        /// <param name="db">指定的db名称</param>
         /// <param name="sql"></param>
         /// <returns></returns>
         [AuthorizeFilter]
         [API("执行Insert,Delete,Update")]
         [HttpPost]
-        public JsonResult SQLExcute(string sql)
+        public JsonResult SQLExcute(string db,string sql)
         {
             var result = new ResultJsonInfo<int>();
             sql = sql.DecodeBase64();
-            var respositoryResult = CommonRespository.SQLExcute(sql);
+            var respositoryResult = CommonRespository.SQLExcute(db,sql);
             if (string.IsNullOrEmpty(respositoryResult.Item2))
             {
                 result.Status = ResultConfig.Ok;
@@ -133,13 +126,30 @@ namespace ant.mgr.core.Areas.Admin.Controllers
         [AuthorizeFilter]
         [API("获取所有的表名称和列")]
         [HttpPost]
-        public JsonResult GetDbTablesAndColumns()
+        public JsonResult GetDbTablesAndColumns(string dbName)
         {
             var result = new ResultJsonInfo<string>();
-            var respositoryResult = CommonRespository.GetDbTablesAndColumns();
+            var respositoryResult = CommonRespository.GetDbTablesAndColumns(dbName);
             result.Status = ResultConfig.Ok;
             result.Info = ResultConfig.SuccessfulMessage;
             result.Data = "var schema = " + respositoryResult;
+            return Json(result);
+        }
+
+        /// <summary>
+        /// 获取数据库列表
+        /// </summary>
+        /// <returns></returns>
+        [AuthorizeFilter]
+        [API("获取数据库列表")]
+        [HttpPost]
+        public JsonResult GetDbs()
+        {
+            var result = new ResultJsonInfo<List<string>>();
+            List<string> respositoryResult = CommonRespository.GetDbs();
+            result.Status = ResultConfig.Ok;
+            result.Info = ResultConfig.SuccessfulMessage;
+            result.Data = respositoryResult;
             return Json(result);
         }
 
