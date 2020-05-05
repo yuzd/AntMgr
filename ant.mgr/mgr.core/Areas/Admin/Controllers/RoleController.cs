@@ -75,7 +75,7 @@ namespace ant.mgr.core.Areas.Admin.Controllers
         public async Task<JsonResult> AddRole([ModelBinder(typeof(JsonNetBinder)),FromForm]AddRoleVm role)
         {
             var result = new ResultJsonNoDataInfo();
-            var respositoryResult = await RoleRespository.AddRole(role, UserToken);
+            var respositoryResult = await RoleRespository.UseTransactionAddRole(role, UserToken);
             if (string.IsNullOrEmpty(respositoryResult))
             {
                 result.Status = ResultConfig.Ok;
@@ -108,7 +108,7 @@ namespace ant.mgr.core.Areas.Admin.Controllers
         public async Task<JsonResult> AddRoleActions([ModelBinder(typeof(JsonNetBinder)),FromForm]RoleAction model)
         {
             var result = new ResultJsonNoDataInfo();
-            var respositoryResult = await RoleRespository.AddRoleActions(model);
+            var respositoryResult = await RoleRespository.UseTransactionAddRoleActions(model);
             if (string.IsNullOrEmpty(respositoryResult))
             {
                 result.Status = ResultConfig.Ok;
