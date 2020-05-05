@@ -118,7 +118,7 @@ namespace ant.mgr.core.Controllers
         {
             using var inputFileStream = Request.Form.Files[0].OpenReadStream();
             var result = new ResultJsonInfo<string>();
-            var respositoryResult = {{ModelClassName}}Respository.Upload(inputFileStream, UserToken.Code);
+            var respositoryResult = {{ModelClassName}}Respository.UseTransactionUpload(inputFileStream, UserToken.Code);
             result.Status = !respositoryResult.Item1?ResultConfig.Fail: ResultConfig.Ok;
             result.Info = respositoryResult.Item2;
             return Json(result);

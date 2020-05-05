@@ -37,7 +37,7 @@ namespace Repository.Interface
         /// <summary>
         /// 根据{{ModelName}}的Excel模板导入
         /// </summary>
-        Tuple<bool, string> Upload(Stream inputFileStream, string userName);
+        Tuple<bool, string> UseTransactionUpload(Stream inputFileStream, string userName);
 
         /// <summary>
         /// 导出{{ModelName}}的Excel

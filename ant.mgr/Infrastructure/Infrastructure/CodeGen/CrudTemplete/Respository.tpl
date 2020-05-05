@@ -14,13 +14,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ViewModels.Reuqest;
-using Autofac.Aspect;
 using Infrastructure.Excel;
 
 namespace Repository
 {
     [Component]
-	[Aspect(InterceptorType.Interface)]
     public class {{ModelClassName}}Respository : BaseRepository<{{ModelClassName}}>, I{{ModelClassName}}Respository
     {
 
@@ -144,8 +142,7 @@ namespace Repository
         /// <param name="inputFileStream"></param>
         /// <param name="userName">当前操作人姓名</param>
         /// <returns></returns>
-        [EnableTransactionScope]
-        public Tuple<bool, string> Upload(Stream inputFileStream, string userName)
+        public Tuple<bool, string> UseTransactionUpload(Stream inputFileStream, string userName)
         {
             return CommonUpload(inputFileStream, (model) =>
             {
