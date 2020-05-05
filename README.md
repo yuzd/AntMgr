@@ -135,11 +135,11 @@ class    | 必须有 authorization
 
 https://github.com/yuzd/AntData.ORM
 
-配合ORM框架的vs一键生成dbmodel 插件：
+配合ORM框架的vs一键生成dbmodel 插件 [wiki有插件使用教程](https://github.com/yuzd/AntMgr/wiki/4-Dbmodels%E6%8F%92%E4%BB%B6%E7%9B%B8%E5%85%B3)：
 
 https://marketplace.visualstudio.com/items?itemName=nainaigu.AntDataVS
 
-配合ORM框架的rider一键生成dbmodel 插件：
+配合ORM框架的rider一键生成dbmodel 插件 [wiki有插件使用教程](https://github.com/yuzd/AntMgr/wiki/4-Dbmodels%E6%8F%92%E4%BB%B6%E7%9B%B8%E5%85%B3)：
 
 https://plugins.jetbrains.com/plugin/14033
 
