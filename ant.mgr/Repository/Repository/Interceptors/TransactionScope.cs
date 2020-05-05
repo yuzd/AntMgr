@@ -8,31 +8,33 @@ namespace Repository.Interceptors
 {
 
     /// <summary>
-    /// 事物
+    /// 事物切面，所有是Respository结尾的容器对象的所有UseTransaction开头的方法都会走进这个切面
     /// </summary>
-    public class EnableTransactionScope : PointcutAttribute
+    [Pointcut(Class = "*Respository",Method = "UseTransaction*")]
+    public class EnableTransactionScope
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
 
         /// <summary>
         /// 事物拦截器
         /// </summary>
         /// <param name="aspectContext"></param>
-        /// <param name="_next"></param>
         /// <returns></returns>
-        public override async Task OnInvocation(AspectContext aspectContext, AspectDelegate _next)
+        [Around]
+        public async Task RunWithTransaction(PointcutContext aspectContext)
         {
-            logger.Debug($"start transactionScope on `{aspectContext.InvocationContext.TargetType.FullName + "." + aspectContext.InvocationContext.Method.Name}`");
+            logger.Debug($"start transactionScope on `{aspectContext.InvocationMethod.DeclaringType.FullName + "." + aspectContext.InvocationMethod.Name}`");
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                await _next(aspectContext);
+                await aspectContext.Proceed();
 
                 if (Transaction.Current.TransactionInformation.Status == TransactionStatus.Active)
                 {
                     scope.Complete();
-                    logger.Debug($"submit transactionScope on `{aspectContext.InvocationContext.TargetType.FullName + "." + aspectContext.InvocationContext.Method.Name}`");
+                    logger.Debug($"submit transactionScope on `{aspectContext.InvocationMethod.DeclaringType.FullName + "." + aspectContext.InvocationMethod.Name}`");
                 }
-            }
+            }   
         }
     }
 }

@@ -19,8 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac.Annotation" Version="3.0.9" />
-    <PackageReference Include="DotLiquid" Version="2.0.325" />
+    <PackageReference Include="Autofac.Annotation" Version="3.1.2" />
+    <PackageReference Include="DotLiquid" Version="2.0.333" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.23" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
