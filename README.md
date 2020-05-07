@@ -9,7 +9,7 @@
 2. 菜单管理
 3. 角色管理
 4. 权限管理[精确到按钮]）
-5. 代码生成器
+5. 代码生成器(一键生成CRUD前后端代码 增+删+改+查【分页】导入+导出)
 6. SQL工具(智能字段提示)
 7. 约定大于配置，开发简单效率高,权限配置友好不复杂
 8. 支持mysql和sqlserver两种数据库。切换数据库不用改任何代码
@@ -135,9 +135,14 @@ class    | 必须有 authorization
 
 https://github.com/yuzd/AntData.ORM
 
-配合ORM框架的vs一键生成dbmodel 插件：
+配合ORM框架的vs一键生成dbmodel 插件 [wiki有插件使用教程](https://github.com/yuzd/AntMgr/wiki/4-Dbmodels%E6%8F%92%E4%BB%B6%E7%9B%B8%E5%85%B3)：
 
 https://marketplace.visualstudio.com/items?itemName=nainaigu.AntDataVS
+
+配合ORM框架的rider一键生成dbmodel 插件 [wiki有插件使用教程](https://github.com/yuzd/AntMgr/wiki/4-Dbmodels%E6%8F%92%E4%BB%B6%E7%9B%B8%E5%85%B3)：
+
+https://plugins.jetbrains.com/plugin/14033
+
 
 ### WIKI有更详细的教程
 https://github.com/yuzd/AntMgr/wiki

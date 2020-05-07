@@ -7,6 +7,7 @@ using ant.mgr.core.Filter;
 using Microsoft.AspNetCore.Mvc;
 using Repository.Interface;
 using ServicesModel;
+using Infrastructure.Excel;
 using ViewModels.Result;
 using ViewModels.Reuqest;
 using ant.mgr.core.Areas.Admin.Controllers;
@@ -67,7 +68,7 @@ namespace ant.mgr.core.Controllers
             else
             {
                 result.Status = ResultConfig.Fail;
-                result.Info = string.IsNullOrEmpty(respositoryResult) ? ResultConfig.FailMessage : respositoryResult;
+                result.Info = respositoryResult;
             }
             return Json(result);
         }
@@ -94,7 +95,47 @@ namespace ant.mgr.core.Controllers
             return Json(result);
         }
 
+        /// <summary>
+        /// 下载导入{{ModelName}}的Excel模板
+        /// </summary>
+        [API("下载导入Excel模板")]
+        public ActionResult ExcelTemplete()
+        {
+            var bytes = {{ModelClassName}}Respository.ExcelTemplete();
+            if (!string.IsNullOrEmpty(bytes.Item1))
+            {
+                var result = new ResultJsonNoDataInfo {Status = ResultConfig.Fail, Info = bytes.Item1 };
+                return Json(result);
+            }
+            return File(bytes.Item2, "application/vnd.ms-excel", "{{ModelClassName}}Templete.xlsx");
+        }
 
+        /// <summary>
+        /// 根据{{ModelName}}的Excel模板导入
+        /// </summary>
+        [API("导入Excel")]
+        public JsonResult Upload()
+        {
+            using var inputFileStream = Request.Form.Files[0].OpenReadStream();
+            var result = new ResultJsonInfo<string>();
+            var respositoryResult = {{ModelClassName}}Respository.UseTransactionUpload(inputFileStream, UserToken.Code);
+            result.Status = !respositoryResult.Item1?ResultConfig.Fail: ResultConfig.Ok;
+            result.Info = respositoryResult.Item2;
+            return Json(result);
+        }
+
+        /// <summary>
+        /// 导出{{ModelName}}的Excel
+        /// </summary>
+        [API("导出Excel")]
+        [HttpPost, FileDownload]
+        public async Task<ActionResult> Export(SchoolVm model)
+        {
+            var data = await {{ModelClassName}}Respository.Export(model);
+            var tabelName = $"{{ModelClassName}}_{DateTime.Now:yyyyMMddHHmmss}";
+            var bytes = ExcelHelper.ExportExcel(data);
+            return File(bytes, "application/vnd.ms-excel", tabelName+".xlsx");
+        }
     }
 
 }

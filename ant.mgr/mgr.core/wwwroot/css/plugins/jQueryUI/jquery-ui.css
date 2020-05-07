@@ -1224,4 +1224,4 @@ body .ui-tooltip {
 	border-radius: 5px;
 }
   .no-close .ui-dialog-titlebar-close {display: none !important}
-  .ui-dialog-titlebar-close {display: none !important}
+  /*.ui-dialog-titlebar-close {display: none !important}*/

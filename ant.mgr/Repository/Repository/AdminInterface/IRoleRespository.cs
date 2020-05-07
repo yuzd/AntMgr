@@ -35,7 +35,7 @@ namespace Repository.Interface
         /// <param name="role"></param>
         /// <param name="uid"></param>
         /// <returns></returns>
-        Task<string> AddRole(AddRoleVm role, Token uid);
+        Task<string> UseTransactionAddRole(AddRoleVm role, Token uid);
         /// <summary>
         /// 获取所有的角色
         /// </summary>
@@ -55,7 +55,7 @@ namespace Repository.Interface
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        Task<string> AddRoleActions(RoleAction model);
+        Task<string> UseTransactionAddRoleActions(RoleAction model);
         /// <summary>
         /// 权限与接口关联配置 获取某一个菜单的某一个功能配置的接口列表
         /// </summary>

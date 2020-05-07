@@ -24,13 +24,13 @@ namespace Infrastructure.CodeGen
             //ModelName
             //ModelFields  Name Comment
             byte[] data;
-            var _modelName = tableName.Split('→')[1];
-            var _modelClassName = tableName.Split('→')[0];
+            var _modelName = tableName.Split('→')[2];
+            var _modelClassName = tableName.Split('→')[1];
             var obj = new
             {
                 ModelName = _modelName,
                 ModelClassName = _modelClassName,
-                ModelFields = columns.Select(r => new { Name = r.Split('→')[0], Comment = r.Split('→')[1] }).ToArray()
+                ModelFields = columns.Select(r => new { Name = r.Split('→')[0], Comment = string.IsNullOrEmpty(r.Split('→')[1])? r.Split('→')[0]: r.Split('→')[1] }).ToArray()
             };
             var assembly = typeof(GeneratorCodeHelper).GetTypeInfo().Assembly;
             using (MemoryStream ms = new MemoryStream())
@@ -70,6 +70,18 @@ namespace Infrastructure.CodeGen
                         template = Template.Parse(file);
                         result = template.Render(Hash.FromAnonymousObject(obj));
                         ZipArchiveEntry entry2 = zip.CreateEntry(_modelClassName + "Vm.cs");
+                        using (StreamWriter entryStream = new StreamWriter(entry2.Open()))
+                        {
+                            entryStream.Write(result);
+                        }
+                    }
+
+                    using (var reader = new StreamReader(assembly.GetManifestResourceStream("Infrastructure.CodeGen.CrudTemplete.ServiceModel.tpl"), Encoding.UTF8))
+                    {
+                        file = reader.ReadToEnd();
+                        template = Template.Parse(file);
+                        result = template.Render(Hash.FromAnonymousObject(obj));
+                        ZipArchiveEntry entry2 = zip.CreateEntry(_modelClassName + "SM.cs");
                         using (StreamWriter entryStream = new StreamWriter(entry2.Open()))
                         {
                             entryStream.Write(result);

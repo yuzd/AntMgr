@@ -29,5 +29,6 @@
   ],
   "SetColumnTypeList": [ //自定义设置属性的类型 格式为 table.filedName=xxxxxx  例如："person.Gender=GenderEnum"
 
-  ]
+  ],
+  "DateTimeDefaultValue": "DateTime.Now" //如果datetime类型是非空有默认值的 可以在这里设置默认值
 }

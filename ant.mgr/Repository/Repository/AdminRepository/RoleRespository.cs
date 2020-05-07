@@ -22,7 +22,6 @@ namespace Repository
     /// 角色权限管理
     /// </summary>
     [Component]
-    [Aspect(InterceptorType.Interface)]
     public class RoleRespository : BaseRepository<SystemRole>, IRoleRespository
     {
         /// <summary>
@@ -30,8 +29,7 @@ namespace Repository
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [EnableTransactionScope]
-        public async Task<string> AddRoleActions(RoleAction model)
+        public async Task<string> UseTransactionAddRoleActions(RoleAction model)
         {
             if (model == null || model.MenuId < 1 || string.IsNullOrEmpty(model.ActionId)) return Tip.BadRequest;
             await this.Entitys.SystemPageAction.Where(r => r.MenuTid.Equals(model.MenuId) && r.ActionId.Equals(model.ActionId)).DeleteAsync();
@@ -139,8 +137,7 @@ namespace Repository
         /// </summary>
         /// <param name="role"></param>
         /// <returns></returns>
-        [EnableTransactionScope]
-        public async Task<string> AddRole(AddRoleVm role, Token user)
+        public async Task<string> UseTransactionAddRole(AddRoleVm role, Token user)
         {
             if (role == null)
             {

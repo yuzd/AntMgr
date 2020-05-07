@@ -14,12 +14,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ViewModels.Reuqest;
-using Autofac.Aspect;
+using Infrastructure.Excel;
 
 namespace Repository
 {
     [Component]
-	[Aspect(InterceptorType.Interface)]
     public class {{ModelClassName}}Respository : BaseRepository<{{ModelClassName}}>, I{{ModelClassName}}Respository
     {
 
@@ -48,6 +47,33 @@ namespace Repository
         }
 
         /// <summary>
+        /// 导出{{ModelName}}
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async Task<List<{{ModelClassName}}SM>> Export(SchoolVm model)
+        {
+            if (model == null) return new List<{{ModelClassName}}SM>();
+
+            var listQuery = this.Entity;
+
+            //这里开始写条件
+
+
+            var list = await listQuery.DynamicOrderBy(string.IsNullOrEmpty(model.OrderBy) ? "DataChangeLastTime" : model.OrderBy,
+                    model.OrderSequence)
+                .Select(r=>new {{ModelClassName}}SM
+                {
+                 {% for field in ModelFields %}
+                    {{field.Name}} = r.{{field.Name}},
+                 {% endfor %}
+                })
+                .ToListAsync();
+
+            return list;
+        }
+
+        /// <summary>
         /// 新增或修改{{ModelName}}
         /// </summary>
         /// <param name="model">{{ModelName}}-对象</param>
@@ -58,6 +84,8 @@ namespace Repository
             {
                 return Tip.BadRequest;
             }
+
+             //写入其他的校验规则 或者其他逻辑 比如 初始值设置
 
             if (model.Tid > 0)
             {
@@ -92,7 +120,44 @@ namespace Repository
             return !result ? Tip.DeleteError : string.Empty;
         }
 
+        /// <summary>
+        /// 下载导入Excel模板
+        /// </summary>
+        /// <returns></returns>
+        public Tuple<string, byte[]> ExcelTemplete()
+        {
+            var ignoreColumns = new string[] { "DataChangeLastTime" };
+            var fields = this.GetTableFileds<{{ModelClassName}}>(ignoreColumns);
+            if (!string.IsNullOrEmpty(fields.Item1))
+            {
+                return Tuple.Create<string, byte[]>(fields.Item1, null);
+            }
+            var bytes = ExcelHelper.ToExcel(fields.Item2);
+            return Tuple.Create<string, byte[]>(null, bytes);
+        }
 
+        /// <summary>
+        /// 导入Excel
+        /// </summary>
+        /// <param name="inputFileStream"></param>
+        /// <param name="userName">当前操作人姓名</param>
+        /// <returns></returns>
+        public Tuple<bool, string> UseTransactionUpload(Stream inputFileStream, string userName)
+        {
+            return CommonUpload(inputFileStream, (model) =>
+            {
+                //这里你可以对数据进行加工或者字段的验证
+                //if (string.IsNullOrEmpty(model.Name))
+                //{
+                    //return "名称不能为空";
+                //}
 
+                //或者数据加工
+                //model.UpdateUser = userName;
+                
+                //校验没错
+                return string.Empty;
+            });
+        }
     }
 }

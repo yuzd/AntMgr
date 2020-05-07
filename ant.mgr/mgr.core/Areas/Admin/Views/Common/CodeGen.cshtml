@@ -2,7 +2,6 @@
     ViewBag.Title = "代码生成";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<link href="~/css/plugins/jQueryUI/jquery-ui.css?201811201906" rel="stylesheet" />
 <link href="~/css/plugins/steps/jquery.steps.css?201811201906" rel="stylesheet" />
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -51,8 +50,8 @@
     </div>
 </div>
 @section Scripts{
-    <script src="~/js/plugins/jquery-ui/jqueryui.js?201811201906"></script>
-    <script src="~/js/jquery.fileDownload.js?201811201906"></script>
+
+    
     <script src="~/js/plugins/staps/jquery.steps.min.js?201811201906"></script>
  
 
@@ -81,7 +80,10 @@
                     if (!tableName) return;
                     QQT.ajax('/Admin/Common/GetDbTableColumns',
                         'Post',
-                        { tableName: tableName.split('→')[0] }
+                        {
+                             dbName: tableName.split('→')[0],
+                             tableName: tableName.split('→')[1]
+                        }
                     )
                         .done(function (response) {
                             InitDbTablesColumns(response.Data);
@@ -148,9 +150,10 @@
             var searchList = [];
             $.each(data,
                 function (index, item) {
+                    var dbName = item.DbName || '';
                     searchList.push({
-                        id: item.Name + "→" + item.Comment,
-                        text: item.TableName + "(" + item.Comment + ")"
+                        id: dbName + "→"+ item.Name + "→" + item.Comment,
+                        text: (dbName.length > 0 ? dbName+".":"") + item.TableName + "(" + item.Comment + ")"
                     });
                 });
 

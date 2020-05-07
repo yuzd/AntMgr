@@ -13,13 +13,19 @@
     <EmbeddedResource Include="CodeGen\CrudTemplete\*.tpl" />
   </ItemGroup>
 
+  
   <ItemGroup>
-    <PackageReference Include="Autofac.Annotation" Version="3.0.7" />
-    <PackageReference Include="DotLiquid" Version="2.0.314" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.16" />
+    <None Remove="CodeGen\CrudTemplete\ServiceModel.tpl" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac.Annotation" Version="3.1.2" />
+    <PackageReference Include="DotLiquid" Version="2.0.333" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.23" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
-    <PackageReference Include="NLog" Version="4.6.7" />
+    <PackageReference Include="NLog" Version="4.7.0" />
+    <PackageReference Include="Npoi.Mapper" Version="3.4.0" />
   </ItemGroup>
 
   <ItemGroup>
