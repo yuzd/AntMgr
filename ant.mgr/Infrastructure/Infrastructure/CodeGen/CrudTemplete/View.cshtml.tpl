@@ -182,11 +182,7 @@
                     });
 				},
                 _SaveImportImport: function() {
-                    $('#uploadModal').modal({ backdrop: 'static', keyboard: false });
-                    $('#uploadModal').modal('show');
-                },
-                _{{ModelClassName}}Import: function() {
-                    if ($('#upload').val().length < 1) {
+					if ($('#upload').val().length < 1) {
                         swal({
                             title: "",
                             text: "请选择Excel文件！",
@@ -203,6 +199,10 @@
                             swal("成功啦！", response.Info, "success");
                             $('#{{ModelClassName}}Table').bootstrapTable('refresh', { silent: true });
                         });
+                },
+                _{{ModelClassName}}Import: function() {
+                      $('#uploadModal').modal({ backdrop: 'static', keyboard: false });
+                    $('#uploadModal').modal('show');
                 },
                 _{{ModelClassName}}Export: function() {
                     $.fileDownload(window.appUrl + '/{{ModelClassName}}/Export',
