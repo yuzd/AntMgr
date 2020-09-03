@@ -28,7 +28,7 @@ namespace Configuration
                     .Split(new string[] { "],[" }, StringSplitOptions.None).ToList();
                 foreach (var li in list)
                 {
-                    result.Add(li.Replace("]", "").Replace("[", ""));
+                    result.Add(li.Replace("]", "").Replace("[", "").ToLower());
                 }
                 return result;
             }

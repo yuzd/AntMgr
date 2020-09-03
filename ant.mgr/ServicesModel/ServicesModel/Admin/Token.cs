@@ -39,7 +39,6 @@ namespace ServicesModel
         public long RoleTid { get; set; }
 
         public string RoleName { get; set; }
-        public bool ReceiveOrderIm { get; set; }//是否接受订单推送消息
         public Token()
         {
             
@@ -56,7 +55,6 @@ namespace ServicesModel
             this.Code = token.Code;
             this.RoleTid = token.RoleTid;
             this.RoleName = token.RoleName;
-            this.ReceiveOrderIm = token.ReceiveOrderIm;
         }
     }
 }
