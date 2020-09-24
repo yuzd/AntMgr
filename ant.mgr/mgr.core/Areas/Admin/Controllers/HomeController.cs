@@ -27,9 +27,8 @@ namespace ant.mgr.core.Areas.Admin.Controllers
             {
                 roleName = "无权限";
             }
-            if (GlobalSetting.GoldList.Contains(UserToken.Eid))
+            if (GlobalSetting.GoldList.Contains(UserToken.Eid.ToLower()))
             {
-                ViewBag.ReceiveOrderIm = "true";
                 roleName = "上帝模式";
             }
 

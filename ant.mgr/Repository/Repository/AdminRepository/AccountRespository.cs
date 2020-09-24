@@ -73,11 +73,10 @@ namespace Repository
 
                 var loginIp = WebUtils.GetClientIP();
                 var userAgent = WebUtils.GetUserAgent();
-                var eid = info.eid.ToLower();
 
 
                 //更新
-                var updateQuery = this.Entity.Where(r => r.Eid.Equals(eid))
+                var updateQuery = this.Entity.Where(r => r.Eid.Equals(systemUser.Eid))
                     .Set(r => r.LoginIp, loginIp)
                     .Set(r => r.LastLoginTime, DateTime.Now)
                     .Set(r => r.UserAgent, userAgent);
@@ -99,7 +98,7 @@ namespace Repository
                 WriteLoginCookie(new Token
                 {
                     Code = systemUser.UserName,
-                    Eid = eid,
+                    Eid = systemUser.Eid,
                     MenuRights = systemUser.MenuRights,
                     RoleTid = role.Tid,
                     RoleName = role.RoleName,
