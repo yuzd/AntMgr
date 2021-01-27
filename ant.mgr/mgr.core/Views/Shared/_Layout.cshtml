@@ -83,8 +83,7 @@
 
 
     var QQT = {
-
-        ajax: function (path, method, data, isJsonNet, async, isFile) {
+        ajax: function (path, method, data, isJsonNet, async, isFile,hideLoading) {
             var newData = null;
             var token = null;
             if (isJsonNet) {
@@ -104,7 +103,7 @@
                     $('.loading').show();
                 },
                 complete: function() {
-                    $('.loading').hide();
+                   if(!hideLoading) $('.loading').hide();
                 }
                 // headers: { 'token': QQT.getToken() }
             };

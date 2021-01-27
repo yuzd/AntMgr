@@ -11,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Autofac.Aspect;
 using DbModel;
 using Repository.Interceptors;
 using ViewModels.Reuqest;

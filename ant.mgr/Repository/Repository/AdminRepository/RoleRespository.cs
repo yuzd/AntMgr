@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
-using Autofac.Aspect;
 using DbModel;
 using Repository.Interceptors;
 using ViewModels.Reuqest;
@@ -29,6 +28,7 @@ namespace Repository
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        [EnableTransactionScope]
         public async Task<string> UseTransactionAddRoleActions(RoleAction model)
         {
             if (model == null || model.MenuId < 1 || string.IsNullOrEmpty(model.ActionId)) return Tip.BadRequest;
@@ -137,6 +137,7 @@ namespace Repository
         /// </summary>
         /// <param name="role"></param>
         /// <returns></returns>
+        [EnableTransactionScope]
         public async Task<string> UseTransactionAddRole(AddRoleVm role, Token user)
         {
             if (role == null)
