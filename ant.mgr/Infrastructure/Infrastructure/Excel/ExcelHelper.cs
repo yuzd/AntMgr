@@ -309,7 +309,7 @@ namespace Infrastructure.Excel
                 style.FillPattern = FillPattern.SolidForeground;
                 style.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.Grey25Percent.Index;
                 IFont f = workbook.CreateFont();
-                f.Boldweight = (short)FontBoldWeight.Bold;
+                f.IsBold = true;
                 style.SetFont(f);
             }
 
@@ -334,9 +334,8 @@ namespace Infrastructure.Excel
                 defaultFont.FontHeightInPoints = (short)10;
                 defaultFont.FontName = "Arial";
                 defaultFont.Color = IndexedColors.Black.Index;
-                defaultFont.IsBold = false;
                 defaultFont.IsItalic = false;
-                defaultFont.Boldweight = 700;
+                defaultFont.IsBold = true;
                 style.SetFont(defaultFont);
             }
 
