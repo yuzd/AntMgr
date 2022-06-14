@@ -27,7 +27,8 @@ namespace Infrastructure.StaticExt
         public static string MD5(string str)
         {
             byte[] b = Encoding.UTF8.GetBytes(str);
-            b = new MD5CryptoServiceProvider().ComputeHash(b);
+            using var md5 = System.Security.Cryptography.MD5.Create();
+            b = md5.ComputeHash(b);
             string ret = string.Empty;
             for (int i = 0; i < b.Length; i++)
             {
@@ -55,7 +56,7 @@ namespace Infrastructure.StaticExt
 
                 byte[] toEncryptArray = Encoding.UTF8.GetBytes(toEncrypt);
 
-                RijndaelManaged rDel = new RijndaelManaged();
+                using var rDel = Aes.Create("AesManaged");
                 rDel.Key = keyArray;
                 rDel.Mode = CipherMode.ECB;
                 rDel.Padding = PaddingMode.PKCS7;
@@ -89,7 +90,7 @@ namespace Infrastructure.StaticExt
 
                 byte[] toEncryptArray = Convert.FromBase64String(toDecrypt);
 
-                RijndaelManaged rDel = new RijndaelManaged();
+                using var rDel = Aes.Create("AesManaged");
                 rDel.Key = keyArray;
                 rDel.Mode = CipherMode.ECB;
                 rDel.Padding = PaddingMode.PKCS7;

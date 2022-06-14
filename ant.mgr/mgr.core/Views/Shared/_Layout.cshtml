@@ -133,6 +133,7 @@
                             text: response.Info,
                             type: "error"
                         });
+                        $('.loading').hide();
                         deferred.reject(response);
                     } else {
                         swal({
@@ -140,6 +141,7 @@
                             text: "请求错误！",
                             type: "error"
                         });
+                        $('.loading').hide();
                         deferred.reject(response);
                     }
                 })
