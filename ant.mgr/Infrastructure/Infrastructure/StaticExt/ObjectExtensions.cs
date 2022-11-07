@@ -18,6 +18,17 @@ namespace Infrastructure.StaticExt
     /// </summary>
     public static class ObjectExtensions
     {
+        /// <summary>
+        /// 判断字符串中是否包含中文
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static bool ContainChinese(this string input)
+        {
+            string pattern = "[\u4e00-\u9fbb]";
+            return Regex.IsMatch(input, pattern);
+        }
+
         public static string DecodeBase64(this string str)
         {
             try

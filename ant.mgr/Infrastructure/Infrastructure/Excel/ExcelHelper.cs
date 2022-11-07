@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Infrastructure.Logging;
+using Infrastructure.StaticExt;
 using Npoi.Mapper;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
@@ -42,25 +43,34 @@ namespace Infrastructure.Excel
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="data"></param>
+        /// <param name="mapperAction"></param>
         /// <param name="sheetName"></param>
         /// <returns></returns>
-        public static Tuple<List<string>, List<T>> ReadExcelSheetWithHeader<T>(this Stream data, string sheetName = "Sheet1") where T : class
+        public static Tuple<List<string>, List<T>> ReadExcelSheetWithHeader<T>(this Stream data, Action<Mapper> mapperAction = null , string sheetName = "Sheet1") where T : class
         {
             try
             {
                 var importer = new Mapper(data);
-               
-                var items = importer.Take<T>(sheetName).Select(r => r.Value).ToList();
-
                 var sheet = importer.Workbook.GetSheet(sheetName);
                 IRow headerRow = sheet.GetRow(sheet.FirstRowNum);
                 var headerValueList = new List<string>();
+                var containsChinese = false;
                 foreach (ICell cell in headerRow)
                 {
                     string stringCellValue = cell.StringCellValue;
                     headerValueList.Add(stringCellValue);
+                    if (!containsChinese && stringCellValue.ContainChinese())
+                    {
+                        containsChinese = true;
+                    }
                 }
 
+                if (containsChinese && mapperAction!=null)
+                {
+                    // 重新map一下
+                    mapperAction.Invoke(importer);
+                }
+                var items = importer.Take<T>(sheetName).Select(r => r.Value).ToList();
                 return Tuple.Create(headerValueList,items);
             }
             catch (Exception ex)

@@ -24,6 +24,7 @@ using Mapping;
 using Repository.Interface;
 using Newtonsoft.Json;
 using ServicesModel;
+using Npoi.Mapper;
 
 namespace Repository
 {
@@ -237,7 +238,23 @@ namespace Repository
             var primary = fields.Item2.First(r => r.IsPrimary);
 
             //读数据
-            var data = inputFileStream.ReadExcelSheetWithHeader<T>();
+            var data = inputFileStream.ReadExcelSheetWithHeader<T>((mapper) =>
+            {
+                var ps = typeof(T).GetProperties();
+                fields.Item2.ForEach(item =>
+                {
+                    PropertyInfo property = ps.FirstOrDefault(r => r.Name.ToLower().Equals(item.FieldName.ToLower()));
+                    if (property!=null && !string.IsNullOrEmpty(item.Comment))
+                    {
+                        ParameterExpression typeExpression = Expression.Parameter(typeof(T), "type");
+                        MemberExpression propExpression = Expression.Property(typeExpression, property);
+                        UnaryExpression objectpropExpression = Expression.Convert(propExpression, typeof(object));
+                        var dynamicEx= Expression.Lambda<Func<T, dynamic>>(objectpropExpression, new[] { typeExpression });
+                        mapper.Map<T>(item.Comment, dynamicEx);
+                    }
+                });
+            });
+
             if (data == null) return Tuple.Create(false, "读取Excel失败");
             var headerList = data.Item1;
             var dataList = data.Item2;
@@ -252,7 +269,11 @@ namespace Repository
                 var cc = fields.Item2.FirstOrDefault(r => header.Equals(r.Name));
                 if (cc == null)
                 {
-                    return Tuple.Create(false, $"{typeof(T).Name}不存在列:{header}");
+                    cc = fields.Item2.FirstOrDefault(r => header.Equals(r.Comment));
+                    if (cc == null)
+                    {
+                        return Tuple.Create(false, $"{typeof(T).Name}不存在列:{header}");
+                    }
                 }
 
                 if (cc.Identity)
@@ -270,10 +291,6 @@ namespace Repository
                 }
             }
 
-            if (!havaPrimary)
-            {
-                return Tuple.Create(false, $"Excel不存在主键列:{primary.Name}");
-            }
 
             var dbName = doHeaderList.First().TableName;
 
