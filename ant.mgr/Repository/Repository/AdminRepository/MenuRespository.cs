@@ -411,11 +411,20 @@ namespace Repository
                                 r.ChildMunuList = r.ChildMunuList.Where(r1 => r1.HasMenu).ToList();
                                 r.ChildMunuList.ForEach(r1 => r1.HasMenu = false);
                             }
+
+                            if (r.ChildMunuList.Any(r1 => r1.HasMenu))
+                            {
+	                            r.HasMenu = true;
+                            }
                         }
                     });
                     addActionChildrenTwo(sysActionSMList, right, acList, ignoreHasMenu, ref parentActionList);
                     item.ChildMunuList.AddRange(parentActionList);
-                }
+                    if (item.ChildMunuList.Any(r1 => r1.HasMenu))
+                    {
+	                    item.HasMenu = true;
+                    }
+				}
 
 
             }

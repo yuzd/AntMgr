@@ -50,10 +50,19 @@ namespace ServicesModel
     }
     public class CodeGenField
     {
+        /// <summary>
+        /// Class的字段名称
+        /// </summary>
         public string Name { get; set; }    
         public bool IsPrimary { get; set; }    
         public bool Identity { get; set; }    
-        public string FieldName { get; set; }    
+        /// <summary>
+        /// 表的字段名称
+        /// </summary>
+        public string FieldName { get; set; }   
+        /// <summary>
+        /// 备注
+        /// </summary>
         public string Comment { get; set; }    
         public string TableName { get; set; }    
         public long Length { get; set; }    
