@@ -56,7 +56,8 @@ namespace Infrastructure.StaticExt
 
                 byte[] toEncryptArray = Encoding.UTF8.GetBytes(toEncrypt);
 
-                using var rDel = Aes.Create("AesManaged");
+                
+                using var rDel = Aes.Create();
                 rDel.Key = keyArray;
                 rDel.Mode = CipherMode.ECB;
                 rDel.Padding = PaddingMode.PKCS7;
@@ -90,7 +91,7 @@ namespace Infrastructure.StaticExt
 
                 byte[] toEncryptArray = Convert.FromBase64String(toDecrypt);
 
-                using var rDel = Aes.Create("AesManaged");
+                using var rDel = Aes.Create();
                 rDel.Key = keyArray;
                 rDel.Mode = CipherMode.ECB;
                 rDel.Padding = PaddingMode.PKCS7;

@@ -36,7 +36,6 @@ namespace ant.mgr.core
                     this.GetType().Assembly,
                     typeof(BaseRepository<>).Assembly,
                     typeof(HttpContext).Assembly)
-                .SetAllowCircularDependencies(true)
                 .SetDefaultAutofacScopeToInstancePerLifetimeScope());
 
         }
