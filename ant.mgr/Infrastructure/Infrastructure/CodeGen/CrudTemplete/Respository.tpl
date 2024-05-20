@@ -15,7 +15,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ViewModels.Reuqest;
 using Infrastructure.Excel;
-
+using System.IO;
 namespace Repository
 {
     [Component]
@@ -51,7 +51,7 @@ namespace Repository
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async Task<List<{{ModelClassName}}SM>> Export(SchoolVm model)
+        public async Task<List<{{ModelClassName}}SM>> Export({{ModelClassName}}Vm model)
         {
             if (model == null) return new List<{{ModelClassName}}SM>();
 

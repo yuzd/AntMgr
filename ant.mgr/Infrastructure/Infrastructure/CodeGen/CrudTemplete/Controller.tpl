@@ -129,7 +129,7 @@ namespace ant.mgr.core.Controllers
         /// </summary>
         [API("导出Excel")]
         [HttpPost, FileDownload]
-        public async Task<ActionResult> Export(SchoolVm model)
+        public async Task<ActionResult> Export({{ModelClassName}}Vm model)
         {
             var data = await {{ModelClassName}}Respository.Export(model);
             var tabelName = $"{{ModelClassName}}_{DateTime.Now:yyyyMMddHHmmss}";
